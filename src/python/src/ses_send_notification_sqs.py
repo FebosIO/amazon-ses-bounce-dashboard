@@ -146,22 +146,3 @@ def verificar_correos_suprimidos(messageId, empresa_id='0', correos=[]):
             table_event.put_item(Item=data)
             correos.remove(item['id'])
     return correos
-
-
-if __name__ == '__main__':
-    if True:
-        handler({'Records': [{'messageId': 'fc007d17-1859-48db-a6ac-6d233d5f9fdc',
-                              'receiptHandle': 'AQEBWwiNg8BidZOZfzPAyGO+8WdqqKXmf+TfuSCpSCgNypgVUudJSpxh6oVqf9uxkexRlSJd4xhYSKL/7Px0KsukmoXiaLhaNFUaUpJ067UnLmuasrMJIXAHtv/qgNIOQdXQRca19m+XCXGT21zjD07bwSMQODfsFcKMlhz5RZw/eM90+e/EEF/kovHygaEGw1PYSP71dxJTMUomcOrHhSg0amFi8bNJOes/PFw+9vm76dJO4MK0gHRXhgJU7YU584BELX7I9/C7PQST9Q1LNPBBET1Dg2qqearCfqSXVHSiyNc=',
-                              'body': '{"id":"bd40367a-5423-4d7c-abb1-03323d9dd605","documentoId":null,"messageId":null,"pais":"chile","stage":"desarrollo","domain":"empresas.febos.cl","manifiesto":"/febos-io/chile/desarrollo/email/31a14ff528ee1247b0289b72ffe75481625d/31a14ff528ee1247b0289b72ffe75481625d.json","empresa":"629fc292-8769-11e7-97e3-129dbb41877c","destinatarios":["claudio.noexiste@febos.cl","claudio+siexiste@febos.cl"],"servicio":"DTE","proceso":"test","application":"FEB","timestamp":"2023-07-27T17:21:01.135Z","ConfigurationSetName":"default"}',
-                              'attributes': {'ApproximateReceiveCount': '1',
-                                             'AWSTraceHeader': 'Root=1-64c2a77c-4be00280440053e50bd0ae29;Parent=496b18fb298db3a4;Sampled=0;Lineage=74085691:0',
-                                             'SentTimestamp': '1690478462058', 'SequenceNumber': '18879506559996399616',
-                                             'MessageGroupId': 'bd40367a-5423-4d7c-abb1-03323d9dd605',
-                                             'SenderId': 'AROA4CUYL4XDWRQJ5I45V:ses-send-email',
-                                             'MessageDeduplicationId': 'bd40367a-5423-4d7c-abb1-03323d9dd605',
-                                             'ApproximateFirstReceiveTimestamp': '1690478462058'},
-                              'messageAttributes': {},
-                              'md5OfBody': '5c22591780274d17f5d216336d2f74a8', 'eventSource': 'aws:sqs',
-                              'eventSourceARN': 'arn:aws:sqs:us-east-1:830321976775:ses-send-email.fifo',
-                              'awsRegion': 'us-east-1'}]},
-                {})
