@@ -23,7 +23,11 @@ export const handler = async (event, context) => {
         const event_detail = message[type.toLowerCase()] || {}
         const timestamp = event_detail.timestamp || new Date().toISOString();
         const data = {
-            id: messageId, timestamp: timestamp, type: type, event: event_detail, mail
+            id: messageId,
+            timestamp: timestamp,
+            type: type,
+            event: event_detail,
+            mail
         };
         await dynamoPutItem({
             TableName: TABLE_EVENT_NAME, Item: data

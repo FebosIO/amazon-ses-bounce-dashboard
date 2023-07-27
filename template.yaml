@@ -18,7 +18,7 @@ Parameters:
 Globals:
   Function:
     Runtime: nodejs18.x
-    MemorySize: 128
+    MemorySize: 256
     Timeout: 10
     Environment:
       Variables:
@@ -123,7 +123,7 @@ Resources:
       RedrivePolicy:
         deadLetterTargetArn: !GetAtt SESSendEmailSQSDeadLeter.Arn
         maxReceiveCount: 4
-      VisibilityTimeout: 10
+      VisibilityTimeout: 30
     DependsOn:
       - SESSendEmailSQSDeadLeter
     Metadata:
@@ -251,6 +251,7 @@ Resources:
       CodeUri: src/python/src/
       Handler: ses_send_notification_sqs.handler
       Runtime: python3.8
+      Timeout: 30
       FunctionName: ses-send-email-process
       Environment:
         Variables:
@@ -260,6 +261,8 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref SESEmailTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SESEventsTable
         - DynamoDBCrudPolicy:
             TableName: !Ref SESEmailSuppressionnTable
         - S3ReadPolicy:

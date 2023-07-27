@@ -13,3 +13,11 @@ sam sync --stack-name='ses-event-manager'
 ```
 
 
+
+# Invocar localmente
+
+
+```bash
+sam build
+sam local invoke SendNotificationFunction --event events/send_email.json -l log.log
+```
