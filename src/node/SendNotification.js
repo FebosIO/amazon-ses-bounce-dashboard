@@ -23,6 +23,7 @@ export const handler = async (event, context) => {
             servicio = '',
             proceso = '',
             destinatarios = [],
+            copias = [],
             ConfigurationSetName = "default"
         } = event;
 
@@ -36,6 +37,7 @@ export const handler = async (event, context) => {
             manifiesto,
             empresa,
             destinatarios,
+            copias,
             servicio,
             proceso,
             application: aplicacion,

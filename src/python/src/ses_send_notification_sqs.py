@@ -29,14 +29,16 @@ def handler(message, context):
             'id': id
         })
         item = item['Item']
-        destinatarios = value_or_default(sqsBody, 'destinatarios')
+        destinatarios = value_or_default(sqsBody, 'destinatarios', [])
+        copias = value_or_default(sqsBody, 'copias', [])
         manifiesto = value_or_default(sqsBody, 'manifiesto')
         ConfigurationSetName = value_or_default(sqsBody, 'ConfigurationSetName', 'default')
         respuesta_email = sen_notification_from_manifest(
             destinatarios,
             manifiesto,
             ConfigurationSetName,
-            item
+            item,
+            copias = copias
         )
 
         messageId = respuesta_email['MessageId']
@@ -66,7 +68,8 @@ def sen_notification_from_manifest(
         destinatario,
         manifiesto,
         ConfigurationSetName="default",
-        item={}
+        item={},
+        copias=[]
 ):
     empresa = "0"
     if 'empresa' in item:
@@ -77,6 +80,11 @@ def sen_notification_from_manifest(
         destinatarios = destinatario
     else:
         destinatarios = destinatario.split(',')
+    _copias = []
+    if isinstance(copias, list):
+        _copias = copias
+    else:
+        _copias = copias.split(',')
     contenido = s3_get_object_string(manifiesto)[0]
     configuracion_manifiesto = json.loads(contenido)
     attachments = []
@@ -98,6 +106,7 @@ def sen_notification_from_manifest(
     client = SesClient(config_set_name=ConfigurationSetName)
     return client.send_email(
         to_addresses=destinatarios,
+        cc_addresses=_copias,
         sender_email=emailField['from']['value'],
         subject=emailField['subject']['value'],
         body_text=value_or_default(value_or_default(emailField, 'text', {}), 'value', '-'),
