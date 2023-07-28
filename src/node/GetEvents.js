@@ -27,7 +27,6 @@ const prepareRequest = (parameter, configuration = posiblesValues) => {
     let index = 0
     for (const key in parameter) {
         if (key.indexOf(".") >= 0) {
-            console.log('key', key)
             const partes = key.split(".")
             const subKey = partes[0]
             const newKey = partes.slice(1).join(".")
