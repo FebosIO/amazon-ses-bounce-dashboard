@@ -38,7 +38,7 @@ def handler(message, context):
             manifiesto,
             ConfigurationSetName,
             item,
-            copias = copias
+            copias=copias
         )
 
         messageId = respuesta_email['MessageId']
@@ -155,3 +155,50 @@ def verificar_correos_suprimidos(messageId, empresa_id='0', correos=[]):
             table_event.put_item(Item=data)
             correos.remove(item['id'])
     return correos
+
+
+if __name__ == '__main__':
+    handler({
+        "Records": [
+            {
+                "messageId": "fc007d17-1859-48db-a6ac-6d233d5f9fdc",
+                "receiptHandle": "AQEBWwiNg8BidZOZfzPAyGO+8WdqqKXmf+TfuSCpSCgNypgVUudJSpxh6oVqf9uxkexRlSJd4xhYSKL/7Px0KsukmoXiaLhaNFUaUpJ067UnLmuasrMJIXAHtv/qgNIOQdXQRca19m+XCXGT21zjD07bwSMQODfsFcKMlhz5RZw/eM90+e/EEF/kovHygaEGw1PYSP71dxJTMUomcOrHhSg0amFi8bNJOes/PFw+9vm76dJO4MK0gHRXhgJU7YU584BELX7I9/C7PQST9Q1LNPBBET1Dg2qqearCfqSXVHSiyNc=",
+                "body": json.dumps({
+                    "id": "025d1f7521b4f249c9290b42db4eaec3b0db",
+                    "application": "FEB",
+                    "ConfigurationSetName": "default",
+                    "copias": [
+                        "cronosunder@gmail.com"
+                    ],
+                    "destinatarios": [
+                        "claudio@febos.cl"
+                    ],
+                    "documentoId": "ab3b498d27dcc244d7288db2ca7b088d991e",
+                    "domain": "empresas.febos.cl",
+                    "empresa": "0",
+                    "manifiesto": "febos-io/chile/pruebas/email/025d1f7521b4f249c9290b42db4eaec3b0db/025d1f7521b4f249c9290b42db4eaec3b0db.json",
+                    "messageId": "010001899d30f079-8a09325a-b070-4a0a-ad1f-678a0d22dbd2-000000",
+                    "pais": "chile",
+                    "proceso": "",
+                    "servicio": "",
+                    "stage": "pruebas",
+                    "timestamp": "2023-07-28T15:49:35.368Z"
+                }),
+                "attributes": {
+                    "ApproximateReceiveCount": "1",
+                    "AWSTraceHeader": "Root=1-64c2a77c-4be00280440053e50bd0ae29;Parent=496b18fb298db3a4;Sampled=0;Lineage=74085691:0",
+                    "SentTimestamp": "1690478462058",
+                    "SequenceNumber": "18879506559996399616",
+                    "MessageGroupId": "bd40367a-5423-4d7c-abb1-03323d9dd605",
+                    "SenderId": "AROA4CUYL4XDWRQJ5I45V:ses-send-email",
+                    "MessageDeduplicationId": "bd40367a-5423-4d7c-abb1-03323d9dd605",
+                    "ApproximateFirstReceiveTimestamp": "1690478462058"
+                },
+                "messageAttributes": {},
+                "md5OfBody": "5c22591780274d17f5d216336d2f74a8",
+                "eventSource": "aws:sqs",
+                "eventSourceARN": "arn:aws:sqs:us-east-1:830321976775:ses-send-email.fifo",
+                "awsRegion": "us-east-1"
+            }
+        ]
+    }, None)

@@ -81,6 +81,10 @@ class SesClient(object):
         msg['Subject'] = subject
         msg['From'] = sender_email
         msg['To'] = ','.join(to_addresses)
+        if cc_addresses:
+            msg['Cc'] = ','.join(cc_addresses)
+        if bcc_addresses:
+            msg['Bcc'] = ','.join(bcc_addresses)
         # Create a multipart/alternative child container.
         msg_body = MIMEMultipart('alternative')
 
