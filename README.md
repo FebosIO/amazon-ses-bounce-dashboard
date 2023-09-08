@@ -21,3 +21,7 @@ sam sync --stack-name='ses-event-manager'
 sam build
 sam local invoke SendNotificationFunction --event events/send_email.json -l log.log
 ```
+
+```bash
+DOCKER_HOST=unix://$HOME/.docker/run/docker.sock sam local invoke  ProcessEmailSyncOS --event events/sync_dynamo_os.json -l log.log  --template template.yaml
+```

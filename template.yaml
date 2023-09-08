@@ -54,8 +54,6 @@ Resources:
     Type: 'AWS::DynamoDB::Table'
     Properties:
       TableName: ses-event
-      StreamSpecification:
-        StreamViewType: NEW_AND_OLD_IMAGES
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
@@ -94,6 +92,8 @@ Resources:
       #        - AttributeName: timestamp
       #          KeyType: RANGE
       BillingMode: PROVISIONED
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
       ProvisionedThroughput:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
@@ -339,7 +339,7 @@ Resources:
           Type: DynamoDB
           Properties:
             Stream:
-              !GetAtt SESEventsTable.StreamArn   # This must be the name of a DynamoDB table declared in the same template file
+              !GetAtt SESEmailTable.StreamArn   # This must be the name of a DynamoDB table declared in the same template file
             StartingPosition: TRIM_HORIZON
             BatchSize: 1
             Enabled: true
