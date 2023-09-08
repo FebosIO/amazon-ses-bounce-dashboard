@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: 'ses-dashboard-events'
 Transform:
   - 'AWS::Serverless-2016-10-31'
+Description: 'ses-dashboard-events'
 Parameters:
   AWSEnv:
     Type: String
@@ -54,6 +54,8 @@ Resources:
     Type: 'AWS::DynamoDB::Table'
     Properties:
       TableName: ses-event
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
@@ -294,6 +296,58 @@ Resources:
     Metadata:
       'AWS::CloudFormation::Designer':
         id: bce22d8f-5cbc-4935-aa75-d9b30ea96d3a
+  ProcessEmailSyncOS:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      CodeUri: src/python/src/
+      Handler: sync_dynamo_os.handler
+      Runtime: python3.8
+      Timeout: 30
+      FunctionName: ses-send-email-sync-os
+      Environment:
+        Variables:
+          TABLE_EVENT_NAME: !Ref SESEventsTable
+          TABLE_EMAIL_NAME: !Ref SESEmailTable
+          TABLE_EMAIL_SUPPRESSION_NAME: !Ref SESEmailSuppressionnTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SESEmailTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SESEventsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SESEmailSuppressionnTable
+        - S3ReadPolicy:
+            BucketName: '*'
+        - SQSSendMessagePolicy:
+            QueueName: '*'
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - 'ses:SendEmail'
+                - 'ses:SendRawEmail'
+              Resource: '*'
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - 'ses:SendEmail'
+                - 'ses:SendRawEmail'
+              Resource: '*'
+      Events:
+        DDBEvent:
+          Type: DynamoDB
+          Properties:
+            Stream:
+              !GetAtt SESEventsTable.StreamArn   # This must be the name of a DynamoDB table declared in the same template file
+            StartingPosition: TRIM_HORIZON
+            BatchSize: 1
+            Enabled: true
+#  EmailEventSync:
+#    Type: AWS::Lambda::EventSourceMapping
+#    Properties:
+#      EventSourceArn: !GetAtt SESEventsTable.StreamArn
+#      FunctionName: !GetAtt ProcessEmailSyncOS.Arn
   ProcessSESSendQueueLogGroup:
     Type: 'AWS::Logs::LogGroup'
     Properties:
