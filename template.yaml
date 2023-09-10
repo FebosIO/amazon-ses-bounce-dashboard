@@ -310,29 +310,11 @@ Resources:
           TABLE_EMAIL_NAME: !Ref SESEmailTable
           TABLE_EMAIL_SUPPRESSION_NAME: !Ref SESEmailSuppressionnTable
       Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref SESEmailTable
-        - DynamoDBCrudPolicy:
-            TableName: !Ref SESEventsTable
-        - DynamoDBCrudPolicy:
-            TableName: !Ref SESEmailSuppressionnTable
-        - S3ReadPolicy:
-            BucketName: '*'
-        - SQSSendMessagePolicy:
-            QueueName: '*'
         - Version: '2012-10-17'
           Statement:
             - Effect: Allow
               Action:
-                - 'ses:SendEmail'
-                - 'ses:SendRawEmail'
-              Resource: '*'
-        - Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Action:
-                - 'ses:SendEmail'
-                - 'ses:SendRawEmail'
+                - 'es:*'
               Resource: '*'
       Events:
         DDBEvent:
