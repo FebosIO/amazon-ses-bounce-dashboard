@@ -20,20 +20,22 @@ table_suppression = dynamo_client.Table(table_email_suppression_name)
 
 
 def handler(message, context):
+    id = None
+    params = None
     try:
         sqsBody = json.loads(message['Records'][0]['body'])
-
         id = value_or_default(sqsBody, 'id')
+        params = {
+            'id': id,
+        }
 
-        item = table_email.get_item(Key={
-            'id': id
-        })
+        item = table_email.get_item(Key=params)
         item = item['Item']
         destinatarios = value_or_default(sqsBody, 'destinatarios', [])
         copias = value_or_default(sqsBody, 'copias', [])
         manifiesto = value_or_default(sqsBody, 'manifiesto')
         ConfigurationSetName = value_or_default(sqsBody, 'ConfigurationSetName', 'default')
-        respuesta_email, subject = sen_notification_from_manifest(
+        respuesta_email, subject, tiene_adjuntos = sen_notification_from_manifest(
             destinatarios,
             manifiesto,
             ConfigurationSetName,
@@ -42,15 +44,15 @@ def handler(message, context):
         )
 
         messageId = respuesta_email['MessageId']
-        params = {
-            'id': id,
-        }
+
         response = table_email.update_item(
             Key=params,
-            UpdateExpression="set messageId = :messageId, subject = :subject",
+            UpdateExpression="set messageId = :messageId, subject = :subject, status = :status, tieneAdjuntos = :tieneAdjuntos",
             ExpressionAttributeValues={
                 ':messageId': messageId,
+                ':status': "sended",
                 ':subject': subject,
+                ':tieneAdjuntos':tiene_adjuntos
             },
             ReturnValues="UPDATED_NEW"
         )
@@ -59,6 +61,14 @@ def handler(message, context):
             'headers': {}
         }
     except Exception as e:
+        response = table_email.update_item(
+            Key=params,
+            UpdateExpression="set status = :status",
+            ExpressionAttributeValues={
+                ':status': "error",
+            },
+            ReturnValues="UPDATED_NEW"
+        )
         print(message)
         print(e)
         raise e
@@ -113,7 +123,7 @@ def sen_notification_from_manifest(
         body_html=emailField['html']['value'],
         attachments=attachments,
         tags=tags
-    ) , emailField['subject']['value']
+    ) , emailField['subject']['value'], len(attachments) > 0
 
 
 def pasar_campos_en_manifiesto_a_objeto(manifiesto):

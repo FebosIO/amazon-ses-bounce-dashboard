@@ -24,6 +24,7 @@ export const handler = async (event, context) => {
         const timestamp = event_detail.timestamp || new Date().toISOString();
         const data = {
             id: messageId,
+            status:'queued',
             timestamp: timestamp,
             type: type,
             event: event_detail,
