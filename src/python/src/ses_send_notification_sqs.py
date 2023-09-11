@@ -33,7 +33,7 @@ def handler(message, context):
         copias = value_or_default(sqsBody, 'copias', [])
         manifiesto = value_or_default(sqsBody, 'manifiesto')
         ConfigurationSetName = value_or_default(sqsBody, 'ConfigurationSetName', 'default')
-        respuesta_email = sen_notification_from_manifest(
+        respuesta_email, subject = sen_notification_from_manifest(
             destinatarios,
             manifiesto,
             ConfigurationSetName,
@@ -42,15 +42,15 @@ def handler(message, context):
         )
 
         messageId = respuesta_email['MessageId']
-        print("MessageId: " + messageId)
         params = {
             'id': id,
         }
         response = table_email.update_item(
             Key=params,
-            UpdateExpression="set messageId = :messageId",
+            UpdateExpression="set messageId = :messageId, subject = :subject",
             ExpressionAttributeValues={
-                ':messageId': messageId
+                ':messageId': messageId,
+                ':subject': subject,
             },
             ReturnValues="UPDATED_NEW"
         )
@@ -113,7 +113,7 @@ def sen_notification_from_manifest(
         body_html=emailField['html']['value'],
         attachments=attachments,
         tags=tags
-    )
+    ) , emailField['subject']['value']
 
 
 def pasar_campos_en_manifiesto_a_objeto(manifiesto):
