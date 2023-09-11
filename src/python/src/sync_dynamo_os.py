@@ -24,6 +24,7 @@ def handler(message, context):
     records = message['Records']
     for record in records:
         event_source_arn: str = record['eventSourceARN']
+        event_name = record['eventName'] # INSERT | MODIFY | REMOVE
         dynamodb_object = record['dynamodb']
         new_image = dynamodb_object['NewImage']
         new_record = {k: deserializer.deserialize(v) for k, v in new_image.items()}

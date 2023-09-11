@@ -35,7 +35,7 @@ def handler(message, context):
         copias = value_or_default(sqsBody, 'copias', [])
         manifiesto = value_or_default(sqsBody, 'manifiesto')
         ConfigurationSetName = value_or_default(sqsBody, 'ConfigurationSetName', 'default')
-        respuesta_email, subject, tiene_adjuntos = sen_notification_from_manifest(
+        respuesta_email, subject, tiene_adjuntos, sender = sen_notification_from_manifest(
             destinatarios,
             manifiesto,
             ConfigurationSetName,
@@ -47,11 +47,12 @@ def handler(message, context):
 
         response = table_email.update_item(
             Key=params,
-            UpdateExpression="set messageId = :messageId, subject = :subject, status = :status, tieneAdjuntos = :tieneAdjuntos",
+            UpdateExpression="set messageId = :messageId, subject = :subject, estado = :status, tieneAdjuntos = :tieneAdjuntos, sender= :sender",
             ExpressionAttributeValues={
                 ':messageId': messageId,
                 ':status': "sended",
                 ':subject': subject,
+                ':sender': sender,
                 ':tieneAdjuntos':tiene_adjuntos
             },
             ReturnValues="UPDATED_NEW"
@@ -63,7 +64,7 @@ def handler(message, context):
     except Exception as e:
         response = table_email.update_item(
             Key=params,
-            UpdateExpression="set status = :status",
+            UpdateExpression="set estado = :status",
             ExpressionAttributeValues={
                 ':status': "error",
             },
@@ -123,7 +124,7 @@ def sen_notification_from_manifest(
         body_html=emailField['html']['value'],
         attachments=attachments,
         tags=tags
-    ) , emailField['subject']['value'], len(attachments) > 0
+    ) , emailField['subject']['value'], len(attachments) > 0, emailField['from']['value']
 
 
 def pasar_campos_en_manifiesto_a_objeto(manifiesto):
