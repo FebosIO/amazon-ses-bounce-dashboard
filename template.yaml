@@ -76,6 +76,8 @@ Resources:
 
       SSESpecification:
         SSEEnabled: true
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
     Metadata:
       'AWS::CloudFormation::Designer':
         id: 0d7f8580-69ee-4297-a770-5cea5e7c801e
@@ -332,6 +334,14 @@ Resources:
           Properties:
             Stream:
               !GetAtt SESEmailSuppressionnTable.StreamArn   # This must be the name of a DynamoDB table declared in the same template file
+            StartingPosition: TRIM_HORIZON
+            BatchSize: 1
+            Enabled: true
+        DDBEventEvents:
+          Type: DynamoDB
+          Properties:
+            Stream:
+              !GetAtt   SESEventsTable.StreamArn   # This must be the name of a DynamoDB table declared in the same template file
             StartingPosition: TRIM_HORIZON
             BatchSize: 1
             Enabled: true

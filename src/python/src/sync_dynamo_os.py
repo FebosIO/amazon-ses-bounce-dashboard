@@ -23,14 +23,23 @@ headers = {"Content-Type": "application/json"}
 def handler(message, context):
     records = message['Records']
     for record in records:
+        event_name = record['eventName']  # INSERT | MODIFY | REMOVE
         event_source_arn: str = record['eventSourceARN']
-        event_name = record['eventName'] # INSERT | MODIFY | REMOVE
         dynamodb_object = record['dynamodb']
-        new_image = dynamodb_object['NewImage']
-        new_record = {k: deserializer.deserialize(v) for k, v in new_image.items()}
-        table_event = event_source_arn.split("table/")[1].split("/")[0]
-        url = host + '/' + table_event + '/' + datatype +"/"+new_record['id']
-        response = requests.put(url, auth=awsauth, json=new_record, headers=headers)
-        if response.status_code > 300 and response.status_code < 200:
-            print(response.text)
 
+        table_event = event_source_arn.split("table/")[1].split("/")[0]
+        keys = {k: deserializer.deserialize(v) for k, v in dynamodb_object['Keys'].items()}
+        # Id de objeto a sincronizar
+        id = keys['id']
+        # URL de objeto indexado
+        url = host + '/' + table_event + '/' + datatype + "/" + id
+        if event_name == 'REMOVE':
+            response = requests.delete(url, auth=awsauth, headers=headers)
+            if response.status_code > 300 and response.status_code < 200:
+                print(response.text)
+        else:
+            new_image = dynamodb_object['NewImage']
+            new_record = {k: deserializer.deserialize(v) for k, v in new_image.items()}
+            response = requests.put(url, auth=awsauth, json=new_record, headers=headers)
+            if response.status_code > 300 and response.status_code < 200:
+                print(response.text)
