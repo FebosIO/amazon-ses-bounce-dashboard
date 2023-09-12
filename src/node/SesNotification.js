@@ -3,44 +3,18 @@
 
 'use strict'
 
-import {dynamoPutItem, sendEventToBus} from "./utils/index.js";
+import {dynamoPutItem, milisegundosToEpoch, sendEventToBus, sunMinutesToDateFromISO} from "./utils/index.js";
 
 const TABLE_EMAIL_SUPPRESSION_NAME = process.env.TABLE_EMAIL_SUPPRESSION_NAME;
 const TABLE_EVENT_NAME = process.env.TABLE_EVENT_NAME
+const TTL = parseInt(process.env.TTL || '525600')
 
 
 export const handler = async (event, context) => {
     try {
-        const record = event.Records[0]
-        const sqsBody = JSON.parse(record.body)
-
-        const message = JSON.parse(sqsBody.Message || "null") || sqsBody
-        // All event definition. For more information, see
-        // https://docs.aws.amazon.com/ses/latest/dg/event-publishing-retrieving-sns-examples.html
-        const type = message.eventType
-        const mail = message.mail
-        const messageId = message.mail.messageId
-        const event_detail = message[type.toLowerCase()] || {}
-        const timestamp = event_detail.timestamp || new Date().toISOString();
-        const data = {
-            id: messageId,
-            estado:'queued',
-            timestamp: timestamp,
-            type: type,
-            event: event_detail,
-            mail
-        };
-        await dynamoPutItem({
-            TableName: TABLE_EVENT_NAME, Item: data
-        })
-        await procesarEventosSuppression({
-            type,
-            event_detail,
-            mail,
-            timestamp,
-            messageId,
-            companyId: obtenerCompanyFromEmailTags(mail)
-        })
+        for(let record of event.Records){
+            await procesarRecord(record);
+        }
     } catch (err) {
         console.warn(event)
         console.log("Error in writing data to the DynamoDB table : ", err.message)
@@ -48,6 +22,39 @@ export const handler = async (event, context) => {
     }
 }
 
+async function procesarRecord(record) {
+    const sqsBody = JSON.parse(record.body)
+
+    const message = JSON.parse(sqsBody.Message || "null") || sqsBody
+    // All event definition. For more information, see
+    // https://docs.aws.amazon.com/ses/latest/dg/event-publishing-retrieving-sns-examples.html
+    const type = message.eventType
+    const mail = message.mail
+    const messageId = message.mail.messageId
+    const event_detail = message[type.toLowerCase()] || {}
+    const timestamp = event_detail.timestamp || new Date().toISOString();
+    const expiration = milisegundosToEpoch(sunMinutesToDateFromISO(timestamp, TTL))
+    const data = {
+        id: messageId,
+        estado: 'queued',
+        timestamp: timestamp,
+        type: type,
+        event: event_detail,
+        expiration,
+        mail
+    };
+    await dynamoPutItem({
+        TableName: TABLE_EVENT_NAME, Item: data
+    })
+    await procesarEventosSuppression({
+        type,
+        event_detail,
+        mail,
+        timestamp,
+        messageId,
+        companyId: obtenerCompanyFromEmailTags(mail)
+    })
+}
 function obtenerCompanyFromEmailTags(mail) {
     try {
         if (mail.tags.empresa) {

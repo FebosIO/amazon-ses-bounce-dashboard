@@ -2,11 +2,11 @@ import datetime
 import json
 import os
 import time
+from _decimal import Decimal
 
-from utils import s3
 from utils.dynamo import get_dynamo_client
 from utils.logic import value_or_default
-from utils.s3 import s3_get_object_string
+from utils.s3 import s3_get_object_string, s3_get_object_file
 from utils.ses_client import SesClient
 
 TTL = int(os.environ.get('TTL') or '525600')
@@ -26,7 +26,7 @@ def handler(message, context):
     params = None
     messageId = None
     vencimiento: datetime.datetime = agregar_minutos(datetime.datetime.now(), TTL)
-    expiration = str(time.mktime(vencimiento.timetuple()))
+    expiration = Decimal(time.mktime(vencimiento.timetuple()))
     try:
         sqsBody = json.loads(message['Records'][0]['body'])
         id = value_or_default(sqsBody, 'id')
@@ -45,7 +45,8 @@ def handler(message, context):
             manifiesto,
             ConfigurationSetName,
             item,
-            copias=copias
+            copias=copias,
+            expiration=expiration
         )
         if respuesta_email:
             messageId = respuesta_email['MessageId']
@@ -86,7 +87,8 @@ def sen_notification_from_manifest(
         manifiesto,
         ConfigurationSetName="default",
         item={},
-        copias=[]
+        copias=[],
+        expiration=None
 ):
     status = "error"
     response = None
@@ -110,7 +112,7 @@ def sen_notification_from_manifest(
     attachments = []
     adjuntos = value_or_default(configuracion_manifiesto, 'adjuntos', [])
     for adjunto in adjuntos:
-        file_path = s3.s3_get_object_file(adjunto['ruta'], adjunto['nombreArchivo'])[0]
+        file_path = s3_get_object_file(adjunto['ruta'], adjunto['nombreArchivo'])[0]
         attachments.append({
             'file_name': adjunto['nombreArchivo'],
             'file_path': file_path,
@@ -123,7 +125,7 @@ def sen_notification_from_manifest(
     if 'empresa' in item:
         tags.append({'Name': 'empresa', 'Value': empresa})
 
-    destinatarios = verificar_correos_suprimidos(item['id'], empresa, destinatarios)
+    destinatarios = verificar_correos_suprimidos(item['id'], empresa, destinatarios,expiration=expiration)
 
     if len(destinatarios) == 0:
         return response, emailField['subject']['value'], len(attachments) > 0, emailField['from']['value'], status
@@ -150,7 +152,7 @@ def pasar_campos_en_manifiesto_a_objeto(manifiesto):
     return output
 
 
-def verificar_correos_suprimidos(messageId, empresa_id='0', correos=[]):
+def verificar_correos_suprimidos(messageId, empresa_id='0', correos=[], expiration=None):
     if not correos or len(correos) == 0:
         return correos
     indice = 0
@@ -182,6 +184,8 @@ def verificar_correos_suprimidos(messageId, empresa_id='0', correos=[]):
                 },
                 "mail": {}
             }
+            if expiration:
+                data['expiration'] = expiration
             table_event.put_item(Item=data)
             correos.remove(item['id'])
     return correos
