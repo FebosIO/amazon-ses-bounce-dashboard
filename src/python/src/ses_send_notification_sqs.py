@@ -1,6 +1,7 @@
 import datetime
 import json
 import os
+import time
 
 from utils import s3
 from utils.dynamo import get_dynamo_client
@@ -8,6 +9,7 @@ from utils.logic import value_or_default
 from utils.s3 import s3_get_object_string
 from utils.ses_client import SesClient
 
+TTL = int(os.environ.get('TTL') or '525600')
 table_email_name = os.environ.get('TABLE_EMAIL_NAME') or 'ses-email'
 table_event_name = os.environ.get('TABLE_EVENT_NAME') or 'ses-event'
 table_email_suppression_name = os.environ.get('TABLE_EMAIL_SUPPRESSION_NAME') or 'ses-email-suppression'
@@ -22,6 +24,9 @@ table_suppression = dynamo_client.Table(table_email_suppression_name)
 def handler(message, context):
     id = None
     params = None
+    messageId = None
+    vencimiento: datetime.datetime = agregar_minutos(datetime.datetime.now(), TTL)
+    expiration = str(time.mktime(vencimiento.timetuple()))
     try:
         sqsBody = json.loads(message['Records'][0]['body'])
         id = value_or_default(sqsBody, 'id')
@@ -35,25 +40,25 @@ def handler(message, context):
         copias = value_or_default(sqsBody, 'copias', [])
         manifiesto = value_or_default(sqsBody, 'manifiesto')
         ConfigurationSetName = value_or_default(sqsBody, 'ConfigurationSetName', 'default')
-        respuesta_email, subject, tiene_adjuntos, sender = sen_notification_from_manifest(
+        respuesta_email, subject, tiene_adjuntos, sender, status = sen_notification_from_manifest(
             destinatarios,
             manifiesto,
             ConfigurationSetName,
             item,
             copias=copias
         )
-
-        messageId = respuesta_email['MessageId']
-
+        if respuesta_email:
+            messageId = respuesta_email['MessageId']
         response = table_email.update_item(
             Key=params,
-            UpdateExpression="set messageId = :messageId, subject = :subject, estado = :status, tieneAdjuntos = :tieneAdjuntos, sender= :sender",
+            UpdateExpression="set messageId = :messageId, expiration = :expiration, subject = :subject, estado = :status, tieneAdjuntos = :tieneAdjuntos, sender= :sender",
             ExpressionAttributeValues={
                 ':messageId': messageId,
-                ':status': "sended",
+                ':status': status,
+                ':expiration': expiration,
                 ':subject': subject,
                 ':sender': sender,
-                ':tieneAdjuntos':tiene_adjuntos
+                ':tieneAdjuntos': tiene_adjuntos
             },
             ReturnValues="UPDATED_NEW"
         )
@@ -64,9 +69,10 @@ def handler(message, context):
     except Exception as e:
         response = table_email.update_item(
             Key=params,
-            UpdateExpression="set estado = :status",
+            UpdateExpression="set estado = :status, expiration = :expiration",
             ExpressionAttributeValues={
                 ':status': "error",
+                ':expiration': expiration,
             },
             ReturnValues="UPDATED_NEW"
         )
@@ -82,6 +88,8 @@ def sen_notification_from_manifest(
         item={},
         copias=[]
 ):
+    status = "error"
+    response = None
     empresa = "0"
     if 'empresa' in item:
         empresa = item['empresa']
@@ -96,6 +104,7 @@ def sen_notification_from_manifest(
         _copias = copias
     else:
         _copias = copias.split(',')
+
     contenido = s3_get_object_string(manifiesto)[0]
     configuracion_manifiesto = json.loads(contenido)
     attachments = []
@@ -113,9 +122,14 @@ def sen_notification_from_manifest(
     tags = []
     if 'empresa' in item:
         tags.append({'Name': 'empresa', 'Value': empresa})
+
     destinatarios = verificar_correos_suprimidos(item['id'], empresa, destinatarios)
+
+    if len(destinatarios) == 0:
+        return response, emailField['subject']['value'], len(attachments) > 0, emailField['from']['value'], status
+
     client = SesClient(config_set_name=ConfigurationSetName)
-    return client.send_email(
+    response = client.send_email(
         to_addresses=destinatarios,
         cc_addresses=_copias,
         sender_email=emailField['from']['value'],
@@ -124,7 +138,9 @@ def sen_notification_from_manifest(
         body_html=emailField['html']['value'],
         attachments=attachments,
         tags=tags
-    ) , emailField['subject']['value'], len(attachments) > 0, emailField['from']['value']
+    )
+    status = "sended"
+    return response, emailField['subject']['value'], len(attachments) > 0, emailField['from']['value'], status
 
 
 def pasar_campos_en_manifiesto_a_objeto(manifiesto):
@@ -135,6 +151,8 @@ def pasar_campos_en_manifiesto_a_objeto(manifiesto):
 
 
 def verificar_correos_suprimidos(messageId, empresa_id='0', correos=[]):
+    if not correos or len(correos) == 0:
+        return correos
     indice = 0
     prefijo = "id"
     valores = {
@@ -146,6 +164,7 @@ def verificar_correos_suprimidos(messageId, empresa_id='0', correos=[]):
         valores[expresion_id] = correo
         in_expresion.append(expresion_id)
         indice = indice + 1
+
     response = table_suppression.scan(
         FilterExpression=f'id IN ( {", ".join(in_expresion)} )',
         ExpressionAttributeValues=valores
@@ -167,49 +186,20 @@ def verificar_correos_suprimidos(messageId, empresa_id='0', correos=[]):
             correos.remove(item['id'])
     return correos
 
+def agregar_minutos(fecha: datetime, aAgregar=0):
+    return fecha + datetime.timedelta(minutes=aAgregar)
 
 if __name__ == '__main__':
-    handler({
-        "Records": [
-            {
-                "messageId": "fc007d17-1859-48db-a6ac-6d233d5f9fdc",
-                "receiptHandle": "AQEBWwiNg8BidZOZfzPAyGO+8WdqqKXmf+TfuSCpSCgNypgVUudJSpxh6oVqf9uxkexRlSJd4xhYSKL/7Px0KsukmoXiaLhaNFUaUpJ067UnLmuasrMJIXAHtv/qgNIOQdXQRca19m+XCXGT21zjD07bwSMQODfsFcKMlhz5RZw/eM90+e/EEF/kovHygaEGw1PYSP71dxJTMUomcOrHhSg0amFi8bNJOes/PFw+9vm76dJO4MK0gHRXhgJU7YU584BELX7I9/C7PQST9Q1LNPBBET1Dg2qqearCfqSXVHSiyNc=",
-                "body": json.dumps({
-                    "id": "025d1f7521b4f249c9290b42db4eaec3b0db",
-                    "application": "FEB",
-                    "ConfigurationSetName": "default",
-                    "copias": [
-                        "cronosunder@gmail.com"
-                    ],
-                    "destinatarios": [
-                        "claudio@febos.cl"
-                    ],
-                    "documentoId": "ab3b498d27dcc244d7288db2ca7b088d991e",
-                    "domain": "empresas.febos.cl",
-                    "empresa": "0",
-                    "manifiesto": "febos-io/chile/pruebas/email/025d1f7521b4f249c9290b42db4eaec3b0db/025d1f7521b4f249c9290b42db4eaec3b0db.json",
-                    "messageId": "010001899d30f079-8a09325a-b070-4a0a-ad1f-678a0d22dbd2-000000",
-                    "pais": "chile",
-                    "proceso": "",
-                    "servicio": "",
-                    "stage": "pruebas",
-                    "timestamp": "2023-07-28T15:49:35.368Z"
-                }),
-                "attributes": {
-                    "ApproximateReceiveCount": "1",
-                    "AWSTraceHeader": "Root=1-64c2a77c-4be00280440053e50bd0ae29;Parent=496b18fb298db3a4;Sampled=0;Lineage=74085691:0",
-                    "SentTimestamp": "1690478462058",
-                    "SequenceNumber": "18879506559996399616",
-                    "MessageGroupId": "bd40367a-5423-4d7c-abb1-03323d9dd605",
-                    "SenderId": "AROA4CUYL4XDWRQJ5I45V:ses-send-email",
-                    "MessageDeduplicationId": "bd40367a-5423-4d7c-abb1-03323d9dd605",
-                    "ApproximateFirstReceiveTimestamp": "1690478462058"
-                },
-                "messageAttributes": {},
-                "md5OfBody": "5c22591780274d17f5d216336d2f74a8",
-                "eventSource": "aws:sqs",
-                "eventSourceARN": "arn:aws:sqs:us-east-1:830321976775:ses-send-email.fifo",
-                "awsRegion": "us-east-1"
-            }
-        ]
-    }, None)
+    handler({'Records': [{'messageId': 'bf6de63a-2b11-459f-a16b-009c7bdcafc7',
+                          'receiptHandle': 'AQEBsqMCvZCLh9p8dUF8hcNbhYtNSaOB/OFW1xXFne7ezYfa7jRTivzaqeT90dVRjD1qsgeXCXde11aMrFp5ABfXWhSqXZR5aG0Eg1Vd7hpBnlUy4xa0pB4N2mY5CJwWtfNAQ1utTu4GxXuedu3znTry3700YLNE5rBr2GtiaAnKpEa2Q9wCZ+mH3zFBycc+ILZrm7w2aTW18vNXoFn3UV5Cw8tAR49IRQulRrBqQYXFWjRZ+FV8tryios/taU56NRoGa9kqTSbvaxRDYB0VX6BNPlLiB7w5P7yXh65Spp1cSE0=',
+                          'body': '{"id":"9f1248522618b241352bb3e2e6a59fdbb2d7","documentoId":null,"messageId":null,"pais":"chile","stage":"pruebas","domain":"empresas.febos.cl","manifiesto":"febos-io/chile/pruebas/email/61f0d42c2570324f692a62123435daee3cd1/61f0d42c2570324f692a62123435daee3cd1.json","empresa":"7258316-7","destinatarios":[],"copias":[],"servicio":"dte","proceso":"","application":"FEB","timestamp":"2023-09-11T21:03:36.628Z","ConfigurationSetName":"default"}',
+                          'attributes': {'ApproximateReceiveCount': '4',
+                                         'AWSTraceHeader': 'Root=1-64ff80a6-632b58284837d71d7c99be29;Parent=15c25d854ec8f782;Sampled=0;Lineage=aae260cf:0|74085691:0',
+                                         'SentTimestamp': '1694466216643', 'SequenceNumber': '18880527425170161152',
+                                         'MessageGroupId': '487e7ef9-5b08-41fb-8533-4169c3864385',
+                                         'SenderId': 'AROA4CUYL4XDWRQJ5I45V:ses-send-email',
+                                         'MessageDeduplicationId': '61f0d42c2570324f692a62123435daee3cd1',
+                                         'ApproximateFirstReceiveTimestamp': '1694466216643'}, 'messageAttributes': {},
+                          'md5OfBody': '0895bd622f2c5a3a12613d193ecf4f8e', 'eventSource': 'aws:sqs',
+                          'eventSourceARN': 'arn:aws:sqs:us-east-1:830321976775:ses-send-email.fifo',
+                          'awsRegion': 'us-east-1'}]}, None)

@@ -22,7 +22,7 @@ Globals:
     Timeout: 10
     Environment:
       Variables:
-        TTL: '6000'
+        TTL: '525600' #Minutos de TTL equivalente a un año
 Resources:
   SESEmailSuppressionnTable:
     Type: 'AWS::DynamoDB::Table'
