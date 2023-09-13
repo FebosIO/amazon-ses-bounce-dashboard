@@ -3,8 +3,13 @@
 
 'use strict'
 
-import {dynamoPutItem, milisegundosToEpoch, sendEventToBus, sunMinutesToDateFromISO} from "./utils/index.js";
-
+import {
+    dynamoPutItem,
+    milisegundosToEpoch,
+    sendEventToBus,
+    sunMinutesToDateFromISO
+} from "./utils/index.js";
+import { v4 as uuidv4 } from 'uuid';
 const TABLE_EMAIL_SUPPRESSION_NAME = process.env.TABLE_EMAIL_SUPPRESSION_NAME;
 const TABLE_EVENT_NAME = process.env.TABLE_EVENT_NAME
 const TTL = parseInt(process.env.TTL || '525600')
@@ -35,7 +40,8 @@ async function procesarRecord(record) {
     const timestamp = event_detail.timestamp || new Date().toISOString();
     const expiration = milisegundosToEpoch(sunMinutesToDateFromISO(timestamp, TTL))
     const data = {
-        id: messageId,
+        id: uuidv4(),
+        messageId: messageId,
         estado: 'queued',
         timestamp: timestamp,
         type: type,

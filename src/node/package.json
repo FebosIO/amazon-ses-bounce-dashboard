@@ -17,8 +17,9 @@
     "@aws-sdk/lib-dynamodb": "^3.341.0"
   },
   "dependencies": {
+    "aws-sdk": "^2.1422.0",
     "mimemessage": "^1.0.5",
     "nodemailer": "^6.9.4",
-    "aws-sdk": "^2.1422.0"
+    "uuid": "^9.0.1"
   }
 }

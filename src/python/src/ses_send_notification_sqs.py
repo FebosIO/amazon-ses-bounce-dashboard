@@ -177,6 +177,7 @@ def verificar_correos_suprimidos(messageId, empresa_id='0', correos=[], expirati
         for item in response['Items']:
             data = {
                 "id": messageId,
+                "messageId": messageId,
                 "timestamp": datetime.datetime.now().isoformat(),
                 "type": 'Suppression',
                 "event": {
