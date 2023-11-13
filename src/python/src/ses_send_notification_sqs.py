@@ -36,9 +36,9 @@ def handler(message, context):
 
         item = table_email.get_item(Key=params)
         item = item['Item']
-        destinatarios = value_or_default(sqsBody, 'destinatarios', [])
-        copias = value_or_default(sqsBody, 'copias', [])
-        manifiesto = value_or_default(sqsBody, 'manifiesto')
+        destinatarios = value_or_default(item, 'destinatarios', [])
+        copias = value_or_default(item, 'copias', [])
+        manifiesto = value_or_default(item, 'manifiesto')
         ConfigurationSetName = value_or_default(sqsBody, 'ConfigurationSetName', 'default')
         respuesta_email, subject, tiene_adjuntos, sender, status = sen_notification_from_manifest(
             destinatarios,
@@ -125,7 +125,7 @@ def sen_notification_from_manifest(
     if 'empresa' in item:
         tags.append({'Name': 'empresa', 'Value': empresa})
 
-    destinatarios = verificar_correos_suprimidos(item['id'], empresa, destinatarios,expiration=expiration)
+    destinatarios = verificar_correos_suprimidos(item['id'], empresa, destinatarios, expiration=expiration)
 
     if len(destinatarios) == 0:
         return response, emailField['subject']['value'], len(attachments) > 0, emailField['from']['value'], status
@@ -191,13 +191,15 @@ def verificar_correos_suprimidos(messageId, empresa_id='0', correos=[], expirati
             correos.remove(item['id'])
     return correos
 
+
 def agregar_minutos(fecha: datetime, aAgregar=0):
     return fecha + datetime.timedelta(minutes=aAgregar)
+
 
 if __name__ == '__main__':
     handler({'Records': [{'messageId': 'bf6de63a-2b11-459f-a16b-009c7bdcafc7',
                           'receiptHandle': 'AQEBsqMCvZCLh9p8dUF8hcNbhYtNSaOB/OFW1xXFne7ezYfa7jRTivzaqeT90dVRjD1qsgeXCXde11aMrFp5ABfXWhSqXZR5aG0Eg1Vd7hpBnlUy4xa0pB4N2mY5CJwWtfNAQ1utTu4GxXuedu3znTry3700YLNE5rBr2GtiaAnKpEa2Q9wCZ+mH3zFBycc+ILZrm7w2aTW18vNXoFn3UV5Cw8tAR49IRQulRrBqQYXFWjRZ+FV8tryios/taU56NRoGa9kqTSbvaxRDYB0VX6BNPlLiB7w5P7yXh65Spp1cSE0=',
-                          'body': '{"id":"9f1248522618b241352bb3e2e6a59fdbb2d7","documentoId":null,"messageId":null,"pais":"chile","stage":"pruebas","domain":"empresas.febos.cl","manifiesto":"febos-io/chile/pruebas/email/61f0d42c2570324f692a62123435daee3cd1/61f0d42c2570324f692a62123435daee3cd1.json","empresa":"7258316-7","destinatarios":[],"copias":[],"servicio":"dte","proceso":"","application":"FEB","timestamp":"2023-09-11T21:03:36.628Z","ConfigurationSetName":"default"}',
+                          'body': '{"id":"8694d2892425e24de52942925de736519f32"}',
                           'attributes': {'ApproximateReceiveCount': '4',
                                          'AWSTraceHeader': 'Root=1-64ff80a6-632b58284837d71d7c99be29;Parent=15c25d854ec8f782;Sampled=0;Lineage=aae260cf:0|74085691:0',
                                          'SentTimestamp': '1694466216643', 'SequenceNumber': '18880527425170161152',
