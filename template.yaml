@@ -296,7 +296,7 @@ Resources:
             Queue: !GetAtt SESSendEmailSQS.Arn
             BatchSize: 1
             ScalingConfig:
-              MaximumConcurrency: 10
+              MaximumConcurrency: 7
     Metadata:
       'AWS::CloudFormation::Designer':
         id: bce22d8f-5cbc-4935-aa75-d9b30ea96d3a
