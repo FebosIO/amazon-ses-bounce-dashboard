@@ -38,14 +38,43 @@ Resources:
           KeyType: HASH
       #        - AttributeName: timestamp
       #          KeyType: RANGE
-      BillingMode: PROVISIONED
       StreamSpecification:
         StreamViewType: NEW_IMAGE
+      BillingMode: PAY_PER_REQUEST
       ProvisionedThroughput:
-        ReadCapacityUnits: 10
-        WriteCapacityUnits: 10
+        ReadCapacityUnits: 0
+        WriteCapacityUnits: 0
       SSESpecification:
         SSEEnabled: true
+      TimeToLiveSpecification:
+        AttributeName: 'expiration'
+        Enabled: true
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 0d7f8580-69ee-4297-a770-5cea5e7c801e
+  SESEmailTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: ses-email
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      #        - AttributeName: timestamp
+      #          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      #        - AttributeName: timestamp
+      #          KeyType: RANGE
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
+      BillingMode: PAY_PER_REQUEST
+      ProvisionedThroughput:
+        ReadCapacityUnits: 0
+        WriteCapacityUnits: 0
+      SSESpecification:
+        SSEEnabled: true
+
       TimeToLiveSpecification:
         AttributeName: 'expiration'
         Enabled: true
@@ -66,10 +95,10 @@ Resources:
           KeyType: HASH
         - AttributeName: timestamp
           KeyType: RANGE
-      BillingMode: PROVISIONED
+      BillingMode: PAY_PER_REQUEST
       ProvisionedThroughput:
-        ReadCapacityUnits: 10
-        WriteCapacityUnits: 10
+        ReadCapacityUnits: 0
+        WriteCapacityUnits: 0
       TimeToLiveSpecification:
         AttributeName: 'expiration'
         Enabled: true
@@ -81,36 +110,6 @@ Resources:
     Metadata:
       'AWS::CloudFormation::Designer':
         id: 0d7f8580-69ee-4297-a770-5cea5e7c801e
-  SESEmailTable:
-    Type: 'AWS::DynamoDB::Table'
-    Properties:
-      TableName: ses-email
-      AttributeDefinitions:
-        - AttributeName: id
-          AttributeType: S
-      #        - AttributeName: timestamp
-      #          AttributeType: S
-      KeySchema:
-        - AttributeName: id
-          KeyType: HASH
-      #        - AttributeName: timestamp
-      #          KeyType: RANGE
-      BillingMode: PROVISIONED
-      StreamSpecification:
-        StreamViewType: NEW_IMAGE
-      ProvisionedThroughput:
-        ReadCapacityUnits: 10
-        WriteCapacityUnits: 10
-      SSESpecification:
-        SSEEnabled: true
-
-      TimeToLiveSpecification:
-        AttributeName: 'expiration'
-        Enabled: true
-    Metadata:
-      'AWS::CloudFormation::Designer':
-        id: 0d7f8580-69ee-4297-a770-5cea5e7c801e
-
   SESSendEmailSQSDeadLeter:
     Type: 'AWS::SQS::Queue'
     Properties:
@@ -345,11 +344,11 @@ Resources:
             StartingPosition: TRIM_HORIZON
             BatchSize: 1
             Enabled: true
-#  EmailEventSync:
-#    Type: AWS::Lambda::EventSourceMapping
-#    Properties:
-#      EventSourceArn: !GetAtt SESEventsTable.StreamArn
-#      FunctionName: !GetAtt ProcessEmailSyncOS.Arn
+  #  EmailEventSync:
+  #    Type: AWS::Lambda::EventSourceMapping
+  #    Properties:
+  #      EventSourceArn: !GetAtt SESEventsTable.StreamArn
+  #      FunctionName: !GetAtt ProcessEmailSyncOS.Arn
   ProcessSESSendQueueLogGroup:
     Type: 'AWS::Logs::LogGroup'
     Properties:
