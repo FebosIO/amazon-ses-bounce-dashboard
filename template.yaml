@@ -42,7 +42,7 @@ Resources:
       StreamSpecification:
         StreamViewType: NEW_IMAGE
       ProvisionedThroughput:
-        ReadCapacityUnits: 5
+        ReadCapacityUnits: 10
         WriteCapacityUnits: 5
       SSESpecification:
         SSEEnabled: true
@@ -68,7 +68,7 @@ Resources:
           KeyType: RANGE
       BillingMode: PROVISIONED
       ProvisionedThroughput:
-        ReadCapacityUnits: 5
+        ReadCapacityUnits: 10
         WriteCapacityUnits: 5
       TimeToLiveSpecification:
         AttributeName: 'expiration'
