@@ -197,16 +197,16 @@ def agregar_minutos(fecha: datetime, aAgregar=0):
 
 
 if __name__ == '__main__':
-    handler({'Records': [{'messageId': 'bf6de63a-2b11-459f-a16b-009c7bdcafc7',
-                          'receiptHandle': 'AQEBsqMCvZCLh9p8dUF8hcNbhYtNSaOB/OFW1xXFne7ezYfa7jRTivzaqeT90dVRjD1qsgeXCXde11aMrFp5ABfXWhSqXZR5aG0Eg1Vd7hpBnlUy4xa0pB4N2mY5CJwWtfNAQ1utTu4GxXuedu3znTry3700YLNE5rBr2GtiaAnKpEa2Q9wCZ+mH3zFBycc+ILZrm7w2aTW18vNXoFn3UV5Cw8tAR49IRQulRrBqQYXFWjRZ+FV8tryios/taU56NRoGa9kqTSbvaxRDYB0VX6BNPlLiB7w5P7yXh65Spp1cSE0=',
-                          'body': '{"id":"8694d2892425e24de52942925de736519f32"}',
-                          'attributes': {'ApproximateReceiveCount': '4',
-                                         'AWSTraceHeader': 'Root=1-64ff80a6-632b58284837d71d7c99be29;Parent=15c25d854ec8f782;Sampled=0;Lineage=aae260cf:0|74085691:0',
-                                         'SentTimestamp': '1694466216643', 'SequenceNumber': '18880527425170161152',
-                                         'MessageGroupId': '487e7ef9-5b08-41fb-8533-4169c3864385',
+    handler({'Records': [{'messageId': '5e772cb7-5190-4d17-8cb1-6f815d238cd8',
+                          'receiptHandle': 'AQEBsJFP0Vw2Re0qQ4Dz0gYa6FfbCvqMVzYCUWt/tMdj5m/Sy8UPXqWi3LYiyyZUQz2ChM7cIB/ioLIHfmnwJKYOfz7ER2BhsY0BsKIhdklt95Uwot97JH2gR2nVrHTJuwNYQ2jy3mW45N5amAvkoHvD1pLY90YQqBWHmonBNXNjwMaLBg3FCHpJDEcS6xq/Q49Hcu2w31zOsElY4irkjgWf6YH2jJb0warmDcavoJ60i55AKJ57H6+T4Sie07vIgNAsH8JqPCCBz1Vl484H6kqOs7LNk+NHui5qY2pgOfda2TY=',
+                          'body': '{"id":"1952b9e428024246d52834f20427f6f9ce26","documentoId":null,"messageId":null,"pais":"chile","stage":"pruebas","domain":"empresas.febos.cl","manifiesto":"febos-io/chile/pruebas/email/1952b9e428024246d52834f20427f6f9ce26/1952b9e428024246d52834f20427f6f9ce26.json","empresa":"72235100-2","destinatarios":["ninosca@febos.cl"],"copias":[],"servicio":"administracion","proceso":"","application":"ED","timestamp":"2023-11-13T20:32:42.224Z","ConfigurationSetName":"default"}',
+                          'attributes': {'ApproximateReceiveCount': '3',
+                                         'AWSTraceHeader': 'Root=1-655287e9-32b47c444148d2740624d93e;Parent=5ac8941106c35d23;Sampled=1;Lineage=de78eaf3:0|74085691:0',
+                                         'SentTimestamp': '1699907562237', 'SequenceNumber': '18881920409642225664',
+                                         'MessageGroupId': '9f3ad5b0-e2fc-49f8-be7e-7a51a765d828',
                                          'SenderId': 'AROA4CUYL4XDWRQJ5I45V:ses-send-email',
-                                         'MessageDeduplicationId': '61f0d42c2570324f692a62123435daee3cd1',
-                                         'ApproximateFirstReceiveTimestamp': '1694466216643'}, 'messageAttributes': {},
-                          'md5OfBody': '0895bd622f2c5a3a12613d193ecf4f8e', 'eventSource': 'aws:sqs',
+                                         'MessageDeduplicationId': '1952b9e428024246d52834f20427f6f9ce26',
+                                         'ApproximateFirstReceiveTimestamp': '1699907562237'}, 'messageAttributes': {},
+                          'md5OfBody': 'a51e9bbe4cf25669e8a70aa299d2a8a1', 'eventSource': 'aws:sqs',
                           'eventSourceARN': 'arn:aws:sqs:us-east-1:830321976775:ses-send-email.fifo',
                           'awsRegion': 'us-east-1'}]}, None)

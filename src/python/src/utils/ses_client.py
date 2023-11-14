@@ -1,12 +1,13 @@
 import os
+from email.header import Header
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.utils import parseaddr, formataddr
 
 import boto3
 from botocore.exceptions import ClientError
 
-from utils.logic import value_or_default
 
 # Specify a configuration set. If you do not want to use a configuration
 # set, comment the following variable, and the
@@ -78,8 +79,11 @@ class SesClient(object):
     ):
         msg = MIMEMultipart('mixed')
         # Add subject, from and to lines.
+        source_email_name, source_email_address = parseaddr(sender_email)
+        msg['From'] = formataddr((str(Header(source_email_name, 'utf-8')), source_email_address))
+        # msg['From'] = sender_email
+
         msg['Subject'] = subject
-        msg['From'] = sender_email
         msg['To'] = ','.join(to_addresses)
         if cc_addresses:
             msg['Cc'] = ','.join(cc_addresses)
@@ -114,7 +118,7 @@ class SesClient(object):
         try:
             # Provide the contents of the email.
             response = self.client.send_raw_email(
-                Source=msg['From'],
+                Source=source_email_address,
                 Destinations=to_addresses,
                 RawMessage={
                     'Data': msg.as_string(),
