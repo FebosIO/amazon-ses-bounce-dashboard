@@ -29,6 +29,7 @@ export const handler = async (event, context) => {
 
         const saveData = {
             id,
+            estado:'queqed',
             documentoId,
             messageId,
             pais,
