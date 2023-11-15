@@ -9,20 +9,22 @@ import {
     sendEventToBus,
     sunMinutesToDateFromISO
 } from "./utils/index.js";
-import { v4 as uuidv4 } from 'uuid';
-const TABLE_EMAIL_SUPPRESSION_NAME = process.env.TABLE_EMAIL_SUPPRESSION_NAME;
-const TABLE_EVENT_NAME = process.env.TABLE_EVENT_NAME
+import {v4 as uuidv4} from 'uuid';
+
+const TABLE_EMAIL_SUPPRESSION_NAME = process.env.TABLE_EMAIL_SUPPRESSION_NAME || 'ses-email-suppression';
+const TABLE_EVENT_NAME = process.env.TABLE_EVENT_NAME || 'ses-event'
 const TTL = parseInt(process.env.TTL || '525600')
 
 
 export const handler = async (event, context) => {
     try {
-        for(let record of event.Records){
+        for (let record of event.Records) {
             await procesarRecord(record);
         }
     } catch (err) {
         console.warn(event)
         console.log("Error in writing data to the DynamoDB table : ", err.message)
+        console.error(err)
         throw err
     }
 }
@@ -30,7 +32,7 @@ export const handler = async (event, context) => {
 async function procesarRecord(record) {
     const sqsBody = JSON.parse(record.body)
 
-    const message = JSON.parse(sqsBody.Message || "null") || sqsBody
+    const message = sqsBody.Message? JSON.parse(sqsBody.Message || "null") || sqsBody: sqsBody
     // All event definition. For more information, see
     // https://docs.aws.amazon.com/ses/latest/dg/event-publishing-retrieving-sns-examples.html
     const type = message.eventType
@@ -49,6 +51,7 @@ async function procesarRecord(record) {
         expiration,
         mail
     };
+    console.log('TABLE',TABLE_EVENT_NAME, data)
     await dynamoPutItem({
         TableName: TABLE_EVENT_NAME, Item: data
     })
@@ -61,6 +64,7 @@ async function procesarRecord(record) {
         companyId: obtenerCompanyFromEmailTags(mail)
     })
 }
+
 function obtenerCompanyFromEmailTags(mail) {
     try {
         if (mail.tags.empresa) {
@@ -77,14 +81,14 @@ async function procesarEventosSuppression({type, event_detail, mail, timestamp, 
         const recipents = event_detail.bouncedRecipients
         for (let recipent of recipents) {
             const {
-                emailAddress, diagnosticCode
+                emailAddress, diagnosticCode, action
             } = recipent;
             await dynamoPutItem({
                 TableName: TABLE_EMAIL_SUPPRESSION_NAME, Item: {
                     id: emailAddress,
                     timestamp,
                     type,
-                    message: diagnosticCode,
+                    message: diagnosticCode || action || '',
                     messageId,
                     companyId
                 }
@@ -107,7 +111,7 @@ async function procesarEventosSuppression({type, event_detail, mail, timestamp, 
                     id: destinationElement,
                     timestamp,
                     type,
-                    message: reason,
+                    message: reason || '',
                     messageId,
                     companyId
                 }
@@ -132,7 +136,7 @@ async function procesarEventosSuppression({type, event_detail, mail, timestamp, 
                     id: emailAddress,
                     timestamp,
                     type,
-                    message: diagnosticCode,
+                    message: diagnosticCode || '' ,
                     messageId,
                     companyId
                 }
@@ -147,6 +151,3 @@ async function procesarEventosSuppression({type, event_detail, mail, timestamp, 
         }
     }
 }
-
-
-

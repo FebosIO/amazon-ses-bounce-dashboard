@@ -1,5 +1,5 @@
 import {DynamoDBClient} from "@aws-sdk/client-dynamodb";
-import {PutCommand, UpdateCommand} from "@aws-sdk/lib-dynamodb";
+import {DynamoDBDocumentClient, PutCommand, UpdateCommand} from "@aws-sdk/lib-dynamodb";
 
 
 const marshallOptions = {
@@ -20,8 +20,9 @@ const unmarshallOptions = {
 const translateConfig = {marshallOptions, unmarshallOptions};
 
 // Create the DynamoDB Document client.
-const ddbClient = new DynamoDBClient(translateConfig);
+const client = new DynamoDBClient(translateConfig);
 
+const ddbClient = DynamoDBDocumentClient.from(client, { marshallOptions });
 
 /**
  *

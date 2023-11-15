@@ -1,0 +1,20 @@
+{
+  "Records": [
+    {
+      "messageId": "19dd0b57-b21e-4ac1-bd88-01bbb068cb78",
+      "receiptHandle": "MessageReceiptHandle",
+      "body": "{\"eventType\":\"Bounce\",\"bounce\":{\"feedbackId\":\"0100018bd46cad45-d451beda-b092-4c8a-9af4-6f18088affa6-000000\",\"bounceType\":\"Transient\",\"bounceSubType\":\"General\",\"bouncedRecipients\":[{\"emailAddress\":\"ventas@euroluz.tie.cl\",\"action\":\"Failed\",\"status\":\"5.2.1\"}],\"timestamp\":\"2023-11-15T19:19:34.052Z\",\"reportingMTA\":\"dns; ms7.isc.cl\"},\"mail\":{\"timestamp\":\"2023-11-15T19:19:23.129Z\",\"source\":\"notificaciones@empresas.febos.cl\",\"sourceArn\":\"arn:aws:ses:us-east-1:830321976775:identity/empresas.febos.cl\",\"sendingAccountId\":\"830321976775\",\"messageId\":\"0100018bd46c82f9-2bd6a410-3fd2-4157-a1f1-d3289ab5b917-000000\",\"destination\":[\"ventas@euroluz.tie.cl\"],\"headersTruncated\":false,\"headers\":[{\"name\":\"Content-Type\",\"value\":\"multipart/mixed; boundary=\\\"===============3319915147077128169==\\\"\"},{\"name\":\"MIME-Version\",\"value\":\"1.0\"},{\"name\":\"From\",\"value\":\"Febos <notificaciones@empresas.febos.cl>\"},{\"name\":\"Subject\",\"value\":\"IMPORTADORA Y DISTRIBUIDORA TASCO CHILE LIMITADA\"},{\"name\":\"To\",\"value\":\"ventas@euroluz.tie.cl\"}],\"commonHeaders\":{\"from\":[\"Febos <notificaciones@empresas.febos.cl>\"],\"to\":[\"ventas@euroluz.tie.cl\"],\"messageId\":\"0100018bd46c82f9-2bd6a410-3fd2-4157-a1f1-d3289ab5b917-000000\",\"subject\":\"IMPORTADORA Y DISTRIBUIDORA TASCO CHILE LIMITADA\"},\"tags\":{\"ses:source-tls-version\":[\"TLSv1.2\"],\"ses:operation\":[\"SendRawEmail\"],\"ses:configuration-set\":[\"default\"],\"ses:source-ip\":[\"3.239.10.150\"],\"ses:from-domain\":[\"empresas.febos.cl\"],\"ses:caller-identity\":[\"ses-event-manager-ProcessSESSendQueueRole-T37E7DP89RXL\"],\"empresa\":[\"0\"]}}}",
+      "attributes": {
+        "ApproximateReceiveCount": "1",
+        "SentTimestamp": "1523232000000",
+        "SenderId": "123456789012",
+        "ApproximateFirstReceiveTimestamp": "1523232000001"
+      },
+      "messageAttributes": {},
+      "md5OfBody": "{{{md5_of_body}}}",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:us-east-1:123456789012:MyQueue",
+      "awsRegion": "us-east-1"
+    }
+  ]
+}
