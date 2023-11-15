@@ -1,5 +1,6 @@
+import time
 
-
+NOMBRE_COLA='ses-send-email.fifo'
 
 def llamar_correos_no_enviados():
     import requests
@@ -71,6 +72,16 @@ def llamar_correos_no_enviados():
     for dato in data:
         id = dato['_id']
         print(id)
+        from src.python.src.utils import sqs
+        response = sqs.enviar_mensaje(
+            NOMBRE_COLA,
+            {
+                'id': id
+            }
+        )
+        print(response)
+        #wait 0.5 seg
+        # time.sleep(1)
 
 
 if __name__ == '__main__':
