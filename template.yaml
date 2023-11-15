@@ -113,7 +113,7 @@ Resources:
   SESSendEmailSQSDeadLeter:
     Type: 'AWS::SQS::Queue'
     Properties:
-      MessageRetentionPeriod: 300
+      MessageRetentionPeriod: 1209600
       QueueName: ses-send-email-dead.fifo
       FifoQueue: true
     Metadata:
@@ -122,7 +122,7 @@ Resources:
   SESSendEmailSQS:
     Type: 'AWS::SQS::Queue'
     Properties:
-      MessageRetentionPeriod: 300
+      MessageRetentionPeriod: 1209600
       QueueName: ses-send-email.fifo
       FifoQueue: true
       RedrivePolicy:
@@ -138,7 +138,7 @@ Resources:
   SESEventSQSDeadLeter:
     Type: 'AWS::SQS::Queue'
     Properties:
-      MessageRetentionPeriod: 300
+      MessageRetentionPeriod: 1209600
       QueueName: ses-event-dead
     Metadata:
       'AWS::CloudFormation::Designer':
@@ -147,7 +147,7 @@ Resources:
   SESEventSQS:
     Type: 'AWS::SQS::Queue'
     Properties:
-      MessageRetentionPeriod: 300
+      MessageRetentionPeriod: 1209600
       QueueName: ses-event
       RedrivePolicy:
         deadLetterTargetArn: !GetAtt SESEventSQSDeadLeter.Arn
