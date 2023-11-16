@@ -4,7 +4,7 @@ NOMBRE_COLA = 'ses-send-email.fifo'
 def llamar_correos_no_enviados():
     import requests
     import json
-
+    procesados = False
     url = "https://search.escritoriodigital.cl/ses-email/_search?"
     null = None
     true = True
@@ -90,9 +90,11 @@ def llamar_correos_no_enviados():
             id = dato['_id']
             destinatarios = dato['_source'].get('destinatarios')
             timestamp = dato['_source'].get('timestamp')
-            if not destinatarios or len(destinatarios) == 0:
+            proceso = dato['_source'].get('proceso')
+            if not destinatarios or len(destinatarios) == 0 or proceso == 'aat-cobranza' or 'aat' in proceso:
                 continue
             print(id, timestamp, destinatarios)
+            procesados = True
             from src.python.src.utils import sqs
             response = sqs.enviar_mensaje(
                 NOMBRE_COLA,
@@ -106,7 +108,8 @@ def llamar_correos_no_enviados():
     except:
         # print(data)
         pass
-
+    return  procesados
 
 if __name__ == '__main__':
-    llamar_correos_no_enviados()
+    while llamar_correos_no_enviados():
+        print("siguiente")

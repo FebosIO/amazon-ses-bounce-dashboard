@@ -130,6 +130,19 @@ def sen_notification_from_manifest(
     destinatarios = verificar_correos_suprimidos(item['id'], empresa, destinatarios, expiration=expiration)
 
     if len(destinatarios) == 0:
+        evento = {
+            "id": item['id'],
+            "messageId": item['id'],
+            "timestamp": datetime.datetime.now().isoformat(),
+            "type": 'Discarded',
+            "event": {
+                "suppression": item['id']
+            },
+            "mail": {}
+        }
+        if expiration:
+            evento['expiration'] = expiration
+        table_event.put_item(Item=evento)
         status = 'empty'
         return response, emailField['subject']['value'], len(attachments) > 0, emailField['from']['value'], status
 
@@ -178,7 +191,7 @@ def verificar_correos_suprimidos(messageId, empresa_id='0', correos=[], expirati
     if response['Count'] > 0:
         # Eliminamos correos suprimidos y agregamos el evento de que no se envio por supresion previa
         for item in response['Items']:
-            data = {
+            evento = {
                 "id": messageId,
                 "messageId": messageId,
                 "timestamp": datetime.datetime.now().isoformat(),
@@ -189,8 +202,8 @@ def verificar_correos_suprimidos(messageId, empresa_id='0', correos=[], expirati
                 "mail": {}
             }
             if expiration:
-                data['expiration'] = expiration
-            table_event.put_item(Item=data)
+                evento['expiration'] = expiration
+            table_event.put_item(Item=evento)
             correos.remove(item['id'])
     return correos
 
@@ -202,7 +215,7 @@ def agregar_minutos(fecha: datetime, aAgregar=0):
 if __name__ == '__main__':
     handler({'Records': [{'messageId': '5e772cb7-5190-4d17-8cb1-6f815d238cd8',
                           'receiptHandle': 'AQEBsJFP0Vw2Re0qQ4Dz0gYa6FfbCvqMVzYCUWt/tMdj5m/Sy8UPXqWi3LYiyyZUQz2ChM7cIB/ioLIHfmnwJKYOfz7ER2BhsY0BsKIhdklt95Uwot97JH2gR2nVrHTJuwNYQ2jy3mW45N5amAvkoHvD1pLY90YQqBWHmonBNXNjwMaLBg3FCHpJDEcS6xq/Q49Hcu2w31zOsElY4irkjgWf6YH2jJb0warmDcavoJ60i55AKJ57H6+T4Sie07vIgNAsH8JqPCCBz1Vl484H6kqOs7LNk+NHui5qY2pgOfda2TY=',
-                          'body': '{"id":"38d51c5a2426c24af02bcd22a47599b3184c"}',
+                          'body': '{"id":"26db718b2a2c8249f72b01328815a06b611c"}',
                           'attributes': {'ApproximateReceiveCount': '3',
                                          'AWSTraceHeader': 'Root=1-655287e9-32b47c444148d2740624d93e;Parent=5ac8941106c35d23;Sampled=1;Lineage=de78eaf3:0|74085691:0',
                                          'SentTimestamp': '1699907562237', 'SequenceNumber': '18881920409642225664',
