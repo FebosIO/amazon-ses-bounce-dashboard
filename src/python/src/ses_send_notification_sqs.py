@@ -69,6 +69,21 @@ def handler(message, context):
             'headers': {}
         }
     except Exception as e:
+        evento = {
+            "id": id,
+            "messageId": id,
+            "timestamp": datetime.datetime.now().isoformat(),
+            "type": 'Error',
+            "event": {
+                "error":{
+                    "message": str(e),
+                }
+            },
+            "mail": {}
+        }
+        if expiration:
+            evento['expiration'] = expiration
+        table_event.put_item(Item=evento)
         traceback.print_exc()
         response = table_email.update_item(
             Key=params,
@@ -215,7 +230,7 @@ def agregar_minutos(fecha: datetime, aAgregar=0):
 if __name__ == '__main__':
     handler({'Records': [{'messageId': '5e772cb7-5190-4d17-8cb1-6f815d238cd8',
                           'receiptHandle': 'AQEBsJFP0Vw2Re0qQ4Dz0gYa6FfbCvqMVzYCUWt/tMdj5m/Sy8UPXqWi3LYiyyZUQz2ChM7cIB/ioLIHfmnwJKYOfz7ER2BhsY0BsKIhdklt95Uwot97JH2gR2nVrHTJuwNYQ2jy3mW45N5amAvkoHvD1pLY90YQqBWHmonBNXNjwMaLBg3FCHpJDEcS6xq/Q49Hcu2w31zOsElY4irkjgWf6YH2jJb0warmDcavoJ60i55AKJ57H6+T4Sie07vIgNAsH8JqPCCBz1Vl484H6kqOs7LNk+NHui5qY2pgOfda2TY=',
-                          'body': '{"id":"26db718b2a2c8249f72b01328815a06b611c"}',
+                          'body': '{"id":"a4dfaf6c216322414429dd02677e5ceb9ede"}',
                           'attributes': {'ApproximateReceiveCount': '3',
                                          'AWSTraceHeader': 'Root=1-655287e9-32b47c444148d2740624d93e;Parent=5ac8941106c35d23;Sampled=1;Lineage=de78eaf3:0|74085691:0',
                                          'SentTimestamp': '1699907562237', 'SequenceNumber': '18881920409642225664',
