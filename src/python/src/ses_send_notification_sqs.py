@@ -228,16 +228,22 @@ def agregar_minutos(fecha: datetime, aAgregar=0):
 
 
 if __name__ == '__main__':
-    handler({'Records': [{'messageId': '5e772cb7-5190-4d17-8cb1-6f815d238cd8',
-                          'receiptHandle': 'AQEBsJFP0Vw2Re0qQ4Dz0gYa6FfbCvqMVzYCUWt/tMdj5m/Sy8UPXqWi3LYiyyZUQz2ChM7cIB/ioLIHfmnwJKYOfz7ER2BhsY0BsKIhdklt95Uwot97JH2gR2nVrHTJuwNYQ2jy3mW45N5amAvkoHvD1pLY90YQqBWHmonBNXNjwMaLBg3FCHpJDEcS6xq/Q49Hcu2w31zOsElY4irkjgWf6YH2jJb0warmDcavoJ60i55AKJ57H6+T4Sie07vIgNAsH8JqPCCBz1Vl484H6kqOs7LNk+NHui5qY2pgOfda2TY=',
-                          'body': '{"id":"a4dfaf6c216322414429dd02677e5ceb9ede"}',
-                          'attributes': {'ApproximateReceiveCount': '3',
-                                         'AWSTraceHeader': 'Root=1-655287e9-32b47c444148d2740624d93e;Parent=5ac8941106c35d23;Sampled=1;Lineage=de78eaf3:0|74085691:0',
-                                         'SentTimestamp': '1699907562237', 'SequenceNumber': '18881920409642225664',
-                                         'MessageGroupId': '9f3ad5b0-e2fc-49f8-be7e-7a51a765d828',
-                                         'SenderId': 'AROA4CUYL4XDWRQJ5I45V:ses-send-email',
-                                         'MessageDeduplicationId': '1952b9e428024246d52834f20427f6f9ce26',
-                                         'ApproximateFirstReceiveTimestamp': '1699907562237'}, 'messageAttributes': {},
-                          'md5OfBody': 'a51e9bbe4cf25669e8a70aa299d2a8a1', 'eventSource': 'aws:sqs',
-                          'eventSourceARN': 'arn:aws:sqs:us-east-1:830321976775:ses-send-email.fifo',
-                          'awsRegion': 'us-east-1'}]}, None)
+    ids="""""".split("\n")
+    for id in ids:
+        try:
+            handler({'Records': [{'messageId': '5e772cb7-5190-4d17-8cb1-6f815d238cd8',
+                                  'receiptHandle': 'AQEBsJFP0Vw2Re0qQ4Dz0gYa6FfbCvqMVzYCUWt/tMdj5m/Sy8UPXqWi3LYiyyZUQz2ChM7cIB/ioLIHfmnwJKYOfz7ER2BhsY0BsKIhdklt95Uwot97JH2gR2nVrHTJuwNYQ2jy3mW45N5amAvkoHvD1pLY90YQqBWHmonBNXNjwMaLBg3FCHpJDEcS6xq/Q49Hcu2w31zOsElY4irkjgWf6YH2jJb0warmDcavoJ60i55AKJ57H6+T4Sie07vIgNAsH8JqPCCBz1Vl484H6kqOs7LNk+NHui5qY2pgOfda2TY=',
+                                  'body': '{"id":"' + str(id).strip() + '"}',
+                                  'attributes': {'ApproximateReceiveCount': '3',
+                                                 'AWSTraceHeader': 'Root=1-655287e9-32b47c444148d2740624d93e;Parent=5ac8941106c35d23;Sampled=1;Lineage=de78eaf3:0|74085691:0',
+                                                 'SentTimestamp': '1699907562237', 'SequenceNumber': '18881920409642225664',
+                                                 'MessageGroupId': '9f3ad5b0-e2fc-49f8-be7e-7a51a765d828',
+                                                 'SenderId': 'AROA4CUYL4XDWRQJ5I45V:ses-send-email',
+                                                 'MessageDeduplicationId': '1952b9e428024246d52834f20427f6f9ce26',
+                                                 'ApproximateFirstReceiveTimestamp': '1699907562237'},
+                                  'messageAttributes': {},
+                                  'md5OfBody': 'a51e9bbe4cf25669e8a70aa299d2a8a1', 'eventSource': 'aws:sqs',
+                                  'eventSourceARN': 'arn:aws:sqs:us-east-1:830321976775:ses-send-email.fifo',
+                                  'awsRegion': 'us-east-1'}]}, None)
+        except:
+            pass

@@ -110,6 +110,9 @@ def llamar_correos_no_enviados():
         pass
     return  procesados
 
+def encolar_por_manifiesto():
+    pass
+
 if __name__ == '__main__':
     while llamar_correos_no_enviados():
         print("siguiente")
