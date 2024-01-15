@@ -8,7 +8,10 @@ sam deploy --guided --stack-name='ses-event-manager'
 If you already have deployed stack
 
 ```sh
-sam build
+sam build 
+sam deploy --config-env='default'
+```
+```sh
 sam sync --stack-name='ses-event-manager'
 ```
 

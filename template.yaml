@@ -8,16 +8,21 @@ Parameters:
     Default: AWS
   STAGE:
     Type: String
-    Default: ''
+    Default: 'pruebas'
   BounceSNSTopic:
     Type: String
     Description: >-
       The bounce Amazon SNS Topic that has been created for the SES  identity. 
       Sepcify the SNS Topic by using its Amazon Resource Name (ARN).  Examples: 
       arn:aws:sns:us-east-1:830321976775:ses-event
+
+Conditions:
+  IsProduccion: !Equals
+    - !Ref STAGE
+    - produccion
 Globals:
   Function:
-    Runtime: nodejs18.x
+    Runtime: python3.9
     MemorySize: 256
     Timeout: 10
     Environment:
@@ -27,7 +32,11 @@ Resources:
   SESEmailSuppressionnTable:
     Type: 'AWS::DynamoDB::Table'
     Properties:
-      TableName: ses-email-suppression
+      TableName:
+        'Fn::If':
+          - IsProduccion
+          - ses-email-suppression
+          - !Ref AWS::NoValue
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
@@ -55,7 +64,11 @@ Resources:
   SESEmailTable:
     Type: 'AWS::DynamoDB::Table'
     Properties:
-      TableName: ses-email
+      TableName:
+        'Fn::If':
+          - IsProduccion
+          - ses-email
+          - !Ref AWS::NoValue
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
@@ -84,7 +97,11 @@ Resources:
   SESEventsTable:
     Type: 'AWS::DynamoDB::Table'
     Properties:
-      TableName: ses-event
+      TableName:
+        'Fn::If':
+          - IsProduccion
+          - ses-event
+          - !Ref AWS::NoValue
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
@@ -114,7 +131,11 @@ Resources:
     Type: 'AWS::SQS::Queue'
     Properties:
       MessageRetentionPeriod: 1209600
-      QueueName: ses-send-email-dead.fifo
+      QueueName:
+        'Fn::If':
+          - IsProduccion
+          - ses-send-email-dead.fifo
+          - !Ref AWS::NoValue
       FifoQueue: true
     Metadata:
       'AWS::CloudFormation::Designer':
@@ -123,7 +144,11 @@ Resources:
     Type: 'AWS::SQS::Queue'
     Properties:
       MessageRetentionPeriod: 1209600
-      QueueName: ses-send-email.fifo
+      QueueName:
+        'Fn::If':
+          - IsProduccion
+          - ses-send-email.fifo
+          - !Ref AWS::NoValue
       FifoQueue: true
       RedrivePolicy:
         deadLetterTargetArn: !GetAtt SESSendEmailSQSDeadLeter.Arn
@@ -139,7 +164,11 @@ Resources:
     Type: 'AWS::SQS::Queue'
     Properties:
       MessageRetentionPeriod: 1209600
-      QueueName: ses-event-dead
+      QueueName:
+        'Fn::If':
+          - IsProduccion
+          - ses-event-dead
+          - !Ref AWS::NoValue
     Metadata:
       'AWS::CloudFormation::Designer':
         id: 1edfa9a2-4dfd-4ea6-a050-ae0884b7dcdb
@@ -148,7 +177,11 @@ Resources:
     Type: 'AWS::SQS::Queue'
     Properties:
       MessageRetentionPeriod: 1209600
-      QueueName: ses-event
+      QueueName:
+        'Fn::If':
+          - IsProduccion
+          - ses-event
+          - !Ref AWS::NoValue
       RedrivePolicy:
         deadLetterTargetArn: !GetAtt SESEventSQSDeadLeter.Arn
         maxReceiveCount: 2
@@ -200,7 +233,12 @@ Resources:
     Properties:
       CodeUri: src/node/
       Handler: SesNotification.handler
-      FunctionName: ses-event-process
+      Runtime: nodejs18.x
+      FunctionName:
+        'Fn::If':
+          - IsProduccion
+          - ses-event-process
+          - !Ref AWS::NoValue
       Environment:
         Variables:
           TABLE_EVENT_NAME: !Ref SESEventsTable
@@ -255,9 +293,12 @@ Resources:
     Properties:
       CodeUri: src/python/src/
       Handler: ses_send_notification_sqs.handler
-      Runtime: python3.8
       Timeout: 30
-      FunctionName: ses-send-email-process
+      FunctionName:
+        'Fn::If':
+          - IsProduccion
+          - ses-send-email-process
+          - !Ref AWS::NoValue
       Environment:
         Variables:
           TABLE_EVENT_NAME: !Ref SESEventsTable
@@ -304,9 +345,12 @@ Resources:
     Properties:
       CodeUri: src/python/src/
       Handler: sync_dynamo_os.handler
-      Runtime: python3.8
       Timeout: 30
-      FunctionName: ses-send-email-sync-os
+      FunctionName:
+        'Fn::If':
+          - IsProduccion
+          - ses-send-email-sync-os
+          - !Ref AWS::NoValue
       Environment:
         Variables:
           TABLE_EVENT_NAME: !Ref SESEventsTable
@@ -318,6 +362,7 @@ Resources:
             - Effect: Allow
               Action:
                 - 'es:*'
+                - 'dynamodb:*'
               Resource: '*'
       Events:
         DDBEvent:
@@ -344,11 +389,6 @@ Resources:
             StartingPosition: TRIM_HORIZON
             BatchSize: 1
             Enabled: true
-  #  EmailEventSync:
-  #    Type: AWS::Lambda::EventSourceMapping
-  #    Properties:
-  #      EventSourceArn: !GetAtt SESEventsTable.StreamArn
-  #      FunctionName: !GetAtt ProcessEmailSyncOS.Arn
   ProcessSESSendQueueLogGroup:
     Type: 'AWS::Logs::LogGroup'
     Properties:
@@ -360,15 +400,22 @@ Resources:
   SendNotificationFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
-      CodeUri: src/node/
-      Handler: SendNotification.handler
-      FunctionName: ses-send-email
+      #      CodeUri: src/node/
+      #      Handler: SendNotification.handler
+
+      CodeUri: src/python/src/
+      Handler: ses_send_email.handler
+      FunctionName:
+        'Fn::If':
+          - IsProduccion
+          - ses-send-email
+          - !Ref AWS::NoValue
       Environment:
         Variables:
           TABLE_EVENT_NAME: !Ref SESEventsTable
           TABLE_EMAIL_NAME: !Ref SESEmailTable
           TABLE_EMAIL_SUPPRESSION_NAME: !Ref SESEmailSuppressionnTable
-          SQS_URL: !Ref SESSendEmailSQS
+          SQS_URL: !GetAtt SESSendEmailSQS.QueueName
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref SESEmailTable
@@ -376,8 +423,12 @@ Resources:
             TableName: !Ref SESEmailSuppressionnTable
         - S3ReadPolicy:
             BucketName: '*'
-        - SQSSendMessagePolicy:
-            QueueName: '*'
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - 'sqs:*'
+              Resource: !GetAtt SESSendEmailSQS.Arn
         - Version: '2012-10-17'
           Statement:
             - Effect: Allow
@@ -403,93 +454,3 @@ Resources:
     Metadata:
       'AWS::CloudFormation::Designer':
         id: 29f463bb-b3e3-4cb1-b8b7-e2eb5bdd3a95
-
-Metadata:
-  'AWS::CloudFormation::Designer':
-    968b2a2a-7489-4b00-8cf4-8c7b2bf967a5:
-      size:
-        width: 150
-        height: 150
-      position:
-        x: 20
-        'y': 100
-      z: 1
-      embeds:
-        - c97126fc-566e-4d2e-bec6-a4275cd5e294
-    29f463bb-b3e3-4cb1-b8b7-e2eb5bdd3a95:
-      size:
-        width: 150
-        height: 150
-      position:
-        x: 470
-        'y': 110
-      z: 1
-      embeds:
-        - bce22d8f-5cbc-4935-aa75-d9b30ea96d3a
-    0d7f8580-69ee-4297-a770-5cea5e7c801e:
-      size:
-        width: 60
-        height: 60
-      position:
-        x: 310
-        'y': 160
-      z: 1
-      embeds: [ ]
-    c97126fc-566e-4d2e-bec6-a4275cd5e294:
-      size:
-        width: 60
-        height: 60
-      position:
-        x: 80
-        'y': 160
-      z: 2
-      pareker nt: 968b2a2a-7489-4b00-8cf4-8c7b2bf967a5
-      embeds: [ ]
-    1edfa9a2-4dfd-4ea6-a050-ae0884b7dcdb:
-      size:
-        width: 60
-        height: 60
-      position:
-        x: 360
-        'y': 390
-      z: 1
-      embeds: [ ]
-    00450781-3848-447b-85e7-526f54cb68f2:
-      size:
-        width: 60
-        height: 60
-      position:
-        x: 510
-        'y': 390
-      z: 1
-      embeds: [ ]
-    bce22d8f-5cbc-4935-aa75-d9b30ea96d3a:
-      size:
-        width: 60
-        height: 60
-      position:
-        x: 510
-        'y': 160
-      z: 2
-      parent: 29f463bb-b3e3-4cb1-b8b7-e2eb5bdd3a95
-      embeds: [ ]
-    7756bc4d-50de-4721-9457-5297a5bb3078:
-      size:
-        width: 60
-        height: 60
-      position:
-        x: 60
-        'y': 440
-      z: 1
-      embeds: [ ]
-    321fa85f-b167-4be6-bdbf-ac675f03f754:
-      size:
-        width: 60
-        height: 60
-      position:
-        x: 710
-        'y': 390
-      z: 1
-      embeds: [ ]
-      dependson:
-        - 00450781-3848-447b-85e7-526f54cb68f2

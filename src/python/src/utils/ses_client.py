@@ -8,7 +8,6 @@ from email.utils import parseaddr, formataddr
 import boto3
 from botocore.exceptions import ClientError
 
-
 # Specify a configuration set. If you do not want to use a configuration
 # set, comment the following variable, and the
 # ConfigurationSetName=CONFIGURATION_SET argument below.
@@ -35,7 +34,7 @@ class SesClient(object):
                    body_html=None,
                    charset=CHARSET,
                    attachments=[],
-                   tags= []
+                   tags=[]
                    ):
         if not attachments or len(attachments) == 0:
             response = self.send_plain_mail(
@@ -75,7 +74,7 @@ class SesClient(object):
             subject,
             to_addresses=[],
             attachments=[],
-            tags= []
+            tags=[]
     ):
         msg = MIMEMultipart('mixed')
         # Add subject, from and to lines.
@@ -87,8 +86,10 @@ class SesClient(object):
         msg['To'] = ','.join(to_addresses)
         if cc_addresses:
             msg['Cc'] = ','.join(cc_addresses)
+            to_addresses = to_addresses + cc_addresses
         if bcc_addresses:
             msg['Bcc'] = ','.join(bcc_addresses)
+            to_addresses = to_addresses + bcc_addresses
         # Create a multipart/alternative child container.
         msg_body = MIMEMultipart('alternative')
 
@@ -140,17 +141,18 @@ class SesClient(object):
                         sender_email,
                         subject,
                         to_addresses,
-                        tags= []
+                        tags=[]
                         ):
         try:
+            destination = {
+                'ToAddresses': to_addresses if isinstance(to_addresses, list) else [to_addresses],
+                'CcAddresses': cc_addresses if isinstance(cc_addresses, list) and cc_addresses else [
+                    cc_addresses] if cc_addresses else [],
+                'BccAddresses': bcc_addresses if isinstance(bcc_addresses, list) and bcc_addresses else [
+                    bcc_addresses] if bcc_addresses else [],
+            }
             response = self.client.send_email(
-                Destination={
-                    'ToAddresses': to_addresses if isinstance(to_addresses, list) else [to_addresses],
-                    'CcAddresses': cc_addresses if isinstance(cc_addresses, list) and cc_addresses else [
-                        cc_addresses] if cc_addresses else [],
-                    'BccAddresses': bcc_addresses if isinstance(bcc_addresses, list) and bcc_addresses else [
-                        bcc_addresses] if bcc_addresses else [],
-                },
+                Destination=destination,
                 Message={
                     'Body': {
                         'Html': {

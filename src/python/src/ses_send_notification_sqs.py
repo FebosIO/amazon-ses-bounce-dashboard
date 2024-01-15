@@ -228,7 +228,7 @@ def agregar_minutos(fecha: datetime, aAgregar=0):
 
 
 if __name__ == '__main__':
-    ids="""""".split("\n")
+    ids="""31c237f12311e2460729214284fe821c3241""".split("\n")
     for id in ids:
         try:
             handler({'Records': [{'messageId': '5e772cb7-5190-4d17-8cb1-6f815d238cd8',
