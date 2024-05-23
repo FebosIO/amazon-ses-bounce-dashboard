@@ -307,6 +307,8 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref SESEmailTable
+        - EventBridgePutEventsPolicy:
+            EventBusName: '*'
         - DynamoDBCrudPolicy:
             TableName: !Ref SESEventsTable
         - DynamoDBCrudPolicy:

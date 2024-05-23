@@ -9,8 +9,17 @@ If you already have deployed stack
 
 ```sh
 sam build 
-sam deploy --config-env='default'
+
 ```
+
+```sh
+sam deploy --config-env='default' # Para deployar a produccion
+```
+
+```sh
+sam deploy --config-env='test' # Para deployar a pruebas
+```
+
 ```sh
 sam sync --stack-name='ses-event-manager'
 ```

@@ -9,6 +9,7 @@ from utils.dynamo import get_dynamo_client
 from utils.logic import value_or_default
 from utils.s3 import s3_get_object_string, s3_get_object_file
 from utils.ses_client import SesClient
+from utils.events import send_event
 
 TTL = int(os.environ.get('TTL') or '525600')
 table_email_name = os.environ.get('TABLE_EMAIL_NAME') or 'ses-email'
@@ -75,7 +76,7 @@ def handler(message, context):
             "timestamp": datetime.datetime.now().isoformat(),
             "type": 'Error',
             "event": {
-                "error":{
+                "error": {
                     "message": str(e),
                 }
             },
@@ -208,9 +209,11 @@ def verificar_correos_suprimidos(messageId, empresa_id='0', correos=[], expirati
         for item in response['Items']:
             evento = {
                 "id": messageId,
+                "emailAddress": item['id'],
                 "messageId": messageId,
                 "timestamp": datetime.datetime.now().isoformat(),
                 "type": 'Suppression',
+                "companyId": empresa_id,
                 "event": {
                     "suppression": item['id']
                 },
@@ -220,6 +223,10 @@ def verificar_correos_suprimidos(messageId, empresa_id='0', correos=[], expirati
                 evento['expiration'] = expiration
             table_event.put_item(Item=evento)
             correos.remove(item['id'])
+            send_event(
+                event_type='skip-by-suppression',
+                event_data=evento
+            )
     return correos
 
 
@@ -228,7 +235,7 @@ def agregar_minutos(fecha: datetime, aAgregar=0):
 
 
 if __name__ == '__main__':
-    ids="""31c237f12311e2460729214284fe821c3241""".split("\n")
+    ids = """11c3052b27216249702ad362940634fd1079""".split("\n")
     for id in ids:
         try:
             handler({'Records': [{'messageId': '5e772cb7-5190-4d17-8cb1-6f815d238cd8',
@@ -236,7 +243,8 @@ if __name__ == '__main__':
                                   'body': '{"id":"' + str(id).strip() + '"}',
                                   'attributes': {'ApproximateReceiveCount': '3',
                                                  'AWSTraceHeader': 'Root=1-655287e9-32b47c444148d2740624d93e;Parent=5ac8941106c35d23;Sampled=1;Lineage=de78eaf3:0|74085691:0',
-                                                 'SentTimestamp': '1699907562237', 'SequenceNumber': '18881920409642225664',
+                                                 'SentTimestamp': '1699907562237',
+                                                 'SequenceNumber': '18881920409642225664',
                                                  'MessageGroupId': '9f3ad5b0-e2fc-49f8-be7e-7a51a765d828',
                                                  'SenderId': 'AROA4CUYL4XDWRQJ5I45V:ses-send-email',
                                                  'MessageDeduplicationId': '1952b9e428024246d52834f20427f6f9ce26',

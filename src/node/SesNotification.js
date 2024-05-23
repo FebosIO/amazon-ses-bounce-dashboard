@@ -3,12 +3,7 @@
 
 'use strict'
 
-import {
-    dynamoPutItem,
-    milisegundosToEpoch,
-    sendEventToBus,
-    sunMinutesToDateFromISO
-} from "./utils/index.js";
+import {dynamoPutItem, milisegundosToEpoch, sendEventToBus, sunMinutesToDateFromISO} from "./utils/index.js";
 import {v4 as uuidv4} from 'uuid';
 
 const TABLE_EMAIL_SUPPRESSION_NAME = process.env.TABLE_EMAIL_SUPPRESSION_NAME || 'ses-email-suppression';
@@ -32,7 +27,7 @@ export const handler = async (event, context) => {
 async function procesarRecord(record) {
     const sqsBody = JSON.parse(record.body)
 
-    const message = sqsBody.Message? JSON.parse(sqsBody.Message || "null") || sqsBody: sqsBody
+    const message = sqsBody.Message ? JSON.parse(sqsBody.Message || "null") || sqsBody : sqsBody
     // All event definition. For more information, see
     // https://docs.aws.amazon.com/ses/latest/dg/event-publishing-retrieving-sns-examples.html
     const type = message.eventType
@@ -51,7 +46,6 @@ async function procesarRecord(record) {
         expiration,
         mail
     };
-    console.log('TABLE',TABLE_EVENT_NAME, data)
     await dynamoPutItem({
         TableName: TABLE_EVENT_NAME, Item: data
     })
@@ -83,22 +77,21 @@ async function procesarEventosSuppression({type, event_detail, mail, timestamp, 
             const {
                 emailAddress, diagnosticCode, action
             } = recipent;
+            const event = {
+                id: emailAddress,
+                emailAddress,
+                timestamp,
+                type,
+                message: diagnosticCode || action || '',
+                messageId,
+                companyId
+            };
             await dynamoPutItem({
-                TableName: TABLE_EMAIL_SUPPRESSION_NAME, Item: {
-                    id: emailAddress,
-                    timestamp,
-                    type,
-                    message: diagnosticCode || action || '',
-                    messageId,
-                    companyId
-                }
+                TableName: TABLE_EMAIL_SUPPRESSION_NAME, Item: event
             })
             sendEventToBus({
                 type: 'email-suppression',
-                event: {
-                    emailAddress,
-                    companyId
-                }
+                event
             })
         }
     } else if (type === 'Reject') {
@@ -106,22 +99,21 @@ async function procesarEventosSuppression({type, event_detail, mail, timestamp, 
             reason
         } = event_detail;
         for (let destinationElement of mail.destination) {
+            const event = {
+                id: destinationElement,
+                emailAddress: destinationElement,
+                timestamp,
+                type,
+                message: reason || '',
+                messageId,
+                companyId
+            }
             await dynamoPutItem({
-                TableName: TABLE_EMAIL_SUPPRESSION_NAME, Item: {
-                    id: destinationElement,
-                    timestamp,
-                    type,
-                    message: reason || '',
-                    messageId,
-                    companyId
-                }
+                TableName: TABLE_EMAIL_SUPPRESSION_NAME, Item: event
             })
             sendEventToBus({
                 type: 'email-suppression',
-                event: {
-                    destinationElement,
-                    companyId
-                }
+                event
             })
         }
     } else if (type === 'Complaint') {
@@ -131,15 +123,17 @@ async function procesarEventosSuppression({type, event_detail, mail, timestamp, 
                 emailAddress
             } = recipent;
             const diagnosticCode = event_detail.complaintFeedbackType
+            const event = {
+                id: emailAddress,
+                emailAddress: emailAddress,
+                timestamp,
+                type,
+                message: diagnosticCode || '',
+                messageId,
+                companyId
+            }
             await dynamoPutItem({
-                TableName: TABLE_EMAIL_SUPPRESSION_NAME, Item: {
-                    id: emailAddress,
-                    timestamp,
-                    type,
-                    message: diagnosticCode || '' ,
-                    messageId,
-                    companyId
-                }
+                TableName: TABLE_EMAIL_SUPPRESSION_NAME, Item: event
             })
             sendEventToBus({
                 type: 'email-suppression',
