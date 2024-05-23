@@ -29,6 +29,34 @@ Globals:
       Variables:
         TTL: '525600' #Minutos de TTL equivalente a un año
 Resources:
+  SESEmailSuppressionNotificationTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName:
+        'Fn::If':
+          - IsProduccion
+          - ses-email-suppression-notificaction
+          - !Ref AWS::NoValue
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
+      BillingMode: PAY_PER_REQUEST
+      ProvisionedThroughput:
+        ReadCapacityUnits: 0
+        WriteCapacityUnits: 0
+      SSESpecification:
+        SSEEnabled: true
+      TimeToLiveSpecification:
+        AttributeName: 'expiration'
+        Enabled: true
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 0d7f8580-69ee-4297-a770-5cea5e7c801e
   SESEmailSuppressionnTable:
     Type: 'AWS::DynamoDB::Table'
     Properties:
@@ -127,6 +155,8 @@ Resources:
     Metadata:
       'AWS::CloudFormation::Designer':
         id: 0d7f8580-69ee-4297-a770-5cea5e7c801e
+
+
   SESSendEmailSQSDeadLeter:
     Type: 'AWS::SQS::Queue'
     Properties:
@@ -172,7 +202,6 @@ Resources:
     Metadata:
       'AWS::CloudFormation::Designer':
         id: 1edfa9a2-4dfd-4ea6-a050-ae0884b7dcdb
-
   SESEventSQS:
     Type: 'AWS::SQS::Queue'
     Properties:
@@ -191,6 +220,7 @@ Resources:
     Metadata:
       'AWS::CloudFormation::Designer':
         id: 00450781-3848-447b-85e7-526f54cb68f2
+
   SESEventSQSPolicy:
     Type: 'AWS::SQS::QueuePolicy'
     Properties:
@@ -380,6 +410,14 @@ Resources:
           Properties:
             Stream:
               !GetAtt SESEmailSuppressionnTable.StreamArn   # This must be the name of a DynamoDB table declared in the same template file
+            StartingPosition: TRIM_HORIZON
+            BatchSize: 1
+            Enabled: true
+        DDBEventSupressionNotification:
+          Type: DynamoDB
+          Properties:
+            Stream:
+              !GetAtt SESEmailSuppressionNotificationTable.StreamArn   # This must be the name of a DynamoDB table declared in the same template file
             StartingPosition: TRIM_HORIZON
             BatchSize: 1
             Enabled: true
