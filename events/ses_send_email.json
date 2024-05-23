@@ -1,0 +1,16 @@
+{
+  "tipo": "enviar",
+  "servicio": "DTE",
+  "ambiente": "produccion",
+  "proceso": "reporte",
+  "dominio": "empresas.febos.cl",
+  "aplicacion": "FEB",
+  "pais": "chile",
+  "manifiesto": "febos-io/chile/produccion/email/631221102c6992487e2abc52a45303933e28/631221102c6992487e2abc52a45303933e28.json",
+  "destinatarios": [
+    "claudio@febos.cl"
+  ],
+  "copias": [],
+  "id": "test",
+  "empresa": "76130655-3"
+}

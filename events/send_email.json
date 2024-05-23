@@ -1,10 +1,33 @@
 {
-  "pais": "chile",
-  "ambiente": "desarrollo",
-  "destinatarios": [
-    "claudio+test@febos.cl"
-  ],
+  "servicio": "DTE",
+  "ambiente": "produccion",
+  "proceso": "reporte",
   "dominio": "empresas.febos.cl",
-  "tipo": "enviar",
-  "manifiesto": "/febos-io/chile/desarrollo/email/31a14ff528ee1247b0289b72ffe75481625d/31a14ff528ee1247b0289b72ffe75481625d.json"
+  "aplicacion": "FEB",
+  "pais": "chile",
+  "destinatarios": [
+    "claudio@febos.cl"
+  ],
+  "copias": [],
+  "id": "631221102c6992487e2abc52a45303933e28",
+  "campos": [
+    {
+      "key": "to",
+      "value": "claudio@febos.cl"
+    },
+    {
+      "key": "from",
+      "value": "Febos <informacion@empresas.febos.cl>"
+    },
+    {
+      "key": "subject",
+      "value": "reporte de documento"
+    },
+    {
+      "key": "html",
+      "value": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n  <!--\n  aws s3 cp plantillaReporteEspecial.html s3://febos-io/chile/desarrollo/archivos/plantillas/plantillaReporteEspecial.html\n  aws s3 cp plantillaReporteEspecial.html s3://febos-io/chile/pruebas/archivos/plantillas/plantillaReporteEspecial.html\n  aws s3 cp plantillaReporteEspecial.html s3://febos-io/chile/certificacion/archivos/plantillas/plantillaReporteEspecial.html\n  aws s3 cp plantillaReporteEspecial.html s3://febos-io/chile/produccion/archivos/plantillas/plantillaReporteEspecial.html\n  !-->\n  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n  <title>Febos - Reportes</title>\n\n  <style type=\"text/css\" media=\"screen\">\n    @import url(http://fonts.googleapis.com/css?family=Oxygen:400,700);\n  </style>\n  <style type=\"text/css\">\n      body {\n          font-family: sans-serif\n      }\n\n      .padding-superior {\n          padding-top: 15px;\n          padding-bottom: 0px;\n      }\n\n      .padding-inferior {\n          padding-bottom: 15px;\n          padding-top: 0px;\n      }\n\n      .titulo-vertical {\n          text-align: left;\n          padding-left: 15px;\n          height: 35px\n      }\n  </style>\n\n</head>\n\n<body style=\"margin: 0; font-family: Roboto, sans-serif;background-color:#eeeeee;padding-bottom:0 0 10px 0;\">\n  <table align=\"center\"  cellspacing=\"0\" width=\"600\"\n       style=\"border-collapse: collapse;box-shadow: 0px 10px 15px #ccc;margin:0 auto;\">\n  <tr>\n    <td bgcolor=\"#ff6200\" style=\"height: 5px\">\n    </td>\n  </tr>\n  <tr>\n    <td align=\"center\" bgcolor=\"#ffffff\" style=\"padding: 40px 0 20px 0;\">\n      <img src=\"https://archivos.febos.io/templates-correo/assets/logo.png\" alt=\"Febos\" width=\"145\"\n           style=\"display: block;\"/>\n    </td>\n  </tr>\n  <tr>\n    <td bgcolor=\"#ffffff\" style=\"padding: 10px 0 10px 0;\">\n    </td>\n  </tr>\n  <tr>\n    <td bgcolor=\"#ffffff\">\n      <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n        <tr>\n          <td style=\"font-weight: 300; font-family: 'Roboto Slab', sans-serif; color: #4a4a4a; font-size: 26px; padding: 0 40px 10px 40px; line-height: 37px; text-align: center;\">\n            Hola, Te traemos el reporte solicitado por <b>Claudio Miranda Pizarro</b>!\n          </td>\n        </tr>\n        <tr>\n          <td style=\"padding: 0 40px 5px 40px;text-align: center;color:gray\">\n            El reporte  ya se encuentra listo para su descarga, solo debes hacer click en el botón que se encuentra aquí abajo\n          </td>\n        </tr>\n        <td class=\"button\" style=\"text-align: center; padding: 20px;\">\n          <div>\n          <!--[if mso]>\n            <v:roundrect xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"urn:schemas-microsoft-com:office:word\" href=\"https://archivos.febos.io/temporal/76130655-3_21-12-2023_4f8ec0ea-6100-45de-ad35-1af7b01edf88.csv\" style=\"height:45px;v-text-anchor:middle;width:155px;\" arcsize=\"15%\" strokecolor=\"#ffffff\" fillcolor=\"#03a9f4\">\n              <w:anchorlock/>s\n              <center style=\"color:#ffffff;font-family:Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;\">Descargar</center>\n            </v:roundrect>\n            <![endif]-->\n\n            <a href=\"https://archivos.febos.io/temporal/76130655-3_21-12-2023_4f8ec0ea-6100-45de-ad35-1af7b01edf88.csv\" download=\"ReporteDte\" style=\"background-color:#03a9f4;border-radius:5px;color:#ffffff;display:inline-block;font-family:'Cabin', Helvetica, Arial, sans-serif;font-size:14px;font-weight:regular;line-height:45px;text-align:center;text-decoration:none;width:155px;-webkit-text-size-adjust:none;mso-hide:all;\">Descargar</a>\n          <br/>\n          https://archivos.febos.io/temporal/76130655-3_21-12-2023_4f8ec0ea-6100-45de-ad35-1af7b01edf88.csv\n          </div>\n        </td>\n      </table>\n    </td>\n  </tr>\n  <tr>\n    <td style=\"color: #ffffff; padding: 15px 0 0 0;\">\n      <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" id=\"detalle\">\n        <tr>\n          <td bgcolor=\"#ff6200\"\n              style=\"color: #ffffff; font-weight: 100; padding: 5px 0 5px 0px; vertical-align: middle; font-size: 14px;padding-left:15px\">\n            <span>Febos Chile © 2016 -2023</span>\n          </td>\n          <td style=\"color: #4d4d4d; padding: 5px 0 5px 0; text-align: right;padding-right:15px\"\n              bgcolor=\"#ff6200\">\n            <a href=\"http://manuales.febos.cl\"><img\n              style=\"margin-bottom: -5px;margin-right:10px;width: 30px;opacity: 0.4;filter: alpha(opacity=50);\"\n              src=\"https://archivos.febos.io/templates-correo/assets/ic_help_white_24_2.png\"\n              alt=\"Portal de Ayuda\" title=\"Portal de Ayuda\"/></a>\n            <a href=\"https://portal.febos.cl\"><img\n              style=\"margin-bottom: -5px;width: 30px;margin-right:10px;opacity: 0.4;filter: alpha(opacity=50);\"\n              src=\"https://archivos.febos.io/templates-correo/assets/ic_home_white_24px.png\"\n              alt=\"Página de inicio\" title=\"Página de inicio\"/></a>\n            <a href=\"https://documentacion.febos.cl\"><img\n              style=\"margin-bottom: -5px;width: 30px;margin-right:10px;opacity: 0.4;filter: alpha(opacity=50);\"\n              src=\"https://archivos.febos.io/templates-correo/assets/ic_extension_white_24px.png\"\n              alt=\"Documentación de la API\" title=\"Documentación de la API\"/></a>\n          </td>\n        </tr>\n      </table>\n    </td>\n  </tr>\n</table>\n\n<table border=\"0\" style=\"border-collapse:collapse;border:0;width: 100%\">\n    <tr><td> <center><span style=\"color:#808080;font-size: 70%;font-weight:100;margin-left:20px;padding-bottom:20px\">ID de Seguimiento: 9568be673039c14466282f9-dce70ac5eeea</span></center> </td></tr>\n</table>\n</body>\n</html>\n"
+    }
+  ],
+  "empresa": "76130655-3",
+  "adjuntos": []
 }
