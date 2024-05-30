@@ -111,6 +111,7 @@ def sen_notification_from_manifest(
     status = "error"
     response = None
     empresa = "0"
+    stage = item.get('stage', 'produccion')
     if 'empresa' in item:
         empresa = item['empresa']
 
@@ -142,8 +143,8 @@ def sen_notification_from_manifest(
     tags = []
     if 'empresa' in item:
         tags.append({'Name': 'empresa', 'Value': empresa})
-
-    destinatarios = verificar_correos_suprimidos(item['id'], empresa, destinatarios, expiration=expiration)
+    tags.append({'Name': 'stage', 'Value': stage})
+    destinatarios = verificar_correos_suprimidos(item['id'], empresa, destinatarios, expiration=expiration, stage=stage)
 
     if len(destinatarios) == 0:
         evento = {
@@ -184,7 +185,7 @@ def pasar_campos_en_manifiesto_a_objeto(manifiesto):
     return output
 
 
-def verificar_correos_suprimidos(messageId, empresa_id='0', correos=[], expiration=None):
+def verificar_correos_suprimidos(messageId, empresa_id='0', correos=[], expiration=None, stage=None):
     if not correos or len(correos) == 0:
         return correos
     indice = 0
@@ -213,6 +214,7 @@ def verificar_correos_suprimidos(messageId, empresa_id='0', correos=[], expirati
                 "messageId": messageId,
                 "timestamp": datetime.datetime.now().isoformat(),
                 "type": 'Suppression',
+                "stage": stage,
                 "companyId": empresa_id,
                 "event": {
                     "suppression": item['id']

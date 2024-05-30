@@ -55,8 +55,20 @@ async function procesarRecord(record) {
         mail,
         timestamp,
         messageId,
-        companyId: obtenerCompanyFromEmailTags(mail)
+        companyId: obtenerCompanyFromEmailTags(mail),
+        stage: obtenerStageFromEmailTags(mail)
     })
+}
+
+function obtenerStageFromEmailTags(mail) {
+    try {
+        if (mail.tags.stage) {
+            return mail.tags.stage.join(",")
+        }
+    } catch (e) {
+        console.error(e);
+    }
+    return 'produccion'
 }
 
 function obtenerCompanyFromEmailTags(mail) {
@@ -70,7 +82,15 @@ function obtenerCompanyFromEmailTags(mail) {
     return '0'
 }
 
-async function procesarEventosSuppression({type, event_detail, mail, timestamp, messageId, companyId = '0'}) {
+async function procesarEventosSuppression({
+                                              type,
+                                              event_detail,
+                                              mail,
+                                              timestamp,
+                                              messageId,
+                                              companyId = '0',
+                                              stage = 'produccion'
+                                          }) {
     if (type === 'Bounce') {
         const recipents = event_detail.bouncedRecipients
         for (let recipent of recipents) {
@@ -82,6 +102,7 @@ async function procesarEventosSuppression({type, event_detail, mail, timestamp, 
                 emailAddress,
                 timestamp,
                 type,
+                stage,
                 message: diagnosticCode || action || '',
                 messageId,
                 companyId
@@ -104,6 +125,7 @@ async function procesarEventosSuppression({type, event_detail, mail, timestamp, 
                 emailAddress: destinationElement,
                 timestamp,
                 type,
+                stage,
                 message: reason || '',
                 messageId,
                 companyId
@@ -128,6 +150,7 @@ async function procesarEventosSuppression({type, event_detail, mail, timestamp, 
                 emailAddress: emailAddress,
                 timestamp,
                 type,
+                stage,
                 message: diagnosticCode || '',
                 messageId,
                 companyId
