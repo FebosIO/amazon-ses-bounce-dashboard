@@ -20,6 +20,11 @@ sam deploy --config-env='default' # Para deployar a produccion
 sam deploy --config-env='test' # Para deployar a pruebas
 ```
 
+
+```sh
+sam deploy --config-env='phoqo-prod' --profile phoqo-prod # Para deployar a phoqo-prod
+```
+
 ```sh
 sam sync --stack-name='ses-event-manager'
 ```
