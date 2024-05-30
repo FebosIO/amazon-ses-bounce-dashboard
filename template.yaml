@@ -16,6 +16,19 @@ Parameters:
       Sepcify the SNS Topic by using its Amazon Resource Name (ARN).  Examples: 
       arn:aws:sns:us-east-1:830321976775:ses-event
 
+  WebhookBus:
+    Type: String
+    Description: >-
+      Bus name of webhook events
+    Default: webhooks
+
+  EventSource:
+    Type: String
+    Description: >-
+      Source identifier for events
+    Default: io.febos.ses
+
+
 Conditions:
   IsProduccion: !Equals
     - !Ref STAGE
@@ -28,6 +41,8 @@ Globals:
     Environment:
       Variables:
         TTL: '525600' #Minutos de TTL equivalente a un año
+        WEBHOOK_EVENT_BUS: !Ref WebhookBus
+        SOURCE_EVENT: !Ref EventSource
 Resources:
   SESEmailSuppressionNotificationTable:
     Type: 'AWS::DynamoDB::Table'

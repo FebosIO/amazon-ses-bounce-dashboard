@@ -1,3 +1,5 @@
+import os
+
 import boto3
 
 from typing import Union
@@ -5,13 +7,15 @@ from typing import Union
 import json
 
 client = boto3.client('events')
+WEBHOOK_EVENT_BUS = os.environ.get('WEBHOOK_EVENT_BUS', 'webhooks')
+SOURCE_EVENT = os.environ.get('SOURCE_EVENT', 'io.febos.ses')
 
 
 def send_event(
         event_type: str,
         event_data: Union[str, dict],
-        source="io.febos.ses",
-        event_bus_name='webhooks'
+        source=SOURCE_EVENT,
+        event_bus_name=WEBHOOK_EVENT_BUS
 ):
     """
     Send event to AWS EventBridge.
