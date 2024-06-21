@@ -4,7 +4,7 @@ import boto3
 
 from typing import Union
 
-import json
+import simplejson as json
 
 client = boto3.client('events')
 WEBHOOK_EVENT_BUS = os.environ.get('WEBHOOK_EVENT_BUS', 'webhooks')
@@ -21,7 +21,7 @@ def send_event(
     Send event to AWS EventBridge.
     """
     if isinstance(event_data, dict):
-        event_data = json.dumps(event_data)
+        event_data = json.dumps(event_data, use_decimal=True)
 
     # Send event
     response = client.put_events(
