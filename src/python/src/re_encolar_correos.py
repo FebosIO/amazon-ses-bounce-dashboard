@@ -1,3 +1,5 @@
+import traceback
+
 NOMBRE_COLA = 'ses-send-email.fifo'
 
 
@@ -11,40 +13,43 @@ def llamar_correos_no_enviados():
     payload = json.dumps({
         "from": 0,
         "size": 10000,
-        "timeout": "2m",
+        "timeout": "1m",
         "query": {
             "bool": {
                 "filter": [
                     {
-                        "term": {
-                            "estado.keyword": {
-                                "value": "error",
-                                "boost": 1.0
-                            }
-                        }
-                    },
-                    {
-                        "term": {
-                            "stage.keyword": {
-                                "value": "produccion",
-                                "boost": 1.0
-                            }
+                        "bool": {
+                            "filter": [
+                                {
+                                    "term": {
+                                        "estado.keyword": {
+                                            "value": "error",
+                                            "boost": 1.0
+                                        }
+                                    }
+                                },
+                                {
+                                    "term": {
+                                        "stage.keyword": {
+                                            "value": "produccion",
+                                            "boost": 1.0
+                                        }
+                                    }
+                                }
+                            ],
+                            "adjust_pure_negative": true,
+                            "boost": 1.0
                         }
                     },
                     {
                         "range": {
                             "timestamp": {
-                                "from": '2023-09-11T00:00:00.000',
+                                "from": 1718755200064,
                                 "to": null,
                                 "include_lower": true,
                                 "include_upper": true,
                                 "boost": 1.0
                             }
-                        }
-                    },
-                    {
-                        "exists": {
-                            "field": "destinatarios"
                         }
                     }
                 ],
@@ -54,19 +59,33 @@ def llamar_correos_no_enviados():
         },
         "_source": {
             "includes": [
-                "estado",
-                "proceso",
-                "destinatarios",
-                "id",
+                "ConfigurationSetName",
+                "servicio",
+                "application",
                 "stage",
-                "timestamp"
+                "manifiesto",
+                "empresa",
+                "subject",
+                "id",
+                "messageId",
+                "copias",
+                "sender",
+                "domain",
+                "tieneAdjuntos",
+                "expiration",
+                "timestamp",
+                "pais",
+                "documentoId",
+                "proceso",
+                "estado",
+                "destinatarios"
             ],
             "excludes": []
         },
         "sort": [
             {
                 "timestamp": {
-                    "order": "asc",
+                    "order": "desc",
                     "missing": "_last"
                 }
             }
@@ -91,7 +110,8 @@ def llamar_correos_no_enviados():
             destinatarios = dato['_source'].get('destinatarios')
             timestamp = dato['_source'].get('timestamp')
             proceso = dato['_source'].get('proceso')
-            if not destinatarios or len(destinatarios) == 0 or proceso == 'aat-cobranza' or 'aat' in proceso:
+            servicio = dato['_source'].get('servicio')
+            if not destinatarios or len(destinatarios) == 0 and servicio not in ['']:
                 continue
             print(id, timestamp, destinatarios)
             procesados = True
@@ -106,13 +126,17 @@ def llamar_correos_no_enviados():
             # import time
             # time.sleep(1)
     except:
-        # print(data)
+        print(data)
+        traceback.print_exc()
         pass
-    return  procesados
+    return procesados
+
 
 def encolar_por_manifiesto():
     pass
 
+
 if __name__ == '__main__':
-    while llamar_correos_no_enviados():
-        print("siguiente")
+    # while llamar_correos_no_enviados():
+    llamar_correos_no_enviados()
+    print("siguiente")
