@@ -35,6 +35,14 @@ def llamar_correos_no_enviados():
                                             "boost": 1.0
                                         }
                                     }
+                                },
+                                {
+                                    "term": {
+                                        "proceso.keyword": {
+                                            "value": "envio-receptor",
+                                            "boost": 1.0
+                                        }
+                                    }
                                 }
                             ],
                             "adjust_pure_negative": true,
@@ -44,7 +52,7 @@ def llamar_correos_no_enviados():
                     {
                         "range": {
                             "timestamp": {
-                                "from": 1718755200064,
+                                "from": 1717200000037,
                                 "to": null,
                                 "include_lower": true,
                                 "include_upper": true,

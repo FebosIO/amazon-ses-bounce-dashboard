@@ -21,13 +21,11 @@ Parameters:
     Description: >-
       Bus name of webhook events
     Default: webhooks
-
   EventSource:
     Type: String
     Description: >-
       Source identifier for events
     Default: io.febos.ses
-
 
 Conditions:
   IsProduccion: !Equals

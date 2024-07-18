@@ -1,0 +1,20 @@
+{
+  "Records": [
+    {
+      "messageId": "19dd0b57-b21e-4ac1-bd88-01bbb068cb78",
+      "receiptHandle": "MessageReceiptHandle",
+      "body": "{\"eventType\":\"Delivery\",\"mail\":{\"timestamp\":\"2024-07-08T21:13:39.232Z\",\"source\":\"Phoqo <information@phoqo.cl>\",\"sourceArn\":\"arn:aws:ses:us-east-1:654654368367:identity/phoqo.cl\",\"sendingAccountId\":\"654654368367\",\"messageId\":\"010001909431f0a0-7db4b0e1-8126-4caa-b286-9bcdd55dd34d-000000\",\"destination\":[\"ss.quilicura@gmail.com\"],\"headersTruncated\":false,\"headers\":[{\"name\":\"From\",\"value\":\"Phoqo <information@phoqo.cl>\"},{\"name\":\"To\",\"value\":\"ss.quilicura@gmail.com\"},{\"name\":\"Subject\",\"value\":\"Hemos recibido la orden de trabajo  24585\"},{\"name\":\"MIME-Version\",\"value\":\"1.0\"},{\"name\":\"Content-Type\",\"value\":\"multipart/alternative;  boundary=\\\"----=_Part_457400_379737883.1720473219232\\\"\"}],\"commonHeaders\":{\"from\":[\"Phoqo <information@phoqo.cl>\"],\"to\":[\"ss.quilicura@gmail.com\"],\"messageId\":\"010001909431f0a0-7db4b0e1-8126-4caa-b286-9bcdd55dd34d-000000\",\"subject\":\"Hemos recibido la orden de trabajo  24585\"},\"tags\":{\"ses:source-tls-version\":[\"TLSv1.2\"],\"ses:operation\":[\"SendEmail\"],\"ses:configuration-set\":[\"phoqo-default-configuration-set\"],\"ses:source-ip\":[\"34.225.166.166\"],\"ses:from-domain\":[\"phoqo.cl\"],\"ses:caller-identity\":[\"phoqo-FunctionCoreProcesosRole-uKlW5wB23Cw5\"],\"empresa\":[\"0\"],\"ses:outgoing-ip\":[\"54.240.8.25\"]}},\"delivery\":{\"timestamp\":\"2024-07-08T21:13:40.401Z\",\"processingTimeMillis\":1169,\"recipients\":[\"ss.quilicura@gmail.com\"],\"smtpResponse\":\"250 2.0.0 OK  1720473220 6a1803df08f44-6b61bafb227si7227106d6.570 - gsmtp\",\"reportingMTA\":\"a8-25.smtp-out.amazonses.com\"}}",
+      "attributes": {
+        "ApproximateReceiveCount": "1",
+        "SentTimestamp": "1523232000000",
+        "SenderId": "123456789012",
+        "ApproximateFirstReceiveTimestamp": "1523232000001"
+      },
+      "messageAttributes": {},
+      "md5OfBody": "{{{md5_of_body}}}",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:us-east-1:123456789012:MyQueue",
+      "awsRegion": "us-east-1"
+    }
+  ]
+}

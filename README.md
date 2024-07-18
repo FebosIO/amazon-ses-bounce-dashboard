@@ -22,7 +22,8 @@ sam deploy --config-env='test' # Para deployar a pruebas
 
 
 ```sh
-sam deploy --config-env='phoqo-prod' --profile phoqo-prod # Para deployar a phoqo-prod
+sam build
+sam deploy --config-env='phoqo-produccion' --profile phoqo-produccion # Para deployar a phoqo-prod
 ```
 
 ```sh
@@ -35,8 +36,7 @@ sam sync --stack-name='ses-event-manager'
 
 
 ```bash
-sam build
-sam local invoke SendNotificationFunction --event events/send_email.json -l log.log
+sam local invoke ProcessSESQueue --event events/sqs_event.json -l log.log --profile phoqo-produccion
 ```
 
 ```bash

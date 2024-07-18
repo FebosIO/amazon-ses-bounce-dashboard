@@ -26,7 +26,6 @@ export const handler = async (event, context) => {
 
 async function procesarRecord(record) {
     const sqsBody = JSON.parse(record.body)
-
     const message = sqsBody.Message ? JSON.parse(sqsBody.Message || "null") || sqsBody : sqsBody
     // All event definition. For more information, see
     // https://docs.aws.amazon.com/ses/latest/dg/event-publishing-retrieving-sns-examples.html
@@ -46,7 +45,7 @@ async function procesarRecord(record) {
         expiration,
         mail
     };
-    await dynamoPutItem({
+    const response = await dynamoPutItem({
         TableName: TABLE_EVENT_NAME, Item: data
     })
     await procesarEventosSuppression({

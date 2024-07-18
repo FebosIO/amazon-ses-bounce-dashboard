@@ -21,7 +21,7 @@ image_repositories = []
 #on_failure = 'DELETE'
 disable_rollback = true
 
-[phoqo-prod.deploy.parameters]
+[phoqo-produccion.deploy.parameters]
 stack_name = "ses-event-manager"
 resolve_s3 = true
 s3_prefix = "ses-event-manager"
