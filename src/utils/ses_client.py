@@ -1,6 +1,4 @@
 import os
-import uuid
-from datetime import datetime
 from email.header import Header
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
@@ -39,21 +37,6 @@ class SesClient(object):
                    tags=[],
                    headers=[]
                    ):
-        # if False and (not attachments or len(attachments) == 0):
-        #     ## eliminado por que no soporta cabeceras en la version 1 del api
-        #     response = self.send_plain_mail(
-        #         bcc_addresses,
-        #         body_html,
-        #         body_text,
-        #         cc_addresses,
-        #         charset,
-        #         sender_email,
-        #         subject,
-        #         to_addresses,
-        #         tags=tags,
-        #         headers=headers
-        #     )
-        # else:
         response = self.send_attachments_mail(
             bcc_addresses,
             body_html,
@@ -88,8 +71,6 @@ class SesClient(object):
         # Add subject, from and to lines.
         source_email_name, source_email_address = parseaddr(sender_email)
         msg.add_header('From', formataddr((str(Header(source_email_name, 'utf-8')), source_email_address)))
-        # msg['From'] = sender_email
-
         msg.add_header('Subject', subject)
         msg.add_header('To', ','.join(to_addresses))
         if cc_addresses:
@@ -157,6 +138,7 @@ if __name__ == '__main___':
     if reply_to:
         headers.append({'Name': 'References', 'Value': ' '.join(references)})
         headers.append({'Name': 'In-Reply-To', 'Value': reply_to})
+
     headers.append({'Name': 'Return-To', 'Value': sender_mail})
 
     # para mail de mac, el to_debe tener el mismo nombre/correo que en el mensaje anterior

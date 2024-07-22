@@ -26,6 +26,16 @@ Parameters:
     Description: >-
       Source identifier for events
     Default: io.febos.ses
+  PrivateBucket:
+    Type: String
+    Description: >-
+      Source identifier for bucket to store files received
+    Default: febos-io
+  PrincipalIdentity:
+    Type: String
+    Description: >-
+      Identidad principal de emails, para configuraciones base
+    Default: febos.cl
 
 Conditions:
   IsProduccion: !Equals
@@ -501,3 +511,105 @@ Resources:
     Metadata:
       'AWS::CloudFormation::Designer':
         id: 29f463bb-b3e3-4cb1-b8b7-e2eb5bdd3a95
+
+
+
+  ## SESS_RECEPCION
+
+  EmailNotificationQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      MessageRetentionPeriod: 1209600
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt EmailNotificationDeadLetterQueue.Arn
+        maxReceiveCount: 3
+      VisibilityTimeout: 60
+    DependsOn: EmailNotificationDeadLetterQueue
+
+  EmailNotificationTopic:
+    Type: AWS::SNS::Topic
+    DependsOn:
+      - EmailNotificationQueue
+
+  EmailNotificationQueueTopicSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Protocol: sqs
+      TopicArn: !Ref EmailNotificationTopic
+      Endpoint: !GetAtt EmailNotificationQueue.Arn
+      RawMessageDelivery: true
+    DependsOn:
+      - EmailNotificationTopic
+      - EmailNotificationQueue
+
+  EmailNotificationDeadLetterQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      MessageRetentionPeriod: 1209600
+
+  CommandsQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      MessageRetentionPeriod: 1209600
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt EmailNotificationDeadLetterQueue.Arn
+        maxReceiveCount: 3
+      VisibilityTimeout: 180
+    DependsOn: EmailNotificationDeadLetterQueue
+
+  EmailNotificationQueuePermissions:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - !Ref EmailNotificationQueue
+      PolicyDocument:
+        Statement:
+          - Action:
+              - 'SQS:SendMessage'
+            Effect: Allow
+            Resource: !GetAtt EmailNotificationQueue.Arn
+            Principal:
+              AWS: '*'
+            Condition:
+              ArnLike:
+                'aws:SourceArn':
+                  - !Ref EmailNotificationTopic
+    DependsOn: EmailNotificationQueue
+
+  EmailReceiver:
+    Type: AWS::SES::ReceiptRuleSet
+
+  EmailReceiverCatchAllRule:
+    Type: AWS::SES::ReceiptRule
+    Properties:
+      RuleSetName: !Ref EmailReceiver
+      Rule:
+        Enabled: true
+        ScanEnabled: true
+        Recipients:
+          - 'Fn::If':
+              - IsProduccion
+              - !Sub cases.${PrincipalIdentity}
+              - !Sub cases-${STAGE}.${PrincipalIdentity}
+          - 'Fn::If':
+              - IsProduccion
+              - !Sub inbound.${PrincipalIdentity}
+              - !Sub inbound-${STAGE}.${PrincipalIdentity}
+          - 'Fn::If':
+              - IsProduccion
+              - !Sub inbox.${PrincipalIdentity}
+              - !Sub inbox-${STAGE}.${PrincipalIdentity}
+          - 'Fn::If':
+              - IsProduccion
+              - !Sub test.${PrincipalIdentity}
+              - !Sub test-${STAGE}.${PrincipalIdentity}
+        Actions:
+          - S3Action:
+              BucketName: !Ref PrivateBucket
+              ObjectKeyPrefix: !Sub 'email/${STAGE}/inbox'
+              TopicArn: !Ref EmailNotificationTopic
+          - StopAction:
+              Scope: RuleSet
+    DependsOn:
+      - EmailReceiver
+      - EmailNotificationTopic
