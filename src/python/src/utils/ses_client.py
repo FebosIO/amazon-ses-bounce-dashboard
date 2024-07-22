@@ -1,4 +1,6 @@
 import os
+import uuid
+from datetime import datetime
 from email.header import Header
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
@@ -34,33 +36,37 @@ class SesClient(object):
                    body_html=None,
                    charset=CHARSET,
                    attachments=[],
-                   tags=[]
+                   tags=[],
+                   headers=[]
                    ):
-        if not attachments or len(attachments) == 0:
-            response = self.send_plain_mail(
-                bcc_addresses,
-                body_html,
-                body_text,
-                cc_addresses,
-                charset,
-                sender_email,
-                subject,
-                to_addresses,
-                tags=tags
-            )
-        else:
-            response = self.send_attachments_mail(
-                bcc_addresses,
-                body_html,
-                body_text,
-                cc_addresses,
-                charset,
-                sender_email,
-                subject,
-                to_addresses,
-                attachments,
-                tags=tags
-            )
+        # if False and (not attachments or len(attachments) == 0):
+        #     ## eliminado por que no soporta cabeceras en la version 1 del api
+        #     response = self.send_plain_mail(
+        #         bcc_addresses,
+        #         body_html,
+        #         body_text,
+        #         cc_addresses,
+        #         charset,
+        #         sender_email,
+        #         subject,
+        #         to_addresses,
+        #         tags=tags,
+        #         headers=headers
+        #     )
+        # else:
+        response = self.send_attachments_mail(
+            bcc_addresses,
+            body_html,
+            body_text,
+            cc_addresses,
+            charset,
+            sender_email,
+            subject,
+            to_addresses,
+            attachments,
+            tags=tags,
+            headers=headers
+        )
         return response
 
     def send_attachments_mail(
@@ -74,32 +80,38 @@ class SesClient(object):
             subject,
             to_addresses=[],
             attachments=[],
-            tags=[]
+            tags=[],
+            headers=[]
     ):
         msg = MIMEMultipart('mixed')
+
         # Add subject, from and to lines.
         source_email_name, source_email_address = parseaddr(sender_email)
-        msg['From'] = formataddr((str(Header(source_email_name, 'utf-8')), source_email_address))
+        msg.add_header('From', formataddr((str(Header(source_email_name, 'utf-8')), source_email_address)))
         # msg['From'] = sender_email
 
-        msg['Subject'] = subject
-        msg['To'] = ','.join(to_addresses)
+        msg.add_header('Subject', subject)
+        msg.add_header('To', ','.join(to_addresses))
         if cc_addresses:
-            msg['Cc'] = ','.join(cc_addresses)
+            msg.add_header('Cc', ','.join(cc_addresses))
             to_addresses = to_addresses + cc_addresses
         if bcc_addresses:
-            msg['Bcc'] = ','.join(bcc_addresses)
+            msg.add_header('Bcc', ','.join(bcc_addresses))
             to_addresses = to_addresses + bcc_addresses
+        if headers:
+            for header in headers:
+                msg.add_header(header['Name'], header['Value'])
         # Create a multipart/alternative child container.
         msg_body = MIMEMultipart('alternative')
 
         # Encode the text and HTML content and set the character encoding. This step is
         # necessary if you're sending a message with characters outside the ASCII range.
-        textpart = MIMEText(body_text.encode(CHARSET), 'plain', CHARSET)
-        htmlpart = MIMEText(body_html.encode(CHARSET), 'html', CHARSET)
+        if body_text:
+            textpart = MIMEText(body_text.encode(CHARSET), 'plain', CHARSET)
+            msg_body.attach(textpart)
 
         # Add the text and HTML parts to the child container.
-        msg_body.attach(textpart)
+        htmlpart = MIMEText(body_html.encode(CHARSET), 'html', CHARSET)
         msg_body.attach(htmlpart)
 
         # Attach the multipart/alternative child container to the multipart/mixed
@@ -132,50 +144,27 @@ class SesClient(object):
         else:
             return response
 
-    def send_plain_mail(self,
-                        bcc_addresses,
-                        body_html,
-                        body_text,
-                        cc_addresses,
-                        charset,
-                        sender_email,
-                        subject,
-                        to_addresses,
-                        tags=[]
-                        ):
-        try:
-            destination = {
-                'ToAddresses': to_addresses if isinstance(to_addresses, list) else [to_addresses],
-                'CcAddresses': cc_addresses if isinstance(cc_addresses, list) and cc_addresses else [
-                    cc_addresses] if cc_addresses else [],
-                'BccAddresses': bcc_addresses if isinstance(bcc_addresses, list) and bcc_addresses else [
-                    bcc_addresses] if bcc_addresses else [],
-            }
-            response = self.client.send_email(
-                Destination=destination,
-                Message={
-                    'Body': {
-                        'Html': {
-                            'Charset': charset,
-                            'Data': body_html,
-                        },
-                        'Text': {
-                            'Charset': charset,
-                            'Data': body_text,
-                        },
-                    },
-                    'Subject': {
-                        'Charset': charset,
-                        'Data': subject,
-                    },
-                },
-                Source=sender_email,
-                ConfigurationSetName=self.config_set_name,
-                Tags=tags
-            )
-        except ClientError as e:
-            print(e.response['Error']['Message'], e.args[0])
-        else:
-            print("Email sent! Message ID:"),
-            print(response['MessageId'])
-        return response
+
+if __name__ == '__main___':
+    sesClient = SesClient()
+    sender_mail = 'Phoqo <cases@inbox.phoqo.cl>'
+    reply_to = "<CAM4-89+R47EEOc_iQcfwEm4TbpKa479RD5HOp6AGr3vjC8+g+A@mail.gmail.com>"
+    references = [
+        "<01000190db3773a7-c6db566b-eef8-4c2d-a55a-edb77f2a5730-000000@email.amazonses.com>",
+        reply_to
+    ]
+    headers = []
+    if reply_to:
+        headers.append({'Name': 'References', 'Value': ' '.join(references)})
+        headers.append({'Name': 'In-Reply-To', 'Value': reply_to})
+    headers.append({'Name': 'Return-To', 'Value': sender_mail})
+
+    # para mail de mac, el to_debe tener el mismo nombre/correo que en el mensaje anterior
+    sesClient.send_email(
+        to_addresses=['Claudio Miranda Pizarro <cronosunder@gmail.com>'],
+        cc_addresses=['Claudio Miranda <claudio@febos.cl>'],
+        sender_email=sender_mail,
+        subject='RE: Test email Caso 2015',
+        body_html=f'OK, enviare todo aparte',
+        headers=headers
+    )
