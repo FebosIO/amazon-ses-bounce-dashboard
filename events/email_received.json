@@ -1,0 +1,131 @@
+{
+  "notificationType": "Received",
+  "mail": {
+    "timestamp": "2024-07-22T21:02:12.524Z",
+    "source": "01000190dc407b87-43186ae3-8280-4ce2-88cc-635ef1b1f8ad-000000@amazonses.com",
+    "messageId": "0f145sb02tcnarrijp3kojsk5b5med5vq6s2k501",
+    "destination": [
+      "xml@inbound-pruebas.phoqo.cl"
+    ],
+    "headersTruncated": false,
+    "headers": [
+      {
+        "name": "Return-Path",
+        "value": "<01000190dc407b87-43186ae3-8280-4ce2-88cc-635ef1b1f8ad-000000@amazonses.com>"
+      },
+      {
+        "name": "Received",
+        "value": "from a65-166.smtp-out.amazonses.com (a65-166.smtp-out.amazonses.com [54.240.65.166]) by inbound-smtp.us-east-1.amazonaws.com with SMTP id 0f145sb02tcnarrijp3kojsk5b5med5vq6s2k501 for xml@inbound-pruebas.phoqo.cl; Mon, 22 Jul 2024 21:02:12 +0000 (UTC)"
+      },
+      {
+        "name": "X-SES-Spam-Verdict",
+        "value": "PASS"
+      },
+      {
+        "name": "X-SES-Virus-Verdict",
+        "value": "PASS"
+      },
+      {
+        "name": "Received-SPF",
+        "value": "pass (spfCheck: domain of amazonses.com designates 54.240.65.166 as permitted sender) client-ip=54.240.65.166; envelope-from=01000190dc407b87-43186ae3-8280-4ce2-88cc-635ef1b1f8ad-000000@amazonses.com; helo=a65-166.smtp-out.amazonses.com;"
+      },
+      {
+        "name": "Authentication-Results",
+        "value": "amazonses.com; spf=pass (spfCheck: domain of amazonses.com designates 54.240.65.166 as permitted sender) client-ip=54.240.65.166; envelope-from=01000190dc407b87-43186ae3-8280-4ce2-88cc-635ef1b1f8ad-000000@amazonses.com; helo=a65-166.smtp-out.amazonses.com; dkim=pass header.i=@empresas.febos.cl; dkim=pass header.i=@amazonses.com; dmarc=pass header.from=empresas.febos.cl;"
+      },
+      {
+        "name": "X-SES-RECEIPT",
+        "value": "AEFBQUFBQUFBQUFFd0xHcUR3VE9nc0JnQ0I0eDl5WGRhMUlRZkxKUmphSTd6dXdGS2plbmFUeXc2K0huOGpUeTdZdEw5MzBzZ2EraWdmUjYydVlva0J3aVZRcUpwT0kyaEJUd25tOFgzb1kzNnVHQjJzYWFOU0paS2ZWUUkwbHNEZklNM05EV21zNUJrSDdaeTQ5SlIrUHVGaFAwd1JyUUpMMzlJSk0ybnA3QTc5d282TTdkRFZPeElwV3BUdzJYK2dwTDRKVTl6ODlUMWtvdTI4TFVGMFdEd0p4V0dnWXN2QUJZdUo3ZkRHZVJzZ0o5RThaNnBxb2tFVjBQUHZjR0NZakIzM01KLzY5T3Rpb0lORjVSU3ZZSVZpMnlLVWd4RmVKcnlCR0dEenRGT1R1RlBVWGpkN0JWdHV2VDlsNG9UV0tBYmp6YlpTNW52cmVSRTAxekhQOXp6R1ZnYWJzRStBcTdLUjJBbnMwRENVZUM5UWJmQmxBPT0="
+      },
+      {
+        "name": "X-SES-DKIM-SIGNATURE",
+        "value": "a=rsa-sha256; q=dns/txt; b=oQ2jT2oDshNaB+tlAcNFvHXqhmveAQaUdNUOjDsZk247aLba5DwfYErR7z7Srk9+VlYndqBM/WsBXweQI7fGldIvuyCGrYvSnxP8dN2d1my1eoORX1gc7RR7adLiVct+9EEM2Q9EgBrkzdFdANHGtSQskiutCTduDpugCGAh74E=; c=relaxed/simple; s=ug7nbtf4gccmlpwj322ax3p6ow6yfsug; d=amazonses.com; t=1721682133; v=1; bh=h3oTPtBlC0/8Ps4HTHZxFGQiDIvcjHHbV3zaQSUgNL0=; h=From:To:Cc:Bcc:Subject:Date:Message-ID:MIME-Version:Content-Type:X-SES-RECEIPT;"
+      },
+      {
+        "name": "DKIM-Signature",
+        "value": "v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple; s=hmqwn55h5prwcqvd3vtu525ax2hy5pnu; d=empresas.febos.cl; t=1721682132; h=Content-Type:MIME-Version:From:Subject:To:Message-ID:Date; bh=h3oTPtBlC0/8Ps4HTHZxFGQiDIvcjHHbV3zaQSUgNL0=; b=Tn6eDLDL+cCoTk1w5AlKzwRXRB6fXhkKlzNybA/dt6TohYwQ+11+8LdteRd2+5LdwvfK+IXBPH0ijoXpU09vb21aUntgs/kZcn3L3/+nhk19kM/CPu2sJ3Rm/nMi4dtIuBsYdMBWUu62FUf8fo/gA8ca/lnSR7Pb7320sQVnmZ0="
+      },
+      {
+        "name": "DKIM-Signature",
+        "value": "v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple; s=ug7nbtf4gccmlpwj322ax3p6ow6yfsug; d=amazonses.com; t=1721682132; h=Content-Type:MIME-Version:From:Subject:To:Message-ID:Date:Feedback-ID; bh=h3oTPtBlC0/8Ps4HTHZxFGQiDIvcjHHbV3zaQSUgNL0=; b=MGG1/+DfXEZrOPhHnUr8pSVOSxsz1E/x3l6UJiwF2zl0L0CyelJs6UvL+0bZLlw2s9kvJBGRULflILZUUyt96LLZP+kO4RiMfKt6VDelK2YxHv8zbQujF0xt/VHcqjWIY7ZE/iVrqutJZoddFkCbPMs4Czp0FdVd7r8DKZ19bkg="
+      },
+      {
+        "name": "Content-Type",
+        "value": "multipart/mixed; boundary=\"===============7801013933437943864==\""
+      },
+      {
+        "name": "MIME-Version",
+        "value": "1.0"
+      },
+      {
+        "name": "From",
+        "value": "SERVICIOS INFORMATICOS IA SOLUTIONS LIMITADA <76179952-5@empresas.febos.cl>"
+      },
+      {
+        "name": "Subject",
+        "value": "[DESARROLLO] Envió de DTE"
+      },
+      {
+        "name": "To",
+        "value": "xml@inbound-pruebas.phoqo.cl"
+      },
+      {
+        "name": "Message-ID",
+        "value": "<01000190dc407b87-43186ae3-8280-4ce2-88cc-635ef1b1f8ad-000000@email.amazonses.com>"
+      },
+      {
+        "name": "Date",
+        "value": "Mon, 22 Jul 2024 21:02:11 +0000"
+      },
+      {
+        "name": "Feedback-ID",
+        "value": "::1.us-east-1.EmX3qA+W9M6ts4w8OQeWCyhkeLMHSXXTaxR1TCUpCak=:AmazonSES"
+      },
+      {
+        "name": "X-SES-Outgoing",
+        "value": "2024.07.22-54.240.65.166"
+      }
+    ],
+    "commonHeaders": {
+      "returnPath": "01000190dc407b87-43186ae3-8280-4ce2-88cc-635ef1b1f8ad-000000@amazonses.com",
+      "from": [
+        "SERVICIOS INFORMATICOS IA SOLUTIONS LIMITADA <76179952-5@empresas.febos.cl>"
+      ],
+      "date": "Mon, 22 Jul 2024 21:02:11 +0000",
+      "to": [
+        "xml@inbound-pruebas.phoqo.cl"
+      ],
+      "messageId": "<01000190dc407b87-43186ae3-8280-4ce2-88cc-635ef1b1f8ad-000000@email.amazonses.com>",
+      "subject": "[DESARROLLO] Envió de DTE"
+    }
+  },
+  "receipt": {
+    "timestamp": "2024-07-22T21:02:12.524Z",
+    "processingTimeMillis": 925,
+    "recipients": [
+      "xml@inbound-pruebas.phoqo.cl"
+    ],
+    "spamVerdict": {
+      "status": "PASS"
+    },
+    "virusVerdict": {
+      "status": "PASS"
+    },
+    "spfVerdict": {
+      "status": "PASS"
+    },
+    "dkimVerdict": {
+      "status": "PASS"
+    },
+    "dmarcVerdict": {
+      "status": "PASS"
+    },
+    "action": {
+      "type": "S3",
+      "topicArn": "arn:aws:sns:us-east-1:471112655224:ses-event-manager-EmailNotificationTopic-8cLvXruvQrPd",
+      "bucketName": "phoqo-privatebucket-mdtfdnlpk6ti",
+      "objectKeyPrefix": "email/pruebas/inbox",
+      "objectKey": "email/pruebas/inbox/0f145sb02tcnarrijp3kojsk5b5med5vq6s2k501"
+    }
+  }
+}

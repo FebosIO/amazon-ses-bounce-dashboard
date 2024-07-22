@@ -39,5 +39,6 @@ def s3_get_object_string(ruta: str, encode="utf-8") -> ():
 
 def s3_get_object_bytes(ruta: str) -> ():
     ruta = s3_normalizar_url(ruta)
+    print(ruta)
     response = _s3.get_object(Bucket=s3_obtener_buket_desde_ruta(ruta), Key=s3_obtener_key_desde_ruta(ruta))
     return (response['Body'].read(), response['Metadata'], response['ResponseMetadata'])
