@@ -233,7 +233,6 @@ Resources:
     Metadata:
       'AWS::CloudFormation::Designer':
         id: 00450781-3848-447b-85e7-526f54cb68f2
-
   SESEventSQSPolicy:
     Type: 'AWS::SQS::QueuePolicy'
     Properties:
@@ -257,7 +256,6 @@ Resources:
     Metadata:
       'AWS::CloudFormation::Designer':
         id: 321fa85f-b167-4be6-bdbf-ac675f03f754
-
   SESEventSQSSubscription:
     Type: 'AWS::SNS::Subscription'
     Properties:
@@ -274,9 +272,8 @@ Resources:
   ProcessSESQueue:
     Type: 'AWS::Serverless::Function'
     Properties:
-      CodeUri: src/node/
-      Handler: SesNotification.handler
-      Runtime: nodejs18.x
+      CodeUri: src/
+      Handler: handle_ses_notifications.handler
       FunctionName:
         'Fn::If':
           - IsProduccion
@@ -334,7 +331,7 @@ Resources:
   ProcessSESSendQueue:
     Type: 'AWS::Serverless::Function'
     Properties:
-      CodeUri: src/python/src/
+      CodeUri: src/
       Handler: ses_send_notification_sqs.handler
       Timeout: 30
       FunctionName:
@@ -388,7 +385,7 @@ Resources:
   ProcessEmailSyncOS:
     Type: 'AWS::Serverless::Function'
     Properties:
-      CodeUri: src/python/src/
+      CodeUri: src/
       Handler: sync_dynamo_os.handler
       Timeout: 30
       FunctionName:
@@ -453,10 +450,7 @@ Resources:
   SendNotificationFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
-      #      CodeUri: src/node/
-      #      Handler: SendNotification.handler
-
-      CodeUri: src/python/src/
+      CodeUri: src/
       Handler: ses_send_email.handler
       FunctionName:
         'Fn::If':
