@@ -599,10 +599,6 @@ Resources:
               - IsProduccion
               - !Sub inbox.${PrincipalIdentity}
               - !Sub inbox-${STAGE}.${PrincipalIdentity}
-          - 'Fn::If':
-              - IsProduccion
-              - !Sub test.${PrincipalIdentity}
-              - !Sub test-${STAGE}.${PrincipalIdentity}
         Actions:
           - S3Action:
               BucketName: !Ref PrivateBucket
