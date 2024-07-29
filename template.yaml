@@ -606,17 +606,14 @@ Resources:
       Timeout: 300
       Environment:
         Variables:
-          TABLE_EVENT_NAME: !Ref SESEventsTable
-          TABLE_EMAIL_NAME: !Ref SESEmailTable
-          TABLE_EMAIL_SUPPRESSION_NAME: !Ref SESEmailSuppressionnTable
           TABLE_EMAIL_RECEIVED_NAME: !Ref SESEventsReceivedTable
           TABLE_EMAIL_REFERENCES_NAME: !Ref SESEventsReferencesTable
           SQS_URL: !GetAtt SESSendEmailSQS.QueueName
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref SESEmailTable
+            TableName: !Ref SESEventsReceivedTable
         - DynamoDBCrudPolicy:
-            TableName: !Ref SESEmailSuppressionnTable
+            TableName: !Ref SESEventsReferencesTable
         - S3FullAccessPolicy:
             BucketName: '*'
         - Version: '2012-10-17'
