@@ -70,17 +70,11 @@ def procesar_record(record, context):
     references = headers.get('references', '').split(' ')
     references = [reference.replace("<", "").replace(">", "") for reference in references]
 
-    saved_parts = process_attachments(bucket_name, em, object_key)
+    attachments = process_attachments(bucket_name, em, object_key)
 
-    print(f"Saved {len(saved_parts)} parts")
+    print(f"Saved {len(attachments)} parts")
 
-    has_attachments = len(saved_parts) > 0
-
-    references_data = {
-        'id': email_id,
-        'references': references
-    }
-    table_references.put_item(Item=references_data)
+    has_attachments = len(attachments) > 0
 
     save_data = {
         'id': email_id,
@@ -91,13 +85,27 @@ def procesar_record(record, context):
         'cc': cc_email,
         'bcc': bcc_email,
         'has_attachments': has_attachments,
-        'attachments': len(has_attachments),
+        'attachments': len(attachments),
         'ttl': unix_timestamp + TTL,
-        'requestId': context.aws_request_id
+        'requestId': context.aws_request_id,
+        'references': references
 
     }
     table_received.put_item(Item=save_data)
     send_event('email-received', save_data)
+    references_data = []
+    for reference in references:
+        references_data.append({
+            'id': email_id,
+            'reference': reference,
+            'ttl': unix_timestamp + TTL,
+        })
+    # batch put item
+    with table_references.batch_writer() as batch:
+        for reference in references_data:
+            batch.put_item(Item=reference)
+
+
 
 
 def process_attachments(bucket_name, em, object_key):
