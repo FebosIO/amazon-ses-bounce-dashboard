@@ -73,7 +73,6 @@ def handler(event, context):
         "MessageBody": json.dumps(save_data),
         "QueueUrl": SQS_URL
     }
-    print(f"SQS_URL :  {SQS_URL}")
     sqs_response = enviar_mensaje(
         nombre_cola=SQS_URL,
         mensaje=save_data,

@@ -1,21 +1,21 @@
 {
   "notificationType": "Received",
   "mail": {
-    "timestamp": "2024-07-22T21:02:12.524Z",
-    "source": "01000190dc407b87-43186ae3-8280-4ce2-88cc-635ef1b1f8ad-000000@amazonses.com",
-    "messageId": "0f145sb02tcnarrijp3kojsk5b5med5vq6s2k501",
+    "timestamp": "2024-07-29T20:32:12.329Z",
+    "source": "claudio@febos.cl",
+    "messageId": "teipqraig39clgibd9onpsi3d24i9aqhpejja2o1",
     "destination": [
-      "xml@inbound-pruebas.phoqo.cl"
+      "cases@cases-pruebas.phoqo.cl"
     ],
     "headersTruncated": false,
     "headers": [
       {
         "name": "Return-Path",
-        "value": "<01000190dc407b87-43186ae3-8280-4ce2-88cc-635ef1b1f8ad-000000@amazonses.com>"
+        "value": "<claudio@febos.cl>"
       },
       {
         "name": "Received",
-        "value": "from a65-166.smtp-out.amazonses.com (a65-166.smtp-out.amazonses.com [54.240.65.166]) by inbound-smtp.us-east-1.amazonaws.com with SMTP id 0f145sb02tcnarrijp3kojsk5b5med5vq6s2k501 for xml@inbound-pruebas.phoqo.cl; Mon, 22 Jul 2024 21:02:12 +0000 (UTC)"
+        "value": "from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176]) by inbound-smtp.us-east-1.amazonaws.com with SMTP id teipqraig39clgibd9onpsi3d24i9aqhpejja2o1 for cases@cases-pruebas.phoqo.cl; Mon, 29 Jul 2024 20:32:12 +0000 (UTC)"
       },
       {
         "name": "X-SES-Spam-Verdict",
@@ -27,83 +27,99 @@
       },
       {
         "name": "Received-SPF",
-        "value": "pass (spfCheck: domain of amazonses.com designates 54.240.65.166 as permitted sender) client-ip=54.240.65.166; envelope-from=01000190dc407b87-43186ae3-8280-4ce2-88cc-635ef1b1f8ad-000000@amazonses.com; helo=a65-166.smtp-out.amazonses.com;"
+        "value": "pass (spfCheck: domain of febos.cl designates 209.85.219.176 as permitted sender) client-ip=209.85.219.176; envelope-from=claudio@febos.cl; helo=mail-yb1-f176.google.com;"
       },
       {
         "name": "Authentication-Results",
-        "value": "amazonses.com; spf=pass (spfCheck: domain of amazonses.com designates 54.240.65.166 as permitted sender) client-ip=54.240.65.166; envelope-from=01000190dc407b87-43186ae3-8280-4ce2-88cc-635ef1b1f8ad-000000@amazonses.com; helo=a65-166.smtp-out.amazonses.com; dkim=pass header.i=@empresas.febos.cl; dkim=pass header.i=@amazonses.com; dmarc=pass header.from=empresas.febos.cl;"
+        "value": "amazonses.com; spf=pass (spfCheck: domain of febos.cl designates 209.85.219.176 as permitted sender) client-ip=209.85.219.176; envelope-from=claudio@febos.cl; helo=mail-yb1-f176.google.com; dkim=pass header.i=@febos-cl.20230601.gappssmtp.com; dmarc=pass header.from=febos.cl;"
       },
       {
         "name": "X-SES-RECEIPT",
-        "value": "AEFBQUFBQUFBQUFFd0xHcUR3VE9nc0JnQ0I0eDl5WGRhMUlRZkxKUmphSTd6dXdGS2plbmFUeXc2K0huOGpUeTdZdEw5MzBzZ2EraWdmUjYydVlva0J3aVZRcUpwT0kyaEJUd25tOFgzb1kzNnVHQjJzYWFOU0paS2ZWUUkwbHNEZklNM05EV21zNUJrSDdaeTQ5SlIrUHVGaFAwd1JyUUpMMzlJSk0ybnA3QTc5d282TTdkRFZPeElwV3BUdzJYK2dwTDRKVTl6ODlUMWtvdTI4TFVGMFdEd0p4V0dnWXN2QUJZdUo3ZkRHZVJzZ0o5RThaNnBxb2tFVjBQUHZjR0NZakIzM01KLzY5T3Rpb0lORjVSU3ZZSVZpMnlLVWd4RmVKcnlCR0dEenRGT1R1RlBVWGpkN0JWdHV2VDlsNG9UV0tBYmp6YlpTNW52cmVSRTAxekhQOXp6R1ZnYWJzRStBcTdLUjJBbnMwRENVZUM5UWJmQmxBPT0="
+        "value": "AEFBQUFBQUFBQUFHTUJpOGphMEhSdXpvQ0FGdWNKdk1BS1FrTEdjWmJ0b1dyRGgxOFhsa05kZjZnR09CUXcvcEFnbUp2ZFV4M2ZRYThoNGVwZHFCQTdRb3dBTEZjeGpVV1Qrekx5WTlKZ0RFaXdkVWhFT0FTR2YrU25HYmptUzRTMTVCejZJZzdHZEo0TGRMVmJlcWMvVXpORE54YktwWjlpLzNuZ1VDckVhSjI2Z243aDJ3RjVGQ0RHRFNVYklEWUpTRUp3T3JCRDZabTQ1V0tPc3lPR0NoK0VaWVRBL3JoRUVuaW1ueWJmaUVObmwxK1pxTmFGcWlSNlpkbk9RNDN6bzBlMnFhRDVkSHdidXhIaTBWdzljK2xhaUgveHg5NHA3eUU2OURwYnptMExlb2owMHc2RGc9PQ=="
       },
       {
         "name": "X-SES-DKIM-SIGNATURE",
-        "value": "a=rsa-sha256; q=dns/txt; b=oQ2jT2oDshNaB+tlAcNFvHXqhmveAQaUdNUOjDsZk247aLba5DwfYErR7z7Srk9+VlYndqBM/WsBXweQI7fGldIvuyCGrYvSnxP8dN2d1my1eoORX1gc7RR7adLiVct+9EEM2Q9EgBrkzdFdANHGtSQskiutCTduDpugCGAh74E=; c=relaxed/simple; s=ug7nbtf4gccmlpwj322ax3p6ow6yfsug; d=amazonses.com; t=1721682133; v=1; bh=h3oTPtBlC0/8Ps4HTHZxFGQiDIvcjHHbV3zaQSUgNL0=; h=From:To:Cc:Bcc:Subject:Date:Message-ID:MIME-Version:Content-Type:X-SES-RECEIPT;"
+        "value": "a=rsa-sha256; q=dns/txt; b=h6xkF1gEPY55TzBQk+E6y2KDps/S+Wla6JpBeEP5RRt+MH5ILkRYujnqThIb/2f2Rc/KBJ/ORwR1VNeTZUgyaIXOQSIvqO8cPC9rtiB3mW99fh8gz3eEJahwpNSFzRghiI4FS9AlJlg1J0Tp1sNMHyO+7vBvkfn5oH/RLtrxDfc=; c=relaxed/simple; s=ug7nbtf4gccmlpwj322ax3p6ow6yfsug; d=amazonses.com; t=1722285133; v=1; bh=UhNzS/HCZBKWXTZRHOkVx/5nVsshOeU3fHfBxY/mVjo=; h=From:To:Cc:Bcc:Subject:Date:Message-ID:MIME-Version:Content-Type:X-SES-RECEIPT;"
+      },
+      {
+        "name": "Received",
+        "value": "by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-e05eccfcdb3so2295301276.1 for <cases@cases-pruebas.phoqo.cl>; Mon, 29 Jul 2024 13:32:12 -0700 (PDT)"
       },
       {
         "name": "DKIM-Signature",
-        "value": "v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple; s=hmqwn55h5prwcqvd3vtu525ax2hy5pnu; d=empresas.febos.cl; t=1721682132; h=Content-Type:MIME-Version:From:Subject:To:Message-ID:Date; bh=h3oTPtBlC0/8Ps4HTHZxFGQiDIvcjHHbV3zaQSUgNL0=; b=Tn6eDLDL+cCoTk1w5AlKzwRXRB6fXhkKlzNybA/dt6TohYwQ+11+8LdteRd2+5LdwvfK+IXBPH0ijoXpU09vb21aUntgs/kZcn3L3/+nhk19kM/CPu2sJ3Rm/nMi4dtIuBsYdMBWUu62FUf8fo/gA8ca/lnSR7Pb7320sQVnmZ0="
+        "value": "v=1; a=rsa-sha256; c=relaxed/relaxed; d=febos-cl.20230601.gappssmtp.com; s=20230601; t=1722285132; x=1722889932; darn=cases-pruebas.phoqo.cl; h=to:subject:message-id:date:from:in-reply-to:references:mime-version:from:to:cc:subject:date:message-id:reply-to; bh=Xo9e9axeGB/n3WARQa9N3Gdq3cQMdSySkFvngLXwJqQ=; b=vf2EiReF/vj/4hRd0o8IvgNKHx2SFqLNlhqkpv8ijw/8qO8aaCZjdYWgQe/1wWU1VhcbbXC17bApgUI3RbsC7JbYMPs7aYf8oq+8dnnlr9rV6MCtTfAHe0CWGREcwg3GhOgPR8ifhC2v4krcWUVeTY3iu7pc2WVU6JZ99bts++1pBV5z2v4FbOaalFWbA6QOYaiIr9yqewte7xgt789VDldbhLHB+xgBLLQCgWzFGAnopS7MnRImsZC8KUuBF/HOFYRe7nHTt8ZQdxIMolu+PxWZzUxgk76Z3+qKiQ+RVRXN994zQytEMZSfVBpgymT41naJRAMUK9NKlZlYhT+H5A=="
       },
       {
-        "name": "DKIM-Signature",
-        "value": "v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple; s=ug7nbtf4gccmlpwj322ax3p6ow6yfsug; d=amazonses.com; t=1721682132; h=Content-Type:MIME-Version:From:Subject:To:Message-ID:Date:Feedback-ID; bh=h3oTPtBlC0/8Ps4HTHZxFGQiDIvcjHHbV3zaQSUgNL0=; b=MGG1/+DfXEZrOPhHnUr8pSVOSxsz1E/x3l6UJiwF2zl0L0CyelJs6UvL+0bZLlw2s9kvJBGRULflILZUUyt96LLZP+kO4RiMfKt6VDelK2YxHv8zbQujF0xt/VHcqjWIY7ZE/iVrqutJZoddFkCbPMs4Czp0FdVd7r8DKZ19bkg="
+        "name": "X-Google-DKIM-Signature",
+        "value": "v=1; a=rsa-sha256; c=relaxed/relaxed; d=1e100.net; s=20230601; t=1722285132; x=1722889932; h=to:subject:message-id:date:from:in-reply-to:references:mime-version :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to; bh=Xo9e9axeGB/n3WARQa9N3Gdq3cQMdSySkFvngLXwJqQ=; b=m9VNYI5OhdI3qpnntE5NWdiiEVhNd6EQIWj/dUdbG+ztgal8Wn2kol8ehudq7V3SkK GNXvDwnxaRZMd3bcAR2YBIR16bO8AeGXxQI63b6/DFYxR9ct77qfXv7TopLNkUR0aynU FHvA11CBxbdKusUh8ag1C9f1xfB6jfwjSkX6N4Il5kwqPGnaUi5xGE3DQPDHVkQHa14S n1xg4nQeuEfPFSs/C4T5T0qfoob5JvMHVZh4LiTQDGI2CJfVt5CgdYtZHHhWzn/GrC8p uakWS1C5uwggEZEydnmEfXotB9ihCw08dhJRHn81POYUqqDCZxvJeLbXQl39oGOFcbZR toQA=="
       },
       {
-        "name": "Content-Type",
-        "value": "multipart/mixed; boundary=\"===============7801013933437943864==\""
+        "name": "X-Gm-Message-State",
+        "value": "AOJu0Yx/rpdNRB7KlP/Bax+CczZlqcs7y3FTqaVPqPh7UkjE+LXUtI3x kdsrq+AXt7dObJQzXI9yW92pFDN4x1iZMt1pEz83lYlUboKsFlMOrz7iPp2kh0Kwk3Euimul5Q5 0mpfSjrGP62ayAtyP2eXDlp/4L/5oa14MkHUXE2nFPD2emi83YOy+xOPebCDi3rrhhll3uq6hQv p6zMvWnu/0XAQ8/kHETNNIJKyqPT35o9/RKlV3ZoFMk7y2"
+      },
+      {
+        "name": "X-Google-Smtp-Source",
+        "value": "AGHT+IHERWu+FVuHqzQzGIyhTMhNqOIa4UE3M0B0nCRuw/0TdNW1bKJ4bAvpm71ayqN9SvLs0Vlo0GpJn8TgVl9RwQg="
+      },
+      {
+        "name": "X-Received",
+        "value": "by 2002:a05:6902:1b81:b0:e03:5db1:a760 with SMTP id 3f1490d57ef6-e0b54585a84mr8679415276.36.1722285131635; Mon, 29 Jul 2024 13:32:11 -0700 (PDT)"
       },
       {
         "name": "MIME-Version",
         "value": "1.0"
       },
       {
+        "name": "References",
+        "value": "<01000191002ec90e-84a58061-b191-4b27-acac-eb5e80d37674-000000@email.amazonses.com> <CAOSnKuXvDQfoqXFk6nZR9zSif4qsB7keYA02jugRuoXq2HBLUQ@mail.gmail.com> <01000191002ff110-b2411b2f-3111-4092-b8d5-67ebeecbc4a8-000000@email.amazonses.com>"
+      },
+      {
+        "name": "In-Reply-To",
+        "value": "<01000191002ff110-b2411b2f-3111-4092-b8d5-67ebeecbc4a8-000000@email.amazonses.com>"
+      },
+      {
         "name": "From",
-        "value": "SERVICIOS INFORMATICOS IA SOLUTIONS LIMITADA <76179952-5@empresas.febos.cl>"
-      },
-      {
-        "name": "Subject",
-        "value": "[DESARROLLO] Envió de DTE"
-      },
-      {
-        "name": "To",
-        "value": "xml@inbound-pruebas.phoqo.cl"
-      },
-      {
-        "name": "Message-ID",
-        "value": "<01000190dc407b87-43186ae3-8280-4ce2-88cc-635ef1b1f8ad-000000@email.amazonses.com>"
+        "value": "Claudio Miranda <claudio@febos.cl>"
       },
       {
         "name": "Date",
-        "value": "Mon, 22 Jul 2024 21:02:11 +0000"
+        "value": "Mon, 29 Jul 2024 16:32:00 -0400"
       },
       {
-        "name": "Feedback-ID",
-        "value": "::1.us-east-1.EmX3qA+W9M6ts4w8OQeWCyhkeLMHSXXTaxR1TCUpCak=:AmazonSES"
+        "name": "Message-ID",
+        "value": "<CAOSnKuVkYTJQ_NErMPKpFOGcWQM1gHUn_Xj7a96Nu=GiQNhTkQ@mail.gmail.com>"
       },
       {
-        "name": "X-SES-Outgoing",
-        "value": "2024.07.22-54.240.65.166"
+        "name": "Subject",
+        "value": "Re: [CASE:1004] Pruebas"
+      },
+      {
+        "name": "To",
+        "value": "Casos 1004 <cases@cases-pruebas.phoqo.cl>"
+      },
+      {
+        "name": "Content-Type",
+        "value": "multipart/alternative; boundary=\"0000000000007938f9061e68c180\""
       }
     ],
     "commonHeaders": {
-      "returnPath": "01000190dc407b87-43186ae3-8280-4ce2-88cc-635ef1b1f8ad-000000@amazonses.com",
+      "returnPath": "claudio@febos.cl",
       "from": [
-        "SERVICIOS INFORMATICOS IA SOLUTIONS LIMITADA <76179952-5@empresas.febos.cl>"
+        "Claudio Miranda <claudio@febos.cl>"
       ],
-      "date": "Mon, 22 Jul 2024 21:02:11 +0000",
+      "date": "Mon, 29 Jul 2024 16:32:00 -0400",
       "to": [
-        "xml@inbound-pruebas.phoqo.cl"
+        "Casos 1004 <cases@cases-pruebas.phoqo.cl>"
       ],
-      "messageId": "<01000190dc407b87-43186ae3-8280-4ce2-88cc-635ef1b1f8ad-000000@email.amazonses.com>",
-      "subject": "[DESARROLLO] Envió de DTE"
+      "messageId": "<CAOSnKuVkYTJQ_NErMPKpFOGcWQM1gHUn_Xj7a96Nu=GiQNhTkQ@mail.gmail.com>",
+      "subject": "Re: [CASE:1004] Pruebas"
     }
   },
   "receipt": {
-    "timestamp": "2024-07-22T21:02:12.524Z",
-    "processingTimeMillis": 925,
+    "timestamp": "2024-07-29T20:32:12.329Z",
+    "processingTimeMillis": 842,
     "recipients": [
-      "xml@inbound-pruebas.phoqo.cl"
+      "cases@cases-pruebas.phoqo.cl"
     ],
     "spamVerdict": {
       "status": "PASS"
@@ -115,7 +131,7 @@
       "status": "PASS"
     },
     "dkimVerdict": {
-      "status": "PASS"
+      "status": "GRAY"
     },
     "dmarcVerdict": {
       "status": "PASS"
@@ -125,7 +141,7 @@
       "topicArn": "arn:aws:sns:us-east-1:471112655224:ses-event-manager-EmailNotificationTopic-8cLvXruvQrPd",
       "bucketName": "phoqo-privatebucket-mdtfdnlpk6ti",
       "objectKeyPrefix": "email/pruebas/inbox",
-      "objectKey": "email/pruebas/inbox/0f145sb02tcnarrijp3kojsk5b5med5vq6s2k501"
+      "objectKey": "email/pruebas/inbox/teipqraig39clgibd9onpsi3d24i9aqhpejja2o1"
     }
   }
 }

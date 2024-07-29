@@ -1,59 +1,180 @@
-import base64
+import email
 import json
+import logging
 import os
-import pathlib
-import traceback
-import eml_parser
 
-from utils import s3
+from dateutil import parser
+
+from utils import s3, sqs
 from utils.dynamo import get_dynamo_client
+from utils.events import send_event
 
 TABLE_EVENT_NAME = os.environ.get('TABLE_EVENT_NAME', 'ses-event')
 TABLE_EMAIL_SUPPRESSION_NAME = os.environ.get('TABLE_EMAIL_SUPPRESSION_NAME', 'ses-email-suppression')
+TABLE_EMAIL_RECEIVED_NAME = os.environ.get('TABLE_EMAIL_RECEIVED_NAME', 'ses-event-received')
+TABLE_EMAIL_REFERENCES_NAME = os.environ.get('TABLE_EMAIL_REFERENCES_NAME', 'ses-event-references')
 
 # Inicializa el cliente DynamoDB y el cliente de SQS (para enviar eventos)
 dynamodb = get_dynamo_client()
-table_event = dynamodb.Table(TABLE_EVENT_NAME)
-table_suppression = dynamodb.Table(TABLE_EMAIL_SUPPRESSION_NAME)
+table_received = dynamodb.Table(TABLE_EMAIL_RECEIVED_NAME)
+table_references = dynamodb.Table(TABLE_EMAIL_REFERENCES_NAME)
 
 # Constants
 TTL = int(os.environ.get('TTL', 525600))
 
+logger = logging.getLogger()
+
 
 def handler(message, context):
-    records = message.get('Records', [])
-    for record in records:
-        try:
-            procesar_record(record)
-        except:
-            traceback.print_exc()
-            pass
+    return sqs.procesar_mensajes(message, procesar_record, context)
 
 
-def procesar_record(record):
+def map_headers(headers_list):
+    headers = {}
+    for header in headers_list:
+        name: str = header.get('name')
+        name = name.lower()
+        headers[name] = header.get('value')
+    return headers
+
+
+def procesar_record(record, context):
     sqs_body: dict = record.get('body', '')
     if isinstance(sqs_body, str):
         sqs_body = json.loads(sqs_body)
+    mail = sqs_body.get('mail')
+    common_headers = mail.get('commonHeaders')
+    headers = map_headers(mail.get('headers', []))
+    email_id = common_headers.get('messageId').replace("<", "").replace(">", "")
+    subject = common_headers.get('subject')
+    from_email = common_headers.get('from')[0]
+    to_email = common_headers.get('to')
+    cc_email = common_headers.get('cc', [])
+    bcc_email = common_headers.get('bcc', [])
+
     receipt = sqs_body.get('receipt')
+
+    timestamp = receipt.get('timestamp')  # "2024-07-22T21:02:12.524Z"
+    datetime_timestamp = parser.isoparse(timestamp)
+
+    unix_timestamp = int(datetime_timestamp.timestamp())
+
     action = receipt.get('action')
     bucket_name = action.get('bucketName')
     object_key = action.get('objectKey')
     # download file from s3
     s3_response = s3.s3_get_object_bytes(f"{bucket_name}/{object_key}")
     file_bytes = s3_response[0]
+    em = email.message_from_bytes(file_bytes)
 
-    ep = eml_parser.EmlParser(include_attachment_data=True)
-    m = ep.decode_email_bytes(file_bytes)
-    out_path = pathlib.Path("/tmp")
+    references = headers.get('references', '').split(' ')
+    references = [reference.replace("<", "").replace(">", "") for reference in references]
 
-    if 'attachment' in m:
-        for a in m['attachment']:
-            out_filepath = out_path / a['filename']
+    saved_parts = process_attachments(bucket_name, em, object_key)
 
-            print(f'\tWriting attachment: {out_filepath}')
-            with out_filepath.open('wb') as a_out:
-                a_out.write(base64.b64decode(a['raw']))
-    print("Parseado", m)
+    print(f"Saved {len(saved_parts)} parts")
+
+    has_attachments = len(saved_parts) > 0
+
+    references_data = {
+        'id': email_id,
+        'references': references
+    }
+    table_references.put_item(Item=references_data)
+
+    save_data = {
+        'id': email_id,
+        'timestamp': timestamp,
+        'subject': subject,
+        'from': from_email,
+        'to': to_email,
+        'cc': cc_email,
+        'bcc': bcc_email,
+        'has_attachments': has_attachments,
+        'attachments': len(has_attachments),
+        'ttl': unix_timestamp + TTL,
+        'requestId': context.aws_request_id
+
+    }
+    table_received.put_item(Item=save_data)
+    send_event('email-received', save_data)
+
+
+def process_attachments(bucket_name, em, object_key):
+    parts = em.walk()
+    part_idx = 0
+    attachments = []
+    for part in parts:
+        part_idx += 1
+
+        # get information about the MIME part
+        content_type, content_disposition, content, charset, filename = [None] * 5
+        filename = part.get_filename()
+
+        content_type = part.get_content_type()
+        content_disposition = str(part.get_content_disposition())
+        content = part.get_payload(decode=True)
+        if content_type == 'message/rfc822':
+            content = part.get_payload(decode=False)[0].as_string()
+        charset = part.get_content_charset()
+        logger.debug(
+            f"Part: {part_idx}. Content charset: {charset}. Content type: {content_type}. Content disposition: {content_disposition}. Filename: {filename}");
+
+        # make file name for body, and untitled text or html parts
+        # add additional content types that we want to support non-existent filenames
+        if not filename:
+            if content_type == 'text/plain':
+                if 'attachment' not in content_disposition:
+                    filename = "body.txt"
+                    continue
+                else:
+                    filename = f"untitled_{part_idx}.txt"
+            elif content_type == 'text/html':
+                if 'attachment' not in content_disposition:
+                    filename = "body.html"
+                    continue
+                else:
+                    filename = f"untitled_{part_idx}.html"
+            else:
+                filename = None
+
+        # TODO: consider overriding or sanitizing the filenames since that is tainted data and might be subject to abuse in object key names
+        # technically, the entire message is tainted data, so it would be the responsibility of downstream parsers to ensure protection from interpreter abuse
+
+        # skip parts that aren't attachment parts
+        # if content_type in ["multipart/mixed", "multipart/related", "multipart/alternative"]:
+        #     continue
+
+        if filename and content:
+            # decode the content based on the character set specified
+            # TODO: add error handling
+            if charset:
+                content = content.decode(charset)
+
+            # store the decoded MIME part in S3 with the filename appended to the object key
+            file_key = object_key + "/" + filename
+            params = {
+                'Bucket': bucket_name,
+                'Key': file_key,
+                'Body': content
+            }
+            put_response = s3.put_object(
+                **params
+            )
+            content_length = len(content)
+            attachments.append({
+                "key": file_key,
+                "contentType": content_type,
+                "contentDisposition": content_disposition,
+                "charset": charset,
+                "contentLength": content_length
+            })
+            logger.info(
+                f"Part {part_idx}: Content type: {content_type}. Content disposition: {content_disposition} stored in {file_key}.")
+        else:
+            logger.error(
+                f"Part ({part_idx}): has no content. Content type: {content_type}. Content disposition: {content_disposition}.")
+    return attachments
 
 
 if __name__ == "__main__":
@@ -80,5 +201,16 @@ if __name__ == "__main__":
                     }
                 ]
             }
+        logger.setLevel(logging.NOTSET)
 
-        handler(message, None)
+
+        class Contexto:
+            aws_request_id = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+            log_group_name = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+            log_stream_name = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+
+            def __int__(self):
+                self.aws_request_id = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+
+
+        handler(message, Contexto())

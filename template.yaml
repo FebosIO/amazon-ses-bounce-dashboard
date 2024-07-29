@@ -178,6 +178,72 @@ Resources:
     Metadata:
       'AWS::CloudFormation::Designer':
         id: 0d7f8580-69ee-4297-a770-5cea5e7c801e
+  SESEventsReceivedTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName:
+        'Fn::If':
+          - IsProduccion
+          - ses-event-received
+          - !Ref AWS::NoValue
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: timestamp
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+      ProvisionedThroughput:
+        ReadCapacityUnits: 0
+        WriteCapacityUnits: 0
+      TimeToLiveSpecification:
+        AttributeName: 'expiration'
+        Enabled: true
+
+      SSESpecification:
+        SSEEnabled: true
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 0d7f8580-69ee-4297-a770-5cea5e7c801e
+  SESEventsReferencesTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName:
+        'Fn::If':
+          - IsProduccion
+          - ses-event-references
+          - !Ref AWS::NoValue
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: reference
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: reference
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+      ProvisionedThroughput:
+        ReadCapacityUnits: 0
+        WriteCapacityUnits: 0
+      TimeToLiveSpecification:
+        AttributeName: 'expiration'
+        Enabled: true
+
+      SSESpecification:
+        SSEEnabled: true
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 0d7f8580-69ee-4297-a770-5cea5e7c801e
 
 
   SESSendEmailSQSDeadLeter:
@@ -449,6 +515,22 @@ Resources:
             StartingPosition: TRIM_HORIZON
             BatchSize: 1
             Enabled: true
+        DDBEmailReceivedEvents:
+          Type: DynamoDB
+          Properties:
+            Stream:
+              !GetAtt   SESEventsReceivedTable.StreamArn   # This must be the name of a DynamoDB table declared in the same template file
+            StartingPosition: TRIM_HORIZON
+            BatchSize: 1
+            Enabled: true
+        DDBEmailReferencesEvents:
+          Type: DynamoDB
+          Properties:
+            Stream:
+              !GetAtt   SESEventsReferencesTable.StreamArn   # This must be the name of a DynamoDB table declared in the same template file
+            StartingPosition: TRIM_HORIZON
+            BatchSize: 1
+            Enabled: true
   ProcessSESSendQueueLogGroup:
     Type: 'AWS::Logs::LogGroup'
     Properties:
@@ -516,6 +598,64 @@ Resources:
 
   ## SESS_RECEPCION
 
+  SesHandlerReceivedFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      CodeUri: src/
+      Handler: handle_ses_email_received.handler
+      Timeout: 300
+      Environment:
+        Variables:
+          TABLE_EVENT_NAME: !Ref SESEventsTable
+          TABLE_EMAIL_NAME: !Ref SESEmailTable
+          TABLE_EMAIL_SUPPRESSION_NAME: !Ref SESEmailSuppressionnTable
+          TABLE_EMAIL_RECEIVED_NAME: !Ref SESEventsReceivedTable
+          TABLE_EMAIL_REFERENCES_NAME: !Ref SESEventsReferencesTable
+          SQS_URL: !GetAtt SESSendEmailSQS.QueueName
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SESEmailTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SESEmailSuppressionnTable
+        - S3FullAccessPolicy:
+            BucketName: '*'
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - 'sqs:*'
+              Resource: !GetAtt SESSendEmailSQS.Arn
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - 'ses:SendEmail'
+                - 'ses:SendRawEmail'
+              Resource: '*'
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - 'ses:SendEmail'
+                - 'ses:SendRawEmail'
+              Resource: '*'
+      Events:
+        SESEventSQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt EmailNotificationQueue.Arn
+            BatchSize: 5
+            FunctionResponseTypes:
+              - ReportBatchItemFailures
+  SesHandlerReceivedFunctionLogGroup:
+    Type: 'AWS::Logs::LogGroup'
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${SesHandlerReceivedFunction}'
+      RetentionInDays: 7
+    Metadata:
+      'AWS::CloudFormation::Designer':
+        id: 29f463bb-b3e3-4cb1-b8b7-e2eb5bdd3a95
+
   EmailNotificationQueue:
     Type: AWS::SQS::Queue
     Properties:
@@ -523,7 +663,7 @@ Resources:
       RedrivePolicy:
         deadLetterTargetArn: !GetAtt EmailNotificationDeadLetterQueue.Arn
         maxReceiveCount: 3
-      VisibilityTimeout: 60
+      VisibilityTimeout: 300
     DependsOn: EmailNotificationDeadLetterQueue
 
   EmailNotificationTopic:

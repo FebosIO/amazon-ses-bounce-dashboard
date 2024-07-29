@@ -8,14 +8,14 @@ _s3 = boto3.client('s3')
 
 
 def s3_normalizar_url(url: str):
-    nuevaUrl = re.sub(".s3.amazonaws.com", "", url)
-    nuevaUrl = re.sub("http:/", "/", nuevaUrl)
-    nuevaUrl = re.sub("https:/", "/", nuevaUrl)
-    nuevaUrl = re.sub(r"/{2,4}", "/", nuevaUrl)
-    nuevaUrl = str(nuevaUrl).split("?")[0]
-    if nuevaUrl.startswith("/"):
-        nuevaUrl = nuevaUrl[1:]
-    return nuevaUrl
+    new_url = re.sub(".s3.amazonaws.com", "", url)
+    new_url = new_url.replace("http:/", "/")
+    new_url = new_url.replace("https:/", "/")
+    new_url = re.sub(r"/{2,4}", "/", new_url)
+    new_url = str(new_url).split("?")[0]
+    if new_url.startswith("/"):
+        new_url = new_url[1:]
+    return new_url
 
 
 def s3_obtener_buket_desde_ruta(url: str):
@@ -28,8 +28,8 @@ def s3_obtener_key_desde_ruta(url: str):
 
 def s3_get_object_file(ruta: str, name=None) -> ():
     salida = s3_get_object_bytes(ruta)
-    nombre = ruta if name is None else name
-    return (byte_to_file(salida[0], nombre=ruta), salida[1])
+    file_name = ruta if name is None else name
+    return (byte_to_file(salida[0], nombre=file_name), salida[1])
 
 
 def s3_get_object_string(ruta: str, encode="utf-8") -> ():
@@ -42,3 +42,43 @@ def s3_get_object_bytes(ruta: str) -> ():
     print(ruta)
     response = _s3.get_object(Bucket=s3_obtener_buket_desde_ruta(ruta), Key=s3_obtener_key_desde_ruta(ruta))
     return (response['Body'].read(), response['Metadata'], response['ResponseMetadata'])
+
+
+def upload_file(file_path: str, key: str, bucket: str, **kargs):
+    parametros = {
+        "Bucket": bucket,
+        "Key": s3_normalizar_url(key),
+        **kargs
+    }
+    with open(file_path, "rb") as file:
+        parametros["Body"] = file
+        response = _s3.put_object(**parametros)
+        return response
+
+
+def upload_text(text: str, ruta: str, bucket: str, **kargs):
+    return _s3.put_object(
+        Body=text,
+        Bucket=bucket,
+        Key=s3_normalizar_url(ruta),
+        **kargs
+    )
+
+
+def upload_bytes(bytes_: bytes, ruta: str, bucket: str, **kargs):
+    if isinstance(bytes_, str):
+        encode = 'utf-8'
+        if 'ContentEncoding' in kargs:
+            encode = kargs['ContentEncoding']
+        bytes_ = bytes_.encode(encode)
+
+    return _s3.put_object(
+        Body=bytes_,
+        Bucket=bucket,
+        Key=s3_normalizar_url(ruta),
+        **kargs
+    )
+
+
+def put_object(*args, **kargs):
+    return _s3.put_object(*args, **kargs)

@@ -1,4 +1,5 @@
 import json
+import traceback
 import uuid
 
 import boto3
@@ -31,3 +32,19 @@ def enviar_mensaje(
             **args
         )
     return response
+
+
+def procesar_mensajes(event, procesar_record, *args,**kargs):
+    errores = []
+    records = event.get('Records', [])
+    for record in records:
+        message_id = record.get('messageId')
+        try:
+            procesar_record(record, *args,**kargs)
+        except:
+            traceback.print_exc()
+            errores.append(message_id)
+    real_response = {
+        'batchItemFailures': errores
+    }
+    return real_response
