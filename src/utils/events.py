@@ -22,16 +22,16 @@ def send_event(
     """
     if isinstance(event_data, dict):
         event_data = json.dumps(event_data, use_decimal=True)
-
+    entry = {
+        'Source': source,
+        'DetailType': str(event_type).lower(),
+        'Detail': event_data,
+        'EventBusName': event_bus_name
+    }
     # Send event
     response = client.put_events(
         Entries=[
-            {
-                'Source': source,
-                'DetailType': str(event_type).lower(),
-                'Detail': event_data,
-                'EventBusName': event_bus_name
-            },
+            entry
         ]
     )
     return response

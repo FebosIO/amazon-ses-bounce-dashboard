@@ -92,6 +92,8 @@ def procesar_record(record, context):
 
     }
     table_received.put_item(Item=save_data)
+    if 'references' in save_data:
+        del save_data['references']
     send_event('email-received', save_data)
     references_data = []
     for reference in references:
