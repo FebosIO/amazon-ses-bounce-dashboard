@@ -85,7 +85,7 @@ def procesar_record(record, context):
         'cc': cc_email,
         'bcc': bcc_email,
         'has_attachments': has_attachments,
-        'attachments': len(attachments),
+        'attachments': attachments,
         'ttl': unix_timestamp + TTL,
         'requestId': context.aws_request_id,
         'references': references
@@ -94,6 +94,8 @@ def procesar_record(record, context):
     table_received.put_item(Item=save_data)
     if 'references' in save_data:
         del save_data['references']
+    if 'attachments' in save_data:
+        del save_data['attachments']
     send_event('email-received', save_data)
     references_data = []
     for reference in references:
@@ -106,8 +108,6 @@ def procesar_record(record, context):
     with table_references.batch_writer() as batch:
         for reference in references_data:
             batch.put_item(Item=reference)
-
-
 
 
 def process_attachments(bucket_name, em, object_key):
@@ -136,13 +136,11 @@ def process_attachments(bucket_name, em, object_key):
             if content_type == 'text/plain':
                 if 'attachment' not in content_disposition:
                     filename = "body.txt"
-                    continue
                 else:
                     filename = f"untitled_{part_idx}.txt"
             elif content_type == 'text/html':
                 if 'attachment' not in content_disposition:
                     filename = "body.html"
-                    continue
                 else:
                     filename = f"untitled_{part_idx}.html"
             else:
