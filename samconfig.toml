@@ -39,7 +39,7 @@ resolve_s3 = true
 s3_prefix = "ses-event-manager"
 region = "us-east-1"
 capabilities = "CAPABILITY_IAM"
-parameter_overrides = "BounceSNSTopic=\"arn:aws:sns:us-east-1:471112655224:phoqo-notificaciones-topic\" PrincipalIdentity=\"phoqo.cl\" STAGE=\"pruebas\" EventSource=\"phoqo.cl\" WebhookBus=\"phoqo-webhook\" PrivateBucket=\"phoqo-privatebucket-mdtfdnlpk6ti\""
+parameter_overrides = "BounceSNSTopic=\"arn:aws:sns:us-east-1:471112655224:phoqo-notificaciones-topic\" PrincipalIdentity=\"phoqo.cl\" STAGE=\"pruebas\" EventSource=\"phoqo.cl\" WebhookBus=\"phoqo-webhook\" PrivateBucket=\"phoqo-privatebucket-k7nbaqvoc1ja\""
 image_repositories = []
 #on_failure = 'DELETE'
 disable_rollback = true
