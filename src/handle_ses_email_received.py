@@ -2,8 +2,11 @@ import email
 import json
 import logging
 import os
+import re
 
 from dateutil import parser
+from langdetect import detect
+from talon import quotations
 
 from utils import s3, sqs
 from utils.dynamo import get_dynamo_client
@@ -36,6 +39,24 @@ def map_headers(headers_list):
         name = name.lower()
         headers[name] = header.get('value')
     return headers
+
+
+def store_part(content, content_type, bucket_name, object_key, filename):
+    file_key = object_key + "/" + filename
+    params = {
+        'Bucket': bucket_name,
+        'Key': file_key,
+        'Body': content
+    }
+    put_response = s3.put_object(
+        **params
+    )
+    content_length = len(content)
+    return {
+        "key": file_key,
+        "contentType": content_type,
+        "contentLength": content_length
+    }
 
 
 def procesar_record(record, context):
@@ -71,6 +92,10 @@ def procesar_record(record, context):
     references = [reference.replace("<", "").replace(">", "") for reference in references]
 
     attachments = process_attachments(bucket_name, em, object_key)
+    clean_body, email_language, text, html = process_body(em, from_email)
+    content = store_part(clean_body, "text/plain", bucket_name, object_key, "body.txt")
+    text = store_part(text, "text/plain", bucket_name, object_key, "body.txt") if text else None
+    html = store_part(html, "text/html", bucket_name, object_key, "body.txt") if html else None
 
     print(f"Saved {len(attachments)} parts")
 
@@ -84,6 +109,10 @@ def procesar_record(record, context):
         'to': to_email,
         'cc': cc_email,
         'bcc': bcc_email,
+        'language': email_language,
+        'content': content,
+        'text': text,
+        'html': html,
         'has_attachments': has_attachments,
         'attachments': attachments,
         'ttl': unix_timestamp + TTL,
@@ -108,6 +137,96 @@ def procesar_record(record, context):
     with table_references.batch_writer() as batch:
         for reference in references_data:
             batch.put_item(Item=reference)
+
+
+# Patrones comunes en varios idiomas para firmas
+signature_patterns = {
+    'es': ['-- ', 'Enviado desde', 'Atentamente', 'Saludos', 'Cordialmente'],
+    'en': ['-- ', 'Sent from my', 'Best regards', 'Sincerely', 'Kind regards'],
+    'fr': ['-- ', 'Envoyé de', 'Cordialement', 'Sincèrement', 'Meilleures salutations'],
+    'de': ['-- ', 'Gesendet von', 'Mit freundlichen Grüßen', 'Beste Grüße', 'Herzliche Grüße'],
+    'pt': ['-- ', 'Enviado do meu', 'Atenciosamente', 'Cumprimentos', 'Saudações'],
+    # Puedes añadir más idiomas y patrones comunes aquí
+}
+
+
+def remove_signature_by_patterns(body, language):
+    """ Elimina la firma usando patrones específicos según el idioma detectado. """
+    pattern_signature = None
+    patterns = signature_patterns.get(language, [])
+    lines = body.splitlines()
+    for i, line in enumerate(lines):
+        for pattern in patterns:
+            if pattern in body and line.strip().startswith(pattern):
+                body = body.split(line)[0]  # Elimina desde el patrón en adelante
+                pattern_signature = pattern
+
+    return body.strip(), pattern_signature
+
+
+def process_body(em, from_email):
+    parts = em.walk()
+    part_idx = 0
+    attachments = []
+    html = None
+    text = None
+    for part in parts:
+        part_idx += 1
+        filename = part.get_filename()
+        content_type = part.get_content_type()
+        content_disposition = str(part.get_content_disposition())
+        content = part.get_payload(decode=True)
+        if content_type == 'message/rfc822':
+            content = part.get_payload(decode=False)[0].as_string()
+        charset = part.get_content_charset()
+        logger.debug(
+            f"Part: {part_idx}. Content charset: {charset}. Content type: {content_type}. Content disposition: {content_disposition}. Filename: {filename}");
+        if not filename:
+            if content_type == 'text/plain':
+                if 'attachment' not in content_disposition:
+                    filename = "body.txt"
+                else:
+                    continue
+            elif content_type == 'text/html':
+                if 'attachment' not in content_disposition:
+                    filename = "body.html"
+                else:
+                    continue
+            else:
+                continue
+        if filename and content:
+            if charset:
+                content = content.decode(charset)
+            if content_type == 'text/html':
+                html = content
+            else:
+                text = content
+            # store the decoded MIME part in S3 with the filename appended to the object key
+            content_length = len(content)
+            attachments.append({
+                "contentType": content_type,
+                "contentDisposition": content_disposition,
+                "charset": charset,
+                "contentLength": content_length,
+                "content": content
+            })
+            logger.info(f"Part {part_idx}: Content type: {content_type}. Content disposition: {content_disposition}.")
+        else:
+            logger.error(
+                f"Part ({part_idx}): has no content. Content type: {content_type}. Content disposition: {content_disposition}.")
+    try:
+        email_language = detect(text)
+    except:
+        email_language = 'es'
+    content = text or html
+    clean_body = content
+    # replace excesive salto de linea
+    clean_body = re.sub(r'\n\r', '\n', clean_body)
+    clean_body = re.sub(r'\r\n', '\n', clean_body)
+    clean_body = re.sub(r'\n{2,}', '\n', clean_body)
+    clean_body = quotations.extract_from(content)
+    clean_body, pattern_signature = remove_signature_by_patterns(content, email_language)
+    return clean_body, email_language, text, html
 
 
 def process_attachments(bucket_name, em, object_key):
@@ -136,16 +255,17 @@ def process_attachments(bucket_name, em, object_key):
             if content_type == 'text/plain':
                 if 'attachment' not in content_disposition:
                     filename = "body.txt"
+                    continue
                 else:
                     filename = f"untitled_{part_idx}.txt"
             elif content_type == 'text/html':
                 if 'attachment' not in content_disposition:
                     filename = "body.html"
+                    continue
                 else:
                     filename = f"untitled_{part_idx}.html"
             else:
                 filename = None
-
         # TODO: consider overriding or sanitizing the filenames since that is tainted data and might be subject to abuse in object key names
         # technically, the entire message is tainted data, so it would be the responsibility of downstream parsers to ensure protection from interpreter abuse
 
@@ -158,7 +278,6 @@ def process_attachments(bucket_name, em, object_key):
             # TODO: add error handling
             if charset:
                 content = content.decode(charset)
-
             # store the decoded MIME part in S3 with the filename appended to the object key
             file_key = object_key + "/" + filename
             params = {

@@ -139,7 +139,7 @@
     "action": {
       "type": "S3",
       "topicArn": "arn:aws:sns:us-east-1:471112655224:ses-event-manager-EmailNotificationTopic-8cLvXruvQrPd",
-      "bucketName": "phoqo-privatebucket-mdtfdnlpk6ti",
+      "bucketName": "phoqo-privatebucket-k7nbaqvoc1ja",
       "objectKeyPrefix": "email/pruebas/inbox",
       "objectKey": "email/pruebas/inbox/q5sslco32vnp75o0gndgoa0e9mm039tbsc79p8g1"
     }
