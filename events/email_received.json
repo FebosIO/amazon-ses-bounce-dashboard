@@ -3,7 +3,7 @@
   "mail": {
     "timestamp": "2024-07-29T20:32:12.329Z",
     "source": "claudio@febos.cl",
-    "messageId": "teipqraig39clgibd9onpsi3d24i9aqhpejja2o1",
+    "messageId": "af1fcj80go5h5rc5v2kf5t74fed3eh7hpug34301",
     "destination": [
       "cases@cases-pruebas.phoqo.cl"
     ],
@@ -141,7 +141,7 @@
       "topicArn": "arn:aws:sns:us-east-1:471112655224:ses-event-manager-EmailNotificationTopic-8cLvXruvQrPd",
       "bucketName": "phoqo-privatebucket-k7nbaqvoc1ja",
       "objectKeyPrefix": "email/pruebas/inbox",
-      "objectKey": "email/pruebas/inbox/q5sslco32vnp75o0gndgoa0e9mm039tbsc79p8g1"
+      "objectKey": "email/pruebas/inbox/af1fcj80go5h5rc5v2kf5t74fed3eh7hpug34301"
     }
   }
 }

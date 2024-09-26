@@ -7,7 +7,7 @@ from typing import Union
 import simplejson as json
 
 client = boto3.client('events')
-WEBHOOK_EVENT_BUS = os.environ.get('WEBHOOK_EVENT_BUS', 'webhooks')
+WEBHOOK_EVENT_BUS = os.environ.get('WEBHOOK_EVENT_BUS', 'phoqo-webhook')
 SOURCE_EVENT = os.environ.get('SOURCE_EVENT', 'io.febos.ses')
 
 

@@ -1,6 +1,4 @@
-boto3
 requests_aws4auth
 simplejson
 langdetect
-talon
 idna==2.10

@@ -6,7 +6,6 @@ import re
 
 from dateutil import parser
 from langdetect import detect
-from talon import quotations
 
 from utils import s3, sqs
 from utils.dynamo import get_dynamo_client
@@ -14,8 +13,10 @@ from utils.events import send_event
 
 TABLE_EVENT_NAME = os.environ.get('TABLE_EVENT_NAME', 'ses-event')
 TABLE_EMAIL_SUPPRESSION_NAME = os.environ.get('TABLE_EMAIL_SUPPRESSION_NAME', 'ses-email-suppression')
-TABLE_EMAIL_RECEIVED_NAME = os.environ.get('TABLE_EMAIL_RECEIVED_NAME', 'ses-event-received')
-TABLE_EMAIL_REFERENCES_NAME = os.environ.get('TABLE_EMAIL_REFERENCES_NAME', 'ses-event-references')
+TABLE_EMAIL_RECEIVED_NAME = os.environ.get('TABLE_EMAIL_RECEIVED_NAME',
+                                           'ses-event-manager-SESEventsReceivedTable-1QDWEHLTTRSYJ')
+TABLE_EMAIL_REFERENCES_NAME = os.environ.get('TABLE_EMAIL_REFERENCES_NAME',
+                                             'ses-event-manager-SESEventsReferencesTable-1ODKIYWESV1M9')
 
 # Inicializa el cliente DynamoDB y el cliente de SQS (para enviar eventos)
 dynamodb = get_dynamo_client()
@@ -128,15 +129,17 @@ def procesar_record(record, context):
     send_event('email-received', save_data)
     references_data = []
     for reference in references:
-        references_data.append({
-            'id': email_id,
-            'reference': reference,
-            'ttl': unix_timestamp + TTL,
-        })
-    # batch put item
-    with table_references.batch_writer() as batch:
-        for reference in references_data:
-            batch.put_item(Item=reference)
+        if reference and str(reference).strip():
+            references_data.append({
+                'id': email_id,
+                'reference': reference,
+                'ttl': unix_timestamp + TTL,
+            })
+    if len(references_data) > 0:
+        # batch put item
+        with table_references.batch_writer() as batch:
+            for reference in references_data:
+                batch.put_item(Item=reference)
 
 
 # Patrones comunes en varios idiomas para firmas
@@ -224,7 +227,7 @@ def process_body(em, from_email):
     clean_body = re.sub(r'\n\r', '\n', clean_body)
     clean_body = re.sub(r'\r\n', '\n', clean_body)
     clean_body = re.sub(r'\n{2,}', '\n', clean_body)
-    clean_body = quotations.extract_from(content)
+    # clean_body = quotations.extract_from(clean_body)
     clean_body, pattern_signature = remove_signature_by_patterns(content, email_language)
     return clean_body, email_language, text, html
 
