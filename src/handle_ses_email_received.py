@@ -64,6 +64,14 @@ def procesar_record(record, context):
     sqs_body: dict = record.get('body', '')
     if isinstance(sqs_body, str):
         sqs_body = json.loads(sqs_body)
+
+    receipt = sqs_body.get('receipt')
+
+    action = receipt.get('action')
+    bucket_name = action.get('bucketName')
+    object_key = action.get('objectKey')
+    if 'AMAZON_SES_SETUP_NOTIFICATION' in object_key:
+        return
     mail = sqs_body.get('mail')
     common_headers = mail.get('commonHeaders')
     headers = map_headers(mail.get('headers', []))
@@ -74,16 +82,11 @@ def procesar_record(record, context):
     cc_email = common_headers.get('cc', [])
     bcc_email = common_headers.get('bcc', [])
 
-    receipt = sqs_body.get('receipt')
-
     timestamp = receipt.get('timestamp')  # "2024-07-22T21:02:12.524Z"
     datetime_timestamp = parser.isoparse(timestamp)
 
     unix_timestamp = int(datetime_timestamp.timestamp())
 
-    action = receipt.get('action')
-    bucket_name = action.get('bucketName')
-    object_key = action.get('objectKey')
     # download file from s3
     s3_response = s3.s3_get_object_bytes(f"{bucket_name}/{object_key}")
     file_bytes = s3_response[0]
@@ -97,8 +100,6 @@ def procesar_record(record, context):
     content = store_part(clean_body, "text/plain", bucket_name, object_key, "body.txt")
     text = store_part(text, "text/plain", bucket_name, object_key, "body.txt") if text else None
     html = store_part(html, "text/html", bucket_name, object_key, "body.txt") if html else None
-
-    print(f"Saved {len(attachments)} parts")
 
     has_attachments = len(attachments) > 0
 
@@ -178,9 +179,6 @@ def process_body(em, from_email):
         filename = part.get_filename()
         content_type = part.get_content_type()
         content_disposition = str(part.get_content_disposition())
-        content = part.get_payload(decode=True)
-        if content_type == 'message/rfc822':
-            content = part.get_payload(decode=False)[0].as_string()
         charset = part.get_content_charset()
         logger.debug(
             f"Part: {part_idx}. Content charset: {charset}. Content type: {content_type}. Content disposition: {content_disposition}. Filename: {filename}");
@@ -197,9 +195,22 @@ def process_body(em, from_email):
                     continue
             else:
                 continue
+        else:
+            continue
+        content = part.get_payload(decode=True)
+        if content_type == 'message/rfc822':
+            content = part.get_payload(decode=False)[0].as_string()
+
+        # si el conent es bytes pasar a string
         if filename and content:
             if charset:
                 content = content.decode(charset)
+            try:
+                if isinstance(content, bytes):
+                    content = content.decode(charset)
+            except:
+                pass
+
             if content_type == 'text/html':
                 html = content
             else:
@@ -222,6 +233,8 @@ def process_body(em, from_email):
     except:
         email_language = 'es'
     content = text or html
+    if not content:
+        content = ""
     clean_body = content
     # replace excesive salto de linea
     clean_body = re.sub(r'\n\r', '\n', clean_body)

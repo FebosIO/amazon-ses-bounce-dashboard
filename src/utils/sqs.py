@@ -43,6 +43,7 @@ def procesar_mensajes(event, procesar_record, *args,**kargs):
             procesar_record(record, *args,**kargs)
         except:
             traceback.print_exc()
+            print(f'Error procesando mensaje {message_id}', record)
             errores.append(message_id)
     real_response = {
         'batchItemFailures': errores
