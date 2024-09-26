@@ -97,9 +97,9 @@ def procesar_record(record, context):
 
     attachments = process_attachments(bucket_name, em, object_key)
     clean_body, email_language, text, html = process_body(em, from_email)
-    content = store_part(clean_body, "text/plain", bucket_name, object_key, "body.txt")
+    content = store_part(clean_body, "text/plain", bucket_name, object_key, "content.txt")
     text = store_part(text, "text/plain", bucket_name, object_key, "body.txt") if text else None
-    html = store_part(html, "text/html", bucket_name, object_key, "body.txt") if html else None
+    html = store_part(html, "text/html", bucket_name, object_key, "body.html") if html else None
 
     has_attachments = len(attachments) > 0
 
