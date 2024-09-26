@@ -740,3 +740,9 @@ Resources:
     DependsOn:
       - EmailReceiver
       - EmailNotificationTopic
+
+Outputs:
+  SESEventsReceivedTableName:
+    Value: !Ref SESEventsReceivedTable
+    Export:
+      Name: !Sub "${AWS::StackName}-TABLE-EMAIL-RECEIVED-NAME"
