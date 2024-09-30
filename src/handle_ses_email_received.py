@@ -360,4 +360,5 @@ if __name__ == "__main__":
                 self.aws_request_id = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
 
 
-        handler(message, Contexto())
+        # handler(message, Contexto())
+        print(json.dumps(message))

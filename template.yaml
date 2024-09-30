@@ -604,6 +604,7 @@ Resources:
       CodeUri: src/
       Handler: handle_ses_email_received.handler
       Timeout: 900
+      MemorySize: 512
       Environment:
         Variables:
           TABLE_EMAIL_RECEIVED_NAME: !Ref SESEventsReceivedTable
