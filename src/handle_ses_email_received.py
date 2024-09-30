@@ -76,6 +76,9 @@ def procesar_record(record, context):
     common_headers = mail.get('commonHeaders')
     headers = map_headers(mail.get('headers', []))
     email_id = common_headers.get('messageId').replace("<", "").replace(">", "")
+
+    print(f"Processing email {email_id}")
+
     subject = common_headers.get('subject')
     from_email = common_headers.get('from')[0]
     to_email = common_headers.get('to')
@@ -88,6 +91,7 @@ def procesar_record(record, context):
     unix_timestamp = int(datetime_timestamp.timestamp())
 
     # download file from s3
+
     s3_response = s3.s3_get_object_bytes(f"{bucket_name}/{object_key}")
     file_bytes = s3_response[0]
     em = email.message_from_bytes(file_bytes)
@@ -95,12 +99,12 @@ def procesar_record(record, context):
     references = headers.get('references', '').split(' ')
     references = [reference.replace("<", "").replace(">", "") for reference in references]
 
-    attachments = process_attachments(bucket_name, em, object_key)
     clean_body, email_language, text, html = process_body(em, from_email)
     content = store_part(clean_body, "text/plain", bucket_name, object_key, "content.txt")
     text = store_part(text, "text/plain", bucket_name, object_key, "body.txt") if text else None
     html = store_part(html, "text/html", bucket_name, object_key, "body.html") if html else None
 
+    attachments = process_attachments(bucket_name, em, object_key)
     has_attachments = len(attachments) > 0
 
     save_data = {

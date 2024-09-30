@@ -603,7 +603,7 @@ Resources:
     Properties:
       CodeUri: src/
       Handler: handle_ses_email_received.handler
-      Timeout: 300
+      Timeout: 900
       Environment:
         Variables:
           TABLE_EMAIL_RECEIVED_NAME: !Ref SESEventsReceivedTable
