@@ -31,6 +31,16 @@ TTL = int(os.environ.get('TTL', 525600))
 
 logger = logging.getLogger()
 
+# Patrones comunes en varios idiomas para firmas
+signature_patterns = {
+    'es': ['Enviado desde', 'Atentamente', 'Saludos', 'Cordialmente', '--'],
+    'en': ['Sent from my', 'Best regards', 'Sincerely', 'Kind regards', '--'],
+    'fr': ['Envoyé de', 'Cordialement', 'Sincèrement', 'Meilleures salutations', '-- '],
+    'de': ['Gesendet von', 'Mit freundlichen Grüßen', 'Beste Grüße', 'Herzliche Grüße', '-- '],
+    'pt': ['Enviado do meu', 'Atenciosamente', 'Cumprimentos', 'Saudações', '-- '],
+    # Puedes añadir más idiomas y patrones comunes aquí
+}
+
 
 def handler(message, context):
     return sqs.procesar_mensajes(message, procesar_record, context)
@@ -150,17 +160,6 @@ def procesar_record(record, context):
                 batch.put_item(Item=reference)
 
 
-# Patrones comunes en varios idiomas para firmas
-signature_patterns = {
-    'es': ['-- ', 'Enviado desde', 'Atentamente', 'Saludos', 'Cordialmente'],
-    'en': ['-- ', 'Sent from my', 'Best regards', 'Sincerely', 'Kind regards'],
-    'fr': ['-- ', 'Envoyé de', 'Cordialement', 'Sincèrement', 'Meilleures salutations'],
-    'de': ['-- ', 'Gesendet von', 'Mit freundlichen Grüßen', 'Beste Grüße', 'Herzliche Grüße'],
-    'pt': ['-- ', 'Enviado do meu', 'Atenciosamente', 'Cumprimentos', 'Saudações'],
-    # Puedes añadir más idiomas y patrones comunes aquí
-}
-
-
 def remove_signature_by_patterns(body, language):
     """ Elimina la firma usando patrones específicos según el idioma detectado. """
     pattern_signature = None
@@ -168,9 +167,15 @@ def remove_signature_by_patterns(body, language):
     lines = body.splitlines()
     for i, line in enumerate(lines):
         for pattern in patterns:
-            if pattern in body and line.strip().startswith(pattern):
-                body = body.split(line)[0]  # Elimina desde el patrón en adelante
-                pattern_signature = pattern
+            try:
+                if pattern in body and line.strip().startswith(pattern):
+                    body = body.split(line)[0].strip()  # Elimina desde el patrón en adelante
+                    pattern_signature = pattern
+                elif pattern in body and line.strip().__eq__(pattern.strip()):
+                    body = body.split(line)[0].strip()  # Elimina desde el patrón en adelante
+                    pattern_signature = pattern
+            except:
+                traceback.print_exc()
 
     return body.strip(), pattern_signature
 

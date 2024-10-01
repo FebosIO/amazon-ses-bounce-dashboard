@@ -133,7 +133,7 @@
       "topicArn": "arn:aws:sns:us-east-1:471112655224:ses-event-manager-EmailNotificationTopic-8cLvXruvQrPd",
       "bucketName": "phoqo-privatebucket-k7nbaqvoc1ja",
       "objectKeyPrefix": "email/pruebas/inbox",
-      "objectKey": "email/pruebas/inbox/dqhop0oocoiukhja33ad1j9hfed39stmpmbgaeo1"
+      "objectKey": "email/pruebas/inbox/9m8ukq4v9lgikmppmsbco10nsk2akraagceovc81"
     }
   }
 }
