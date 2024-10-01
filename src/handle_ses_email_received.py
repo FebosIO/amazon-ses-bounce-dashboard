@@ -313,6 +313,8 @@ def process_attachments(bucket_name, em, object_key):
             put_response = s3.put_object(
                 **params
             )
+            etag = put_response['ETag']
+            version = put_response['VersionId']
             content_length = len(content)
             attachments.append({
                 "id": id,
@@ -321,7 +323,9 @@ def process_attachments(bucket_name, em, object_key):
                 "contentType": content_type,
                 "contentDisposition": content_disposition,
                 "charset": charset,
-                "contentLength": content_length
+                "contentLength": content_length,
+                "etag": etag,
+                "version": version
             })
             logger.info(
                 f"Part {part_idx}: Content type: {content_type}. Content disposition: {content_disposition} stored in {file_key}.")
