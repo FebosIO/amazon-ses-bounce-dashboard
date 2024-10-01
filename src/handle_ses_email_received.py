@@ -4,6 +4,7 @@ import logging
 import os
 import re
 import traceback
+import uuid
 from email.header import decode_header
 
 from dateutil import parser
@@ -302,7 +303,8 @@ def process_attachments(bucket_name, em, object_key):
             if charset:
                 content = content.decode(charset)
             # store the decoded MIME part in S3 with the filename appended to the object key
-            file_key = object_key + "/" + filename
+            id = str(uuid.uuid4())
+            file_key = object_key + "/" + id
             params = {
                 'Bucket': bucket_name,
                 'Key': file_key,
@@ -313,7 +315,9 @@ def process_attachments(bucket_name, em, object_key):
             )
             content_length = len(content)
             attachments.append({
+                "id": id,
                 "key": file_key,
+                "name": filename,
                 "contentType": content_type,
                 "contentDisposition": content_disposition,
                 "charset": charset,
