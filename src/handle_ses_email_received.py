@@ -304,7 +304,7 @@ def process_attachments(bucket_name, em, object_key):
                 content = content.decode(charset)
             # store the decoded MIME part in S3 with the filename appended to the object key
             id = str(uuid.uuid4())
-            file_key = object_key + "/" + id
+            file_key = object_key + "/" + filename
             params = {
                 'Bucket': bucket_name,
                 'Key': file_key,
