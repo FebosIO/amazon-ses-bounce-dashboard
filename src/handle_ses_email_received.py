@@ -3,6 +3,8 @@ import json
 import logging
 import os
 import re
+import traceback
+from email.header import decode_header
 
 from dateutil import parser
 from langdetect import detect
@@ -294,6 +296,7 @@ def process_attachments(bucket_name, em, object_key):
         #     continue
 
         if filename and content:
+            filename = decode_mime_words(filename)
             # decode the content based on the character set specified
             # TODO: add error handling
             if charset:
@@ -322,6 +325,22 @@ def process_attachments(bucket_name, em, object_key):
             logger.error(
                 f"Part ({part_idx}): has no content. Content type: {content_type}. Content disposition: {content_disposition}.")
     return attachments
+
+
+def decode_mime_words(encoded_text):
+    try:
+        """ Decodifica el texto MIME en UTF-8 """
+        decoded_fragments = decode_header(encoded_text)
+        decoded_string = ''
+        for fragment, encoding in decoded_fragments:
+            if isinstance(fragment, bytes):
+                decoded_string += fragment.decode(encoding or 'utf-8')
+            else:
+                decoded_string += fragment
+        return decoded_string
+    except:
+        traceback.print_exc()
+        return encoded_text
 
 
 if __name__ == "__main__":
@@ -360,5 +379,5 @@ if __name__ == "__main__":
                 self.aws_request_id = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
 
 
-        # handler(message, Contexto())
         print(json.dumps(message))
+        handler(message, Contexto())
