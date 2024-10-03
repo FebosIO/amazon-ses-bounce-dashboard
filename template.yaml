@@ -51,6 +51,8 @@ Globals:
         TTL: '525600' #Minutos de TTL equivalente a un año
         WEBHOOK_EVENT_BUS: !Ref WebhookBus
         SOURCE_EVENT: !Ref EventSource
+        POWERTOOLS_SERVICE_NAME: email
+        POWERTOOLS_METRICS_NAMESPACE: ServerlessEmail
 Resources:
   SESEmailSuppressionNotificationTable:
     Type: 'AWS::DynamoDB::Table'
@@ -610,6 +612,8 @@ Resources:
           TABLE_EMAIL_RECEIVED_NAME: !Ref SESEventsReceivedTable
           TABLE_EMAIL_REFERENCES_NAME: !Ref SESEventsReferencesTable
           SQS_URL: !GetAtt SESSendEmailSQS.QueueName
+          POWERTOOLS_SERVICE_NAME: email-received
+
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref SESEventsReceivedTable

@@ -10,9 +10,16 @@ from email.header import decode_header
 from dateutil import parser
 from langdetect import detect
 
+from aws_lambda_powertools import Metrics
+from aws_lambda_powertools.metrics import MetricUnit
+from aws_lambda_powertools.utilities.typing import LambdaContext
+
 from utils import s3, sqs
 from utils.dynamo import get_dynamo_client
 from utils.events import send_event
+
+STAGE = os.getenv("STAGE", "dev")
+metrics = Metrics()
 
 TABLE_EVENT_NAME = os.environ.get('TABLE_EVENT_NAME', 'ses-event')
 TABLE_EMAIL_SUPPRESSION_NAME = os.environ.get('TABLE_EMAIL_SUPPRESSION_NAME', 'ses-email-suppression')
@@ -42,6 +49,7 @@ signature_patterns = {
 }
 
 
+@metrics.log_metrics
 def handler(message, context):
     return sqs.procesar_mensajes(message, procesar_record, context)
 
@@ -98,6 +106,10 @@ def procesar_record(record, context):
     cc_email = common_headers.get('cc', [])
     bcc_email = common_headers.get('bcc', [])
 
+    if isinstance(to_email, str):
+        to_email = [to_email]
+
+
     timestamp = receipt.get('timestamp')  # "2024-07-22T21:02:12.524Z"
     datetime_timestamp = parser.isoparse(timestamp)
 
@@ -118,7 +130,17 @@ def procesar_record(record, context):
     html = store_part(html, "text/html", bucket_name, object_key, "body.html") if html else None
 
     attachments = process_attachments(bucket_name, em, object_key)
+    num_attachments = len(attachments)
+    attachments_size = sum([attachment['contentLength'] for attachment in attachments])
     has_attachments = len(attachments) > 0
+    metrics.add_metric(name="EmailReceived", unit=MetricUnit.Count, value=1)
+    metrics.add_metric(name="Attachments", unit=MetricUnit.Count, value=num_attachments)
+    metrics.add_metric(name="AttachmentsSize", unit=MetricUnit.Count, value=attachments_size)
+    for email_address in to_email:
+        metrics.add_dimension(name="to", value=email_address)
+        metrics.add_metric(name="EmailReceived", unit=MetricUnit.Count, value=1)
+        metrics.add_metric(name="Attachments", unit=MetricUnit.Count, value=num_attachments)
+        metrics.add_metric(name="AttachmentsSize", unit=MetricUnit.Count, value=attachments_size)
 
     save_data = {
         'id': email_id,
