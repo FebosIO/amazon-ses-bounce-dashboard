@@ -136,7 +136,8 @@ def procesar_record(record, context):
         'attachments': attachments,
         'ttl': unix_timestamp + TTL,
         'requestId': context.aws_request_id,
-        'references': references
+        'references': references,
+        "object_key": object_key
 
     }
     table_received.put_item(Item=save_data)
