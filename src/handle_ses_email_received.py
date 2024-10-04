@@ -174,7 +174,7 @@ def procesar_record(record, context):
         'subject': subject,
         'from': from_email,
         'to': to_email,
-        'to': tos,
+        'tos': tos,
         'cc': cc_email,
         'bcc': bcc_email,
         'language': email_language,

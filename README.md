@@ -12,12 +12,14 @@ sam build
 
 ```
 
+# Para deployar a pruebas
 ```sh
-sam deploy --config-env='test' # Para deployar a pruebas
+sam deploy --config-env='test' 
 ```
 
+# Para deployar a produccion
 ```sh
-sam deploy --config-env='default' # Para deployar a produccion
+sam build  && sam deploy --config-env='default' 
 ```
 
 # Para deployar a produccion usar phoqo-produccion
