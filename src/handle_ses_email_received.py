@@ -7,12 +7,10 @@ import traceback
 import uuid
 from email.header import decode_header
 
-from dateutil import parser
-from langdetect import detect
-
 from aws_lambda_powertools import Metrics
 from aws_lambda_powertools.metrics import MetricUnit
-from aws_lambda_powertools.utilities.typing import LambdaContext
+from dateutil import parser
+from langdetect import detect
 
 from utils import s3, sqs
 from utils.dynamo import get_dynamo_client
@@ -95,7 +93,11 @@ def clean_email_address(email_address):
     except:
         return email_address
 
-print(clean_email_address("PROCESADORA Y COMERCIAL DE MINERALES Y GRANOS INDUSTRIALES MIGRIN SA <99572740-4@prd.inbox.febos.cl>"))
+
+print(clean_email_address(
+    "PROCESADORA Y COMERCIAL DE MINERALES Y GRANOS INDUSTRIALES MIGRIN SA <99572740-4@prd.inbox.febos.cl>"))
+
+
 def procesar_record(record, context):
     sqs_body: dict = record.get('body', '')
     if isinstance(sqs_body, str):
@@ -117,13 +119,8 @@ def procesar_record(record, context):
 
     subject = common_headers.get('subject')
     from_email = common_headers.get('from')[0]
-    to_email = common_headers.get('to')
     cc_email = common_headers.get('cc', [])
     bcc_email = common_headers.get('bcc', [])
-
-    if isinstance(to_email, str):
-        to_email = [to_email]
-
 
     timestamp = receipt.get('timestamp')  # "2024-07-22T21:02:12.524Z"
     datetime_timestamp = parser.isoparse(timestamp)
@@ -136,6 +133,20 @@ def procesar_record(record, context):
     file_bytes = s3_response[0]
     em = email.message_from_bytes(file_bytes)
 
+    to_email = common_headers.get('to')
+    if isinstance(to_email, str):
+        to_email = [to_email]
+
+    try:
+        received = em.get('received', '')
+        matchs = re.findall(r'for(.*);', received)
+        receibed_email = matchs[0] if received else None
+        if receibed_email and receibed_email not in to_email:
+            to_email = [receibed_email.strip()]
+    except:
+        traceback.print_exc()
+
+    to_email = [clean_email_address(email_address) for email_address in to_email]
     references = headers.get('references', '').split(' ')
     references = [reference.replace("<", "").replace(">", "") for reference in references]
 
@@ -392,43 +403,43 @@ def decode_mime_words(encoded_text):
     except:
         traceback.print_exc()
         return encoded_text
-#
-#
-# if __name__ == "__main__":
-#     with open('/Users/claudiomiranda/IdeaProjects/amazon-ses-bounce-dashboard/events/email_received.json', 'r') as f:
-#         message = json.load(f)
-#         if 'Records' not in message:
-#             message = {
-#                 "Records": [
-#                     {
-#                         "messageId": "19dd0b57-b21e-4ac1-bd88-01bbb068cb78",
-#                         "receiptHandle": "MessageReceiptHandle",
-#                         "body": message,
-#                         "attributes": {
-#                             "ApproximateReceiveCount": "1",
-#                             "SentTimestamp": "1523232000000",
-#                             "SenderId": "123456789012",
-#                             "ApproximateFirstReceiveTimestamp": "1523232000001"
-#                         },
-#                         "messageAttributes": {},
-#                         "md5OfBody": "{{{md5_of_body}}}",
-#                         "eventSource": "aws:sqs",
-#                         "eventSourceARN": "arn:aws:sqs:us-east-1:123456789012:MyQueue",
-#                         "awsRegion": "us-east-1"
-#                     }
-#                 ]
-#             }
-#         logger.setLevel(logging.NOTSET)
-#
-#
-#         class Contexto:
-#             aws_request_id = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-#             log_group_name = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-#             log_stream_name = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-#
-#             def __int__(self):
-#                 self.aws_request_id = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-#
-#
-#         print(json.dumps(message))
-#         handler(message, Contexto())
+
+
+if __name__ == "__main__":
+    with open('/Users/claudiomiranda/IdeaProjects/amazon-ses-bounce-dashboard/events/email_received.json', 'r') as f:
+        message = json.load(f)
+        if 'Records' not in message:
+            message = {
+                "Records": [
+                    {
+                        "messageId": "19dd0b57-b21e-4ac1-bd88-01bbb068cb78",
+                        "receiptHandle": "MessageReceiptHandle",
+                        "body": message,
+                        "attributes": {
+                            "ApproximateReceiveCount": "1",
+                            "SentTimestamp": "1523232000000",
+                            "SenderId": "123456789012",
+                            "ApproximateFirstReceiveTimestamp": "1523232000001"
+                        },
+                        "messageAttributes": {},
+                        "md5OfBody": "{{{md5_of_body}}}",
+                        "eventSource": "aws:sqs",
+                        "eventSourceARN": "arn:aws:sqs:us-east-1:123456789012:MyQueue",
+                        "awsRegion": "us-east-1"
+                    }
+                ]
+            }
+        logger.setLevel(logging.NOTSET)
+
+
+        class Contexto:
+            aws_request_id = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+            log_group_name = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+            log_stream_name = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+
+            def __int__(self):
+                self.aws_request_id = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+
+
+        print(json.dumps(message))
+        handler(message, Contexto())

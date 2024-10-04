@@ -15,7 +15,7 @@
       },
       {
         "name": "Received",
-        "value": "from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180]) by inbound-smtp.us-east-1.amazonaws.com with SMTP id t1oh2g3r4r33r92khhljfvhegtjcg14utn1l2ro1 for cases@cases-pruebas.phoqo.cl; Mon, 30 Sep 2024 14:24:20 +0000 (UTC)"
+        "value": "from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])\n by inbound-smtp.us-east-1.amazonaws.com with SMTP id ipf9rfn9q999m4fqduebc66mpkm84lfbaqbgaeo1\n for recepcion@empresas.febos.io;\n Fri, 04 Oct 2024 16:56:00  0000 (UTC)"
       },
       {
         "name": "X-SES-Spam-Verdict",
@@ -131,9 +131,9 @@
     "action": {
       "type": "S3",
       "topicArn": "arn:aws:sns:us-east-1:471112655224:ses-event-manager-EmailNotificationTopic-8cLvXruvQrPd",
-      "bucketName": "phoqo-privatebucket-k7nbaqvoc1ja",
-      "objectKeyPrefix": "email/pruebas/inbox",
-      "objectKey": "email/pruebas/inbox/9m8ukq4v9lgikmppmsbco10nsk2akraagceovc81"
+      "bucketName": "febos-io",
+      "objectKeyPrefix": "email/produccion/inbox",
+      "objectKey": "email/desarrollo/inbox/5vkrjfvsbbcr88im9uqisuifkh2umf3u0opq37o1\n"
     }
   }
 }
