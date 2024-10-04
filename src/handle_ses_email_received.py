@@ -408,7 +408,7 @@ def decode_mime_words(encoded_text):
         return encoded_text
 
 
-if __name__ == "__main__":
+if __name__ == "__main__2":
     with open('/Users/claudiomiranda/IdeaProjects/amazon-ses-bounce-dashboard/events/email_received.json', 'r') as f:
         message = json.load(f)
         if 'Records' not in message:
@@ -439,3 +439,69 @@ if __name__ == "__main__":
 
         print(json.dumps(message))
         handler(message, Contexto())
+
+
+
+
+def procesar_recibidos(recibidos):
+    bucket_name = 'febos-io'
+    for recibido in recibidos:
+        try:
+            object_key = recibido['object_key']
+            id = recibido['id']
+            if id == '20241860.1728064028090.JavaMail.root@dte01':
+                print(id)
+            if 'produccion' in object_key.lower() or 'prod' in object_key.lower():
+                to = recibido.get('to',[])
+                #if any to end with @febos.cl
+                if any([x.endswith('@febos.cl') for x in to]):
+                    # corregir to guadar y lanzar evento
+                    s3_response = s3.s3_get_object_bytes(f"{bucket_name}/{object_key}")
+                    file_bytes = s3_response[0]
+                    em = email.message_from_bytes(file_bytes)
+                    try:
+                        received = em.get('received', '')
+                        matchs = re.findall(r'for(.*);', received)
+                        receibed_email = matchs[0] if received else None
+                        if receibed_email and receibed_email not in to:  # posiblemente una redireccion o un grupo de google
+                            to_email = [receibed_email.strip()]
+                            print("new to", receibed_email.strip())
+                            recibido['to'] = to_email
+                            recibido['tos'] = to
+                            # update dynamo by id and timestamp
+                            update_response = table_received.update_item(
+                                Key={
+                                    'id': recibido['id'],
+                                    'timestamp': recibido['timestamp']
+                                },
+                                UpdateExpression='SET #to = :val0, #tos = :val1',
+                                ExpressionAttributeValues={
+                                    ':val0': to_email,
+                                    ':val1': to
+                                },
+                                ExpressionAttributeNames={
+                                    '#to': 'to',
+                                    '#tos': 'tos'
+                                }
+                            )
+                            send_event('email-received', recibido)
+                    except:
+                        traceback.print_exc()
+
+                    print(recibido)
+        except:
+            pass
+
+
+if __name__ == '__main__':
+    # load all email received from dynamodb
+    recibidos_response = table_received.scan()
+    last_evaluated_key = 'A'
+    recibidos = recibidos_response['Items']
+    last_evaluated_key = recibidos_response.get('LastEvaluatedKey', None)
+    while last_evaluated_key or len(recibidos) > 0:
+        procesar_recibidos(recibidos)
+        recibidos_response = table_received.scan(ExclusiveStartKey=last_evaluated_key)
+        last_evaluated_key = recibidos_response.get('LastEvaluatedKey', None)
+        recibidos = recibidos_response.get('Items', [])
+
