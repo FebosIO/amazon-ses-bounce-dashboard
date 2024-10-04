@@ -136,12 +136,13 @@ def procesar_record(record, context):
     to_email = common_headers.get('to')
     if isinstance(to_email, str):
         to_email = [to_email]
-
+    tos = None
     try:
         received = em.get('received', '')
         matchs = re.findall(r'for(.*);', received)
         receibed_email = matchs[0] if received else None
         if receibed_email and receibed_email not in to_email:
+            tos = to_email
             to_email = [receibed_email.strip()]
     except:
         traceback.print_exc()
@@ -174,6 +175,7 @@ def procesar_record(record, context):
         'subject': subject,
         'from': from_email,
         'to': to_email,
+        'to': tos,
         'cc': cc_email,
         'bcc': bcc_email,
         'language': email_language,
