@@ -1,21 +1,21 @@
 {
   "notificationType": "Received",
   "mail": {
-    "timestamp": "2024-09-30T14:24:20.331Z",
-    "source": "claudio@febos.cl",
-    "messageId": "t1oh2g3r4r33r92khhljfvhegtjcg14utn1l2ro1",
+    "timestamp": "2024-10-04T16:02:16.030Z",
+    "source": "sii+bncBCP4TUFWJMIINI4AXADBUBDQVR5X2@febos.cl",
+    "messageId": "76hq00l8sl06p5uku8dlk1pqi1otu247tjrmamo1",
     "destination": [
-      "cases@cases-pruebas.phoqo.cl"
+      "sii@febos.cl"
     ],
     "headersTruncated": false,
     "headers": [
       {
         "name": "Return-Path",
-        "value": "<claudio@febos.cl>"
+        "value": "<sii+bncBCP4TUFWJMIINI4AXADBUBDQVR5X2@febos.cl>"
       },
       {
         "name": "Received",
-        "value": "from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])\n by inbound-smtp.us-east-1.amazonaws.com with SMTP id ipf9rfn9q999m4fqduebc66mpkm84lfbaqbgaeo1\n for recepcion@empresas.febos.io;\n Fri, 04 Oct 2024 16:56:00  0000 (UTC)"
+        "value": "from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198]) by inbound-smtp.us-east-1.amazonaws.com with SMTP id 76hq00l8sl06p5uku8dlk1pqi1otu247tjrmamo1 for sii_produccion@empresas.febos.io; Fri, 04 Oct 2024 16:02:16 +0000 (UTC)"
       },
       {
         "name": "X-SES-Spam-Verdict",
@@ -27,91 +27,195 @@
       },
       {
         "name": "Received-SPF",
-        "value": "pass (spfCheck: domain of febos.cl designates 209.85.128.180 as permitted sender) client-ip=209.85.128.180; envelope-from=claudio@febos.cl; helo=mail-yw1-f180.google.com;"
+        "value": "pass (spfCheck: domain of febos.cl designates 209.85.215.198 as permitted sender) client-ip=209.85.215.198; envelope-from=sii+bncBCP4TUFWJMIINI4AXADBUBDQVR5X2@febos.cl; helo=mail-pg1-f198.google.com;"
       },
       {
         "name": "Authentication-Results",
-        "value": "amazonses.com; spf=pass (spfCheck: domain of febos.cl designates 209.85.128.180 as permitted sender) client-ip=209.85.128.180; envelope-from=claudio@febos.cl; helo=mail-yw1-f180.google.com; dkim=pass header.i=@febos-cl.20230601.gappssmtp.com; dmarc=pass header.from=febos.cl;"
+        "value": "amazonses.com; spf=pass (spfCheck: domain of febos.cl designates 209.85.215.198 as permitted sender) client-ip=209.85.215.198; envelope-from=sii+bncBCP4TUFWJMIINI4AXADBUBDQVR5X2@febos.cl; helo=mail-pg1-f198.google.com; dkim=pass header.i=@febos-cl.20230601.gappssmtp.com; dmarc=fail header.from=sii.cl;"
       },
       {
         "name": "X-SES-RECEIPT",
-        "value": "AEFBQUFBQUFBQUFIaWtPTVlnaWxlbGtuYjhpck43cUxCOE8yN1JETE9PMkppRW5CVVl4OGYvWVpXZFRKMVNMaVRxaThyaWtKWFJOY2g2VmtmbG9FNUFpL0xuVE9XZHJuTFkxRE5yQTFLaEZueDFHOU1VRFkrb0hjMERMS0RQeTlxRjRzOEVzTVZWb3ZrNEJFdWpUQ1l2dVZtcFBWdEZMYmtveWpmdVQvNy9XYXVBd2pqNThHdGQxdmJpb3NhYkE0VWFOb1U4OGRYU3RITGtlaWNETmlGd2UzNDVCdjRTaTl3di9zei9DWUZWR1k4ZFp3bVRvYmhyV3FEYUYrWDdJOXpQd0FmQUlYLzRMSU1PTDhkRE5kTTRTTFJ3N3ZBY3NWbmN3aHRmaGIwTncvL3lSK2VsVUV4Mnc9PQ=="
+        "value": "AEFBQUFBQUFBQUFFMi9Ka3pxWFVJVlZ3aWFIMlFLTEdmTUJTZkQvLzkxV1hxWXFMQjNYUTkzRC8ybElGMmNFNnhmZGliemM1RlJ5a2I3Zkh2RGUzWGdyQ2ZXZnF0NVRnS1MzMlE3WU95a201UkxQUWVNWlh2SnRDTmlWRmhYT3AxZjM3cklST2tRN3FVMGJRNlFyMm0rd3pET0tuRHJQMHphQVFIVGtuck9nK1RxQXQwU0hEUHYrSjVEZnJ0dVpxTEhwdklvUVdPVSt1TXR0R3lJM296eDN1d01TM2E5R2kvNzhBY2dpY0Jha3BlZE1HWmk0T0hobFNIZjhIRUNzRG45OTd6UXpmRVcyVTBBV3FKTHRsenNXMXh0Unh1N1FGUVZma2w3UW9SaW9HdDBnYzF6TzcyWFhlUzRuQWZ1SXRUcUlqNFJnN0M3YnptcEtkUkIzaWY0NzJLVkNOcHJzTXo="
       },
       {
         "name": "X-SES-DKIM-SIGNATURE",
-        "value": "a=rsa-sha256; q=dns/txt; b=ebXUyPOHIxWrKM8H0Y10TMT0O7gd1Onbn7kdx8HNgtTXLku6MvaYpziFBi7jVESEHFCvU/DHWXly+zTbOadPkhEfSWTu15qx0kgNi3B8hMqggn/68nExbnDc57GDK+/HCtxICvicva9F/da5f0tom6iQDXFRB/pgN4CxVEZ7QjQ=; c=relaxed/simple; s=ug7nbtf4gccmlpwj322ax3p6ow6yfsug; d=amazonses.com; t=1727706264; v=1; bh=8ZAF9+voTBbEpjs8+PEDwlmvyYbzz9IdOmxHjfsYPZQ=; h=From:To:Cc:Bcc:Subject:Date:Message-ID:MIME-Version:Content-Type:X-SES-RECEIPT;"
+        "value": "a=rsa-sha256; q=dns/txt; b=S2hH11R3HbdfKRYZDJ6iHBFI/9mPnyagotDWUDO/pUuA0l3qS6dvWBvZ+OXr5G3r6oC6HygMqpxLW5LKc/ecVvS9CgS40x7a6pIgHkPYOFkxlgsqZdVAaNtfU1sHcSCCMV6vtytsEQks0azug1NknTs74Cjmo++UH5JghfEPxWg=; c=relaxed/simple; s=ug7nbtf4gccmlpwj322ax3p6ow6yfsug; d=amazonses.com; t=1728057736; v=1; bh=BnxrnfI83NCU5JAdZtT6/3SObBzj8xr+srncjUXbHu0=; h=From:To:Cc:Bcc:Subject:Date:Message-ID:MIME-Version:Content-Type:X-SES-RECEIPT;"
       },
       {
         "name": "Received",
-        "value": "by mail-yw1-f180.google.com with SMTP id 00721157ae682-6d6a3ab427aso33366637b3.2 for <cases@cases-pruebas.phoqo.cl>; Mon, 30 Sep 2024 07:24:20 -0700 (PDT)"
+        "value": "by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-7e6cc094c2fsf3607494a12.1 for <sii_produccion@empresas.febos.io>; Fri, 04 Oct 2024 09:02:15 -0700 (PDT)"
+      },
+      {
+        "name": "ARC-Seal",
+        "value": "i=2; a=rsa-sha256; t=1728057735; cv=pass; d=google.com; s=arc-20240605; b=Y156sYXRf75s1PpZNZmo2GjG7cg9o8Mwcua6JiY5fbDBpt5FdiQNnnNxLX6BbMhgXJ DK42MFPeDvpkQmRkm30Sj/J6EnHmAbj3hv4FpKmeUr7PtRz2yiyxjRnMeul3THCF5e3C WeYwR/iOvuxy3NoKjb5gAbdq1CM/7CCzVQcvokibMjrOml1CoEutu6P0e4EYMuIvEDY1 UtBQU7M8bF1H/8vVPfxHfE78wtV4Gln3F5pV71XclrH2PgBxEwOIlK4bKTUq9O6m15fz YjaPkDlnlRyt9QBQYu4j7kQqEePnx/B7W2Br9GnS1A833DuI1dVgmtH1oWYT2yh/Y2i0 FVZA=="
+      },
+      {
+        "name": "ARC-Message-Signature",
+        "value": "i=2; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605; h=list-unsubscribe:list-archive:list-help:list-post:list-id :mailing-list:precedence:mime-version:subject:to:from:date :message-id:dkim-signature; bh=Yzph0hy/IpLIMGYU9u+vyrVSAd0AA8NSV4MgI2rSzwY=; fh=fY1TBh8aGB6q0Su6KRQTEigVsIRutDH2ZilBUZDoiGk=; b=kBAWQbz+Xy/D65gB5OnylkFKeS0/yVb9Mm1rEaijyz6wvx69rLKZDtm9rj9SKlxk4g VZONSzzRjzeDPu8PFMq6k3az2R3H91ox/UCFdQ+Lca85tarXP3rT80OTdOJH9IlpcVOG 0PGlsgwIWo79jEPW2vm6XB73YRueqNHRHisED8vGpFEM4pXe+Fmc8Gmj03eyL0ASjwK6 GyEH3YQK38F8CKOK3s61zt6JJEMTxc/X3rjo0wIGrclJWxc1Zn4Lk7CxmtpiZuEsXG6l B6jp5RD/kz6ywzzQcwjpN1ussVWRJmismI63sl7rYxFtxh/6NoF0/txrDEMNsnYwOnKw uwjQ==; darn=empresas.febos.io"
+      },
+      {
+        "name": "ARC-Authentication-Results",
+        "value": "i=2; mx.google.com; dkim=pass header.i=@sii.cl header.s=selector1 header.b=kRDt4r3W; spf=pass (google.com: domain of siidte@sii.cl designates 200.10.251.90 as permitted sender) smtp.mailfrom=siidte@sii.cl; dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=sii.cl"
       },
       {
         "name": "DKIM-Signature",
-        "value": "v=1; a=rsa-sha256; c=relaxed/relaxed; d=febos-cl.20230601.gappssmtp.com; s=20230601; t=1727706259; x=1728311059; darn=cases-pruebas.phoqo.cl; h=to:subject:message-id:date:from:mime-version:from:to:cc:subject:date:message-id:reply-to; bh=Ei8+k9LmtEVUnnBlbtYoS+TXJ/1+xmYJeujFPh1RhWY=; b=kWzZOfAhxU4O5LlDBD+37Ni+NYQDb3SbmNtsZSbjkF6Lgub4Eu4jqdRln95tZMmiiP5obXoncbpdgYb7rp/ut1rLX9XbsmXqITW7djutI65QGGSuC306Vok5n+E0WJIr/8QaOTf5qE8qb3WmEOrZqW7uKnZJE5+KPIT0bViiiOIVB7ORjs9vJVwt11oavra18pCGlaFrIzdPIDJB2Ncm8THCcP/47snsvu+EPCWAcur5PBZYY8oS0jj8cA250Zulu5Db49qmEVkYRsiKWNb3iV0dP9SJPCVGsoP7kG+oajwGHQfBwyW2zZbaluArjlYVqJlccG9bRBVlR3IkE/tYvw=="
+        "value": "v=1; a=rsa-sha256; c=relaxed/relaxed; d=febos-cl.20230601.gappssmtp.com; s=20230601; t=1728057735; x=1728662535; darn=empresas.febos.io; h=list-unsubscribe:list-archive:list-help:list-post:list-id:mailing-list:precedence:x-original-authentication-results:x-original-sender:mime-version:subject:to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to; bh=Yzph0hy/IpLIMGYU9u+vyrVSAd0AA8NSV4MgI2rSzwY=; b=dqiSim2/2NpbhahsGff1H3vRr+o6mu2qytzb4QC7k1eUklGvh4GoJhdZ/RY6EExVCEUibFTcmZk6xMVuVvgPmdxtGAQczoAMULAA+PxVgJATkzp2HD/p2ilQ8r2ErN4loDJav5tktaIvchvS8hSyWnqJh4N+XKlCBtKz4SUZ2b7FnKyXybbcWSvID0Hlis9lOtgtZpe9kxgVZRq4jukaVXX41zc+AZq743ubRPUS4P4zZ9r3vzhZOA8k8e+06qVJBmn1HYSjeZmjeLO+e3tdEMIddH31oMPXyz+Az2Gx2PPgOpHiQqW69EctskY65iyqVgGdEcKXKAvlCcQiNgN+1Q=="
       },
       {
         "name": "X-Google-DKIM-Signature",
-        "value": "v=1; a=rsa-sha256; c=relaxed/relaxed; d=1e100.net; s=20230601; t=1727706259; x=1728311059; h=to:subject:message-id:date:from:mime-version:x-gm-message-state :from:to:cc:subject:date:message-id:reply-to; bh=Ei8+k9LmtEVUnnBlbtYoS+TXJ/1+xmYJeujFPh1RhWY=; b=Np+Gqmpig3+BG5U1k17eY3PgxYq5W1G3GVv28wWjEZq1whoyaaMrKaRhITmlUp51h3 FlrKFhKBwqFUubyNgo3Qq9mhGbEWWmjzs3Kd/vuX5AguyTk9MXEZWnzfiS/onnkFaulH gmotXUEK34dkHUj1l2lGgQMxsiE8V7SqYPkG+ehb21kSAZmg+bCRDjntwkcu0y9BnnC9 hmemZf3CRXLDofceksPcP2RBphiuLLvtfg8p24Vc3o6zw4/VULBDgbEn3yUHOqGgV9Ia sZBzmy/KqhmQjt52YaKJjrhRXeZx98fc8PytmFTP7FHFqUZKWEMvTfI8Kl5hvLeSLEkh rCkw=="
+        "value": "v=1; a=rsa-sha256; c=relaxed/relaxed; d=1e100.net; s=20230601; t=1728057735; x=1728662535; h=list-unsubscribe:list-archive:list-help:list-post :x-spam-checked-in-group:list-id:mailing-list:precedence :x-original-authentication-results:x-original-sender:mime-version :subject:to:from:date:message-id:x-beenthere:x-gm-message-state:from :to:cc:subject:date:message-id:reply-to; bh=Yzph0hy/IpLIMGYU9u+vyrVSAd0AA8NSV4MgI2rSzwY=; b=DP/OWFWyGIALbd9FMFLZ6Qv3JbGSN7+rTgPkXFIDPbpEggDmMK0LvD5aTIWvdP+aMe gn/vJqcBzajKsqAAmVOQEaSYcfglCdWxDmigNefsn8Bt2L4pEJLHCpXTDC9+5grY2KmP LrDg2hRSn2akUqRCkkdm8jmBKca15vAoADcg0bwn96c2gFKelraahvIJk4vvg5ImxSDy S913qIDyylZiHj4K3bS1P3nll54IveKDArzXYnjnr+ftlHk0lzVo0iT6690UCBI3u8JL 55PaPA++vRMqkfgwI3wV0tTs6gFdwR3fsw5oGKIZSJbacmX6MSh1nFgTmueHojivIHfU Zh3Q=="
+      },
+      {
+        "name": "X-Forwarded-Encrypted",
+        "value": "i=2; AJvYcCXOlvosB9TFl9wIv88RHNFFa/FOFfcziO1wNVjaxFWeCmKl2HMzqEACOZhtLeL/dU73BxB/ORkMBhJMYKVBqA==@empresas.febos.io"
       },
       {
         "name": "X-Gm-Message-State",
-        "value": "AOJu0Yw6NmOvXammQNnJN69pvqD7hfzq+xOAlnjjyG3UgkwE6o1vn01Q y4eLxH6vNEUJ8fdeEq9j8XXJGWPud5Ywr4vgXXA52zhA1J5Wal3efDQLimDD6NE9bPtS/87vw74 uixWSpV9Ie+c8CO+Yfx6qmG/BlunBqnKI1/XUQaIhZD5gE4jxhzma8ZhymWNEkQOflQMNG7BXiI 4rdgdaxmWnGQZV21WuZATdRXx/YDKu9qaEv9SPm9or8IXJh3I="
+        "value": "AOJu0YwlMA8xII3KHHqgDTicyXKVM6Ks8sdIT/Pqo7XKl668+bmk9EZD sgUO0HCZltf6HB921KAR5c6bNvtLopNNPVfIj5TLY+Z2msEHWc0YzfXmL6zNYSBLj6/M34QrSg= ="
       },
       {
         "name": "X-Google-Smtp-Source",
-        "value": "AGHT+IF0PFp2ptfAeuanCZj85BL/Tj+wVYnJMJHLOD2V4xc7Qw/5hOYbP5URicYGcq+ZLcf5jMpkEc811T9BgEH0b9k="
+        "value": "AGHT+IFlwCy8JCOs3AKNVSvo1pc56h/VRY8v9wo9oGWhZKtFfN02YmMaVg78LpzBCWMM68HUAmaNsQ=="
       },
       {
         "name": "X-Received",
-        "value": "by 2002:a05:690c:2d87:b0:6d3:f9a6:e29c with SMTP id 00721157ae682-6e24754e995mr76486267b3.12.1727706257055; Mon, 30 Sep 2024 07:24:17 -0700 (PDT)"
+        "value": "by 2002:a17:90a:8a13:b0:2d8:89ff:db1a with SMTP id 98e67ed59e1d1-2e1e5b49179mr4611494a91.8.1728057734903; Fri, 04 Oct 2024 09:02:14 -0700 (PDT)"
       },
       {
-        "name": "MIME-Version",
-        "value": "1.0"
+        "name": "X-BeenThere",
+        "value": "sii@febos.cl"
       },
       {
-        "name": "From",
-        "value": "Claudio Miranda <claudio@febos.cl>"
+        "name": "Received",
+        "value": "by 2002:a17:90b:4b09:b0:2e1:167c:a3ec with SMTP id 98e67ed59e1d1-2e1b5975ac3ls1513221a91.2.-pod-prod-00-us; Fri, 04 Oct 2024 09:02:14 -0700 (PDT)"
       },
       {
-        "name": "Date",
-        "value": "Mon, 30 Sep 2024 11:24:06 -0300"
+        "name": "X-Received",
+        "value": "by 2002:a17:90b:3b4a:b0:2d8:7a63:f9c8 with SMTP id 98e67ed59e1d1-2e1b396213bmr10901571a91.14.1728057733653; Fri, 04 Oct 2024 09:02:13 -0700 (PDT)"
+      },
+      {
+        "name": "ARC-Seal",
+        "value": "i=1; a=rsa-sha256; t=1728057733; cv=none; d=google.com; s=arc-20240605; b=dOM87Ginxk2ZV+51RGEt+lG32wy9VMQLMtYvbLR73JenzqylyYEP07w3x7SkYGTZpV AhPGEZUCCdFaxYNUmj6xz7opg4/K0FMhpWAOmNFSO88UxfMP2HVurs9tZ/uflCrssN95 YJDodI/wQR+HnRmxJNKwujApzPOkdTV7Zy0pTStH1FB9AWc/BSi1pioxMxCmK55lHnHe +oRrQ3FX+hz0tSu/uMQQ4jVxfr8JQExsT5+4fFyxU27KgQ7JXuO7NI3DKDgrF/bzRYe4 +cmn/b23rQlEZaPhdrLk2aT7WZgoULg+rVkSsGyq6ODEaBoTdV7ej5zplsLNNrNoG4S7 ODYw=="
+      },
+      {
+        "name": "ARC-Message-Signature",
+        "value": "i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605; h=mime-version:subject:to:from:date:message-id:dkim-signature; bh=Yzph0hy/IpLIMGYU9u+vyrVSAd0AA8NSV4MgI2rSzwY=; fh=8z3rB3iHQISoQ1wSIT1v1aO5b7w8J6/1nmBcwOWMuKI=; b=Yy1ksmmohpgKZAkCDDUmapcy+DzWofWy32Aa72EqhfwHAwpGkfE3Z12Z1TLxKsyhdt JlYJY/Cw8TEE/hz97c9bDEQ0CG2k3qm0tnG9qdZwxbXP1+RPo+ZDEnfQ08kMENRgk+LI duhEaCa7qVuStGzoW21BPHRbzbN1S2C9EZW94QVr3cb+ZN4RVHIazqR49oSPrtbQYt32 LKFsv8u3OJ65mRkwDwZu9SO0cwWwXlxMFGllpo51/ZBpCM1lulKEy92wsWgSKNTMjki4 PfT7iWov9ftQ+a/Nxq5XB5b555f8ue8scztN649NQYRpETZMisvMDnIfE313cGNBGQg1 0y1A==; dara=google.com"
+      },
+      {
+        "name": "ARC-Authentication-Results",
+        "value": "i=1; mx.google.com; dkim=pass header.i=@sii.cl header.s=selector1 header.b=kRDt4r3W; spf=pass (google.com: domain of siidte@sii.cl designates 200.10.251.90 as permitted sender) smtp.mailfrom=siidte@sii.cl; dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=sii.cl"
+      },
+      {
+        "name": "Received",
+        "value": "from mxmail.sii.cl (rapel12.sii.cl. [200.10.251.90]) by mx.google.com with ESMTPS id 98e67ed59e1d1-2e20b187a95si77239a91.179.2024.10.04.09.02.13 for <sii@febos.cl> (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128); Fri, 04 Oct 2024 09:02:13 -0700 (PDT)"
+      },
+      {
+        "name": "Received-SPF",
+        "value": "pass (google.com: domain of siidte@sii.cl designates 200.10.251.90 as permitted sender) client-ip=200.10.251.90;"
+      },
+      {
+        "name": "X-IronPort-AV",
+        "value": "E=Sophos;i=\"6.11,177,1725336000\";  d=\"xml'?txt'?scan'208\";a=\"1496698127\""
+      },
+      {
+        "name": "Received",
+        "value": "from condor02.sii.cl ([10.20.6.100]) by mxmail.sii.cl with ESMTP; 04 Oct 2024 12:57:00 -0300"
+      },
+      {
+        "name": "Received",
+        "value": "from dte01 (dte01.sii.cl [10.20.201.29]) by condor02.sii.cl (8.14.4/8.14.4) with ESMTP id 494Fuxe7023000 for <sii@febos.cl>; Fri, 4 Oct 2024 12:56:59 -0300"
       },
       {
         "name": "Message-ID",
-        "value": "<CAOSnKuX4CAn8ruMmR1=L5mrq+tPVttB_cpFhUyJbUgYi4DDxiA@mail.gmail.com>"
+        "value": "<8285997.1728057424585.JavaMail.root@dte01>"
       },
       {
-        "name": "Subject",
-        "value": "[CASO:103] Pruebas"
+        "name": "Date",
+        "value": "Fri, 4 Oct 2024 12:57:04 -0300 (CLST)"
+      },
+      {
+        "name": "From",
+        "value": "siidte@sii.cl"
       },
       {
         "name": "To",
-        "value": "Casos 1004 <cases@cases-pruebas.phoqo.cl>"
+        "value": "sii@febos.cl"
+      },
+      {
+        "name": "Subject",
+        "value": "Produccion - Resultado de Revision Envio 10023295120 - 76168557-0"
+      },
+      {
+        "name": "Mime-Version",
+        "value": "1.0"
       },
       {
         "name": "Content-Type",
-        "value": "multipart/mixed; boundary=\"000000000000be7fda062356f592\""
+        "value": "multipart/mixed;  boundary=\"----=_Part_3265843_11020928.1728057424585\""
+      },
+      {
+        "name": "X-Original-Sender",
+        "value": "siidte@sii.cl"
+      },
+      {
+        "name": "X-Original-Authentication-Results",
+        "value": "mx.google.com;       dkim=pass header.i=@sii.cl header.s=selector1 header.b=kRDt4r3W;       spf=pass (google.com: domain of siidte@sii.cl designates 200.10.251.90 as permitted sender) smtp.mailfrom=siidte@sii.cl;       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=sii.cl"
+      },
+      {
+        "name": "Precedence",
+        "value": "list"
+      },
+      {
+        "name": "Mailing-list",
+        "value": "list sii@febos.cl; contact sii+owners@febos.cl"
+      },
+      {
+        "name": "List-ID",
+        "value": "<sii.febos.cl>"
+      },
+      {
+        "name": "X-Spam-Checked-In-Group",
+        "value": "sii@febos.cl"
+      },
+      {
+        "name": "X-Google-Group-Id",
+        "value": "445092146881"
+      },
+      {
+        "name": "List-Post",
+        "value": "<https://groups.google.com/a/febos.cl/group/sii/post>, <mailto:sii@febos.cl>"
+      },
+      {
+        "name": "List-Help",
+        "value": "<https://support.google.com/a/febos.cl/bin/topic.py?topic=25838>, <mailto:sii+help@febos.cl>"
+      },
+      {
+        "name": "List-Archive",
+        "value": "<https://groups.google.com/a/febos.cl/group/sii/>"
+      },
+      {
+        "name": "List-Unsubscribe",
+        "value": "<mailto:googlegroups-manage+445092146881+unsubscribe@googlegroups.com>, <https://groups.google.com/a/febos.cl/group/sii/subscribe>"
       }
     ],
     "commonHeaders": {
-      "returnPath": "claudio@febos.cl",
+      "returnPath": "sii+bncBCP4TUFWJMIINI4AXADBUBDQVR5X2@febos.cl",
       "from": [
-        "Claudio Miranda <claudio@febos.cl>"
+        "siidte@sii.cl"
       ],
-      "date": "Mon, 30 Sep 2024 11:24:06 -0300",
+      "date": "Fri, 4 Oct 2024 12:57:04 -0300 (CLST)",
       "to": [
-        "Casos 1004 <cases@cases-pruebas.phoqo.cl>"
+        "sii@febos.cl"
       ],
-      "messageId": "<CAOSnKuX4CAn8ruMmR1=L5mrq+tPVttB_cpFhUyJbUgYi4DDxiA@mail.gmail.com>",
-      "subject": "[CASO:103] Pruebas"
+      "messageId": "<8285997.1728057424585.JavaMail.root@dte01>",
+      "subject": "Produccion - Resultado de Revision Envio 10023295120 - 76168557-0"
     }
   },
   "receipt": {
-    "timestamp": "2024-09-30T14:24:20.331Z",
-    "processingTimeMillis": 6544,
+    "timestamp": "2024-10-04T16:02:16.030Z",
+    "processingTimeMillis": 955,
     "recipients": [
-      "cases@cases-pruebas.phoqo.cl"
+      "sii_produccion@empresas.febos.io"
     ],
     "spamVerdict": {
       "status": "PASS"
@@ -126,14 +230,15 @@
       "status": "GRAY"
     },
     "dmarcVerdict": {
-      "status": "PASS"
+      "status": "FAIL"
     },
     "action": {
       "type": "S3",
-      "topicArn": "arn:aws:sns:us-east-1:471112655224:ses-event-manager-EmailNotificationTopic-8cLvXruvQrPd",
+      "topicArn": "arn:aws:sns:us-east-1:830321976775:ses-event-manager-EmailNotificationTopic-13Gug6rA6bdq",
       "bucketName": "febos-io",
       "objectKeyPrefix": "email/produccion/inbox",
-      "objectKey": "email/desarrollo/inbox/5vkrjfvsbbcr88im9uqisuifkh2umf3u0opq37o1\n"
-    }
+      "objectKey": "email/produccion/inbox/76hq00l8sl06p5uku8dlk1pqi1otu247tjrmamo1"
+    },
+    "dmarcPolicy": "none"
   }
 }

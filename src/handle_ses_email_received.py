@@ -21,10 +21,8 @@ metrics = Metrics()
 
 TABLE_EVENT_NAME = os.environ.get('TABLE_EVENT_NAME', 'ses-event')
 TABLE_EMAIL_SUPPRESSION_NAME = os.environ.get('TABLE_EMAIL_SUPPRESSION_NAME', 'ses-email-suppression')
-TABLE_EMAIL_RECEIVED_NAME = os.environ.get('TABLE_EMAIL_RECEIVED_NAME',
-                                           'ses-event-manager-SESEventsReceivedTable-1QDWEHLTTRSYJ')
-TABLE_EMAIL_REFERENCES_NAME = os.environ.get('TABLE_EMAIL_REFERENCES_NAME',
-                                             'ses-event-manager-SESEventsReferencesTable-1ODKIYWESV1M9')
+TABLE_EMAIL_RECEIVED_NAME = os.environ.get('TABLE_EMAIL_RECEIVED_NAME','ses-event-received')
+TABLE_EMAIL_REFERENCES_NAME = os.environ.get('TABLE_EMAIL_REFERENCES_NAME', 'ses-event-references')
 
 # Inicializa el cliente DynamoDB y el cliente de SQS (para enviar eventos)
 dynamodb = get_dynamo_client()
@@ -144,6 +142,7 @@ def procesar_record(record, context):
         if receibed_email and receibed_email not in to_email:# posiblemente una redireccion o un grupo de google
             tos = to_email
             to_email = [receibed_email.strip()]
+            print("new to",receibed_email.strip())
     except:
         traceback.print_exc()
 
@@ -226,7 +225,7 @@ def remove_signature_by_patterns(body, language):
                     body = body.split(line)[0].strip()  # Elimina desde el patrón en adelante
                     pattern_signature = pattern
             except:
-                traceback.print_exc()
+                pass
 
     return body.strip(), pattern_signature
 
@@ -299,6 +298,8 @@ def process_body(em, from_email):
     if not content:
         content = ""
     clean_body = content
+    if isinstance(clean_body, bytes):
+        clean_body = clean_body.decode('utf-8')
     # replace excesive salto de linea
     clean_body = re.sub(r'\n\r', '\n', clean_body)
     clean_body = re.sub(r'\r\n', '\n', clean_body)
