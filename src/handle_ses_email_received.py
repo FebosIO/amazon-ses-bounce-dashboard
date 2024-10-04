@@ -422,7 +422,7 @@ def decode_mime_words(encoded_text):
         return encoded_text
 
 
-if __name__ == "__main__":
+if __name__ == "__main__2":
     with open('/Users/claudiomiranda/IdeaProjects/amazon-ses-bounce-dashboard/events/email_received.json', 'r') as f:
         message = json.load(f)
         if 'Records' not in message:
@@ -461,12 +461,12 @@ def procesar_recibidos(recibidos):
         try:
             object_key = recibido['object_key']
             id = recibido['id']
-            if id == '20241860.1728064028090.JavaMail.root@dte01':
+            if id == '6700199b.630a0220.6b549.1cc6@mx.google.com':
                 print(id)
             if 'produccion' in object_key.lower() or 'prod' in object_key.lower():
                 to = recibido.get('to', [])
                 # if any to end with @febos.cl
-                if any([x.endswith('@febos.cl') for x in to]):
+                if any([x.lower().endswith('@febos.cl') for x in to]):
                     # corregir to guadar y lanzar evento
                     s3_response = s3.s3_get_object_bytes(f"{bucket_name}/{object_key}")
                     file_bytes = s3_response[0]
@@ -502,10 +502,10 @@ def procesar_recibidos(recibidos):
 
                     print(recibido)
         except:
-            pass
+            traceback.print_exc()
 
 
-if __name__ == '__main__2':
+if __name__ == '__main__':
     # load all email received from dynamodb
     recibidos_response = table_received.scan()
     last_evaluated_key = 'A'
