@@ -81,6 +81,21 @@ def store_part(content, content_type, bucket_name, object_key, filename):
     }
 
 
+def clean_email_address(email_address):
+    '''
+    >>> clean_email_address("PROCESADORA Y COMERCIAL DE MINERALES Y GRANOS INDUSTRIALES MIGRIN SA <99572740-4@prd.inbox.febos.cl>")
+    :param email_address:
+    :return:
+    '''
+    try:
+        # if email has <email> get only email
+        if '<' in email_address and '>' in email_address:
+            email_address = email_address[email_address.index('<') + 1:email_address.index('>')]
+        return email_address
+    except:
+        return email_address
+
+print(clean_email_address("PROCESADORA Y COMERCIAL DE MINERALES Y GRANOS INDUSTRIALES MIGRIN SA <99572740-4@prd.inbox.febos.cl>"))
 def procesar_record(record, context):
     sqs_body: dict = record.get('body', '')
     if isinstance(sqs_body, str):
@@ -137,7 +152,7 @@ def procesar_record(record, context):
     metrics.add_metric(name="Attachments", unit=MetricUnit.Count, value=num_attachments)
     metrics.add_metric(name="AttachmentsSize", unit=MetricUnit.Count, value=attachments_size)
     for email_address in to_email:
-        metrics.add_dimension(name="to", value=email_address)
+        metrics.add_dimension(name="to", value=clean_email_address(email_address))
         metrics.add_metric(name="EmailReceived", unit=MetricUnit.Count, value=1)
         metrics.add_metric(name="Attachments", unit=MetricUnit.Count, value=num_attachments)
         metrics.add_metric(name="AttachmentsSize", unit=MetricUnit.Count, value=attachments_size)
@@ -377,43 +392,43 @@ def decode_mime_words(encoded_text):
     except:
         traceback.print_exc()
         return encoded_text
-
-
-if __name__ == "__main__":
-    with open('/Users/claudiomiranda/IdeaProjects/amazon-ses-bounce-dashboard/events/email_received.json', 'r') as f:
-        message = json.load(f)
-        if 'Records' not in message:
-            message = {
-                "Records": [
-                    {
-                        "messageId": "19dd0b57-b21e-4ac1-bd88-01bbb068cb78",
-                        "receiptHandle": "MessageReceiptHandle",
-                        "body": message,
-                        "attributes": {
-                            "ApproximateReceiveCount": "1",
-                            "SentTimestamp": "1523232000000",
-                            "SenderId": "123456789012",
-                            "ApproximateFirstReceiveTimestamp": "1523232000001"
-                        },
-                        "messageAttributes": {},
-                        "md5OfBody": "{{{md5_of_body}}}",
-                        "eventSource": "aws:sqs",
-                        "eventSourceARN": "arn:aws:sqs:us-east-1:123456789012:MyQueue",
-                        "awsRegion": "us-east-1"
-                    }
-                ]
-            }
-        logger.setLevel(logging.NOTSET)
-
-
-        class Contexto:
-            aws_request_id = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-            log_group_name = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-            log_stream_name = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-
-            def __int__(self):
-                self.aws_request_id = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-
-
-        print(json.dumps(message))
-        handler(message, Contexto())
+#
+#
+# if __name__ == "__main__":
+#     with open('/Users/claudiomiranda/IdeaProjects/amazon-ses-bounce-dashboard/events/email_received.json', 'r') as f:
+#         message = json.load(f)
+#         if 'Records' not in message:
+#             message = {
+#                 "Records": [
+#                     {
+#                         "messageId": "19dd0b57-b21e-4ac1-bd88-01bbb068cb78",
+#                         "receiptHandle": "MessageReceiptHandle",
+#                         "body": message,
+#                         "attributes": {
+#                             "ApproximateReceiveCount": "1",
+#                             "SentTimestamp": "1523232000000",
+#                             "SenderId": "123456789012",
+#                             "ApproximateFirstReceiveTimestamp": "1523232000001"
+#                         },
+#                         "messageAttributes": {},
+#                         "md5OfBody": "{{{md5_of_body}}}",
+#                         "eventSource": "aws:sqs",
+#                         "eventSourceARN": "arn:aws:sqs:us-east-1:123456789012:MyQueue",
+#                         "awsRegion": "us-east-1"
+#                     }
+#                 ]
+#             }
+#         logger.setLevel(logging.NOTSET)
+#
+#
+#         class Contexto:
+#             aws_request_id = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+#             log_group_name = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+#             log_stream_name = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+#
+#             def __int__(self):
+#                 self.aws_request_id = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+#
+#
+#         print(json.dumps(message))
+#         handler(message, Contexto())
