@@ -499,9 +499,11 @@ if __name__ == '__main__':
     last_evaluated_key = 'A'
     recibidos = recibidos_response['Items']
     last_evaluated_key = recibidos_response.get('LastEvaluatedKey', None)
-    while last_evaluated_key or len(recibidos) > 0:
+    while len(recibidos) > 0:
         procesar_recibidos(recibidos)
-        recibidos_response = table_received.scan(ExclusiveStartKey=last_evaluated_key)
-        last_evaluated_key = recibidos_response.get('LastEvaluatedKey', None)
-        recibidos = recibidos_response.get('Items', [])
+        recibidos = []
+        if last_evaluated_key:
+            recibidos_response = table_received.scan(ExclusiveStartKey=last_evaluated_key)
+            last_evaluated_key = recibidos_response.get('LastEvaluatedKey', None)
+            recibidos = recibidos_response.get('Items', [])
 
