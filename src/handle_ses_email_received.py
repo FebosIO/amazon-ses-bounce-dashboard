@@ -107,10 +107,6 @@ def procesar_record(record, context):
     mail = sqs_body.get('mail')
     common_headers = mail.get('commonHeaders')
     headers = map_headers(mail.get('headers', []))
-    email_id = common_headers.get('messageId').replace("<", "").replace(">", "")
-
-    print(f"Processing email {email_id}")
-
     subject = common_headers.get('subject')
     from_email = common_headers.get('from')[0]
     cc_email = common_headers.get('cc', [])
@@ -126,6 +122,10 @@ def procesar_record(record, context):
     s3_response = s3.s3_get_object_bytes(f"{bucket_name}/{object_key}")
     file_bytes = s3_response[0]
     em = email.message_from_bytes(file_bytes)
+
+    email_id = get_message_id(common_headers, em)
+
+    print(f"Processing email {email_id}")
 
     to_email = common_headers.get('to')
     if isinstance(to_email, str):
@@ -201,6 +201,15 @@ def procesar_record(record, context):
         with table_references.batch_writer() as batch:
             for reference in references_data:
                 batch.put_item(Item=reference)
+
+
+def get_message_id(common_headers, em):
+    message_id =  common_headers.get('messageId')
+    if not message_id:
+        message_id = em.get('Message-ID')
+    if not message_id:
+        message_id = str(uuid.uuid4())
+    return message_id.replace("<", "").replace(">", "")
 
 
 def remove_signature_by_patterns(body, language):
@@ -419,7 +428,7 @@ def decode_mime_words(encoded_text):
         return encoded_text
 
 
-if __name__ == "__main__2":
+if __name__ == "__main__":
     with open('/Users/claudiomiranda/IdeaProjects/amazon-ses-bounce-dashboard/events/email_received.json', 'r') as f:
         message = json.load(f)
         if 'Records' not in message:
@@ -504,7 +513,7 @@ def procesar_recibidos(recibidos):
             print(recibido)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__2':
     # load all email received from dynamodb
     recibidos_response = table_received.scan()
     last_evaluated_key = 'A'
