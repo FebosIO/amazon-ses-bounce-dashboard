@@ -1,1 +1,240 @@
-{"notificationType":"Received","mail":{"timestamp":"2024-10-04T18:23:01.746Z","source":"76956140-4+bncBD3LV5MPZUNBBBHFQC4AMGQEOROTSHI@febos.cl","messageId":"mg682j99cples2s0uk5c38efusbbgrr15ce8tc01","destination":["76956140-4@febos.cl"],"headersTruncated":false,"headers":[{"name":"Return-Path","value":"<76956140-4+bncBD3LV5MPZUNBBBHFQC4AMGQEOROTSHI@febos.cl>"},{"name":"Received","value":"from mail-pl1-f199.google.com (mail-pl1-f199.google.com [209.85.214.199]) by inbound-smtp.us-east-1.amazonaws.com with SMTP id mg682j99cples2s0uk5c38efusbbgrr15ce8tc01 for recibidos@empresas.febos.io; Fri, 04 Oct 2024 18:23:01 +0000 (UTC)"},{"name":"X-SES-Spam-Verdict","value":"PASS"},{"name":"X-SES-Virus-Verdict","value":"PASS"},{"name":"Received-SPF","value":"pass (spfCheck: domain of febos.cl designates 209.85.214.199 as permitted sender) client-ip=209.85.214.199; envelope-from=76956140-4+bncBD3LV5MPZUNBBBHFQC4AMGQEOROTSHI@febos.cl; helo=mail-pl1-f199.google.com;"},{"name":"Authentication-Results","value":"amazonses.com; spf=pass (spfCheck: domain of febos.cl designates 209.85.214.199 as permitted sender) client-ip=209.85.214.199; envelope-from=76956140-4+bncBD3LV5MPZUNBBBHFQC4AMGQEOROTSHI@febos.cl; helo=mail-pl1-f199.google.com; dmarc=none header.from=custodium.com;"},{"name":"X-SES-RECEIPT","value":"AEFBQUFBQUFBQUFHSmdBRU9NWkIrN2ptRUdoSzdZdXNQZ0kvVVlBVW9EUjJjWjFXcmkzbGxFd2Zic09GMVU3T3hhblFDNVFSdUVaMUZIWktkcGpxemNHR3NyL2dCZ0MrK2I0R0dwZ2JQV0p0bTE0T3lncU1mY09aNk82Y0IrTG1RMWwxYTViNUpFaHFnN21jckd2R1AwNm82bVhnMTlMNHVvaEdBa0J1eVNJczN4WVpYTVdRS2VtVkJMLytqWVQ0WDQ1UzdaV2FCZUgwY0Z5N29Da0tSWitWTDNnbmlNSWlWYVVFV2ZiTVFpV0hCejYwcWJaRUR5bDdUSFpJMWRDUkg3b3lBRjZGZXpFVDBoSy9PRkVQRjlPNTJ4d2Uzd0FLT2k5M05kc2RZeGRHb2Q0dlBJcjM1Mnk3cFRRcU41cCt1R0tRdzluZFFydVphQ1hBZjlDK2NRNEl3cC9PT3hRNEo="},{"name":"X-SES-DKIM-SIGNATURE","value":"a=rsa-sha256; q=dns/txt; b=BBVvvGPoyv/9ceg3DPATtRkP9sDrm3axbwxJDtbvenODso6UxrbzGTV1rkbqWrgHhRKDciTkSoz2BcuSHVTOnLr747teeRyFpcsNe19OCKnri2l+4u/N/SZ6AMhwE+1K/FkitFTuGR5Js4tHDS+UEX9cHN9ohN+tTNfOy0qpBTo=; c=relaxed/simple; s=ug7nbtf4gccmlpwj322ax3p6ow6yfsug; d=amazonses.com; t=1728066182; v=1; bh=iZ4kpM8krjpUPmbgO6xjZ21oBmfFgqnr55irlCZMrfg=; h=From:To:Cc:Bcc:Subject:Date:Message-ID:MIME-Version:Content-Type:X-SES-RECEIPT;"},{"name":"Received","value":"by mail-pl1-f199.google.com with SMTP id d9443c01a7336-20b410f0acfsf23261125ad.0 for <recibidos@empresas.febos.io>; Fri, 04 Oct 2024 11:23:01 -0700 (PDT)"},{"name":"ARC-Seal","value":"i=2; a=rsa-sha256; t=1728066181; cv=pass; d=google.com; s=arc-20240605; b=U6ub/hJbzJsSZGVe6KteOBiD2UqGdzZGw4cPzCMZ0oloF1nlHqvSAR3MB9JN6bonHW 8U9hrcQJyupX3Pq3nATml185o1qtMd4KVpv7SkaRfIt2zcSAtQwXG/xyGDG2eqBlOWKF /dylEDu5g1VV7+NZd+bzvqotzVC5DKfjpXNLKF/+RSld0l3/rtUC7w0yN1e7Icg1YtHe OZGK7V3ZmUgi7eWfjGg/H1vrv3C4CoUslDFqw+ZAO7qVJPaZ2aBltIyHh+5FGXadWlTx h6y6kqxiFerzmKgXbuq7EmY+YN5QethIf2BEl+B9mXR6gJGYdlJquDHmjvye7eA5Maxy 951A=="},{"name":"ARC-Message-Signature","value":"i=2; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605; h=list-unsubscribe:list-archive:list-help:list-post:list-id :mailing-list:precedence:sender:message-id:date:to:from:subject :mime-version; bh=XKPP3BPnhJThI4mQFacAbt8FNMWe9oek6AKQGboM5x8=; fh=wLX66xAsXbbgwknbHgCLjgKRlRXwgGK97xcwatgQHz4=; b=cTVTcf5wp3IhW+CJmkiUcErc6tSmp0srpOyia83V1YJ3GuVDQJYyNC7DMzSXS6ZcLG /RBBMNxRkECyBp5fWU+nc6UiFNPKxspf8D9386nve3R0e4TjWDsgDFuzYCr5Spy+AYLY QWck2qQ01/x5VkTunKm4nXWaqEN4832d7LoQzKe6mUcwsLeWK7l/d+1QzmcdrLDZp5wg VxaWFoIzYohE1EQmlkJMnysWQL18/h2uRo77ChBTNrqPbOSFUZCdWznYuI2/VLRuxPxp ziuKVjkS2e+95xMTYfVtAsm84U+nwMz6/uEiRPK0j/UF6aXZbmhupozmgBBWEyWtDVDW SSTA==; darn=empresas.febos.io"},{"name":"ARC-Authentication-Results","value":"i=2; mx.google.com; dkim=pass header.i=@custodium.com header.s=cluster header.b=caaIU2Xp; spf=pass (google.com: domain of dipresrecepcion@custodium.com designates 200.29.6.201 as permitted sender) smtp.mailfrom=dipresrecepcion@custodium.com"},{"name":"X-Google-DKIM-Signature","value":"v=1; a=rsa-sha256; c=relaxed/relaxed; d=1e100.net; s=20230601; t=1728066181; x=1728670981; h=list-unsubscribe:list-archive:list-help:list-post :x-spam-checked-in-group:list-id:mailing-list:precedence :x-original-authentication-results:x-original-sender:sender :message-id:date:to:from:subject:mime-version:x-beenthere :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to; bh=XKPP3BPnhJThI4mQFacAbt8FNMWe9oek6AKQGboM5x8=; b=MC6kAB24by8hJyOy426ut0meGp5r4A9MZKq2gMwNG3iAOpugFCI9TmxsXvaRqeohDt BnimR3Ql9qCOm0NtiSvJBsHEBLacWUZtnu3LwOGxnuhTrdDpdYzny0UNqg1wUbP1dMMm rvbTAPUgSr8EkAuOyayW1BOi7fK/un4hRRe0eZU0q0eoyhPk/16+aeEY/REyXA7jUVaA JFhAMgLDeuk5ANRFO/WrW3KuU1TDwH5LaJ/YsdN2PEtE40Zah20z5l7L1+dsmQpv+zsY KiJPAzyQrRNbdD/sgwbvgSIK4LvEvYPyoxlvvWj+GgwMUODkcVaCl0fg9OgmPZ/syhv/ j9cg=="},{"name":"X-Forwarded-Encrypted","value":"i=2; AJvYcCUqeqWiWLkLaM5OS3tRpH761zTYwHkrkuNwhaW+xlCzHIn0NuJz+gzigUN6WBEHR7B/4cQ8xKyW6/k=@empresas.febos.io"},{"name":"X-Gm-Message-State","value":"AOJu0YwR6OuaWTooa38+z+T1NcO20xIwtRiWBR5wo2pfAJFPL81qIsKQ AFRGFtv1o0sFvabPduGYXfC5XXQj6FduNZ3hmEI/R6s6lSghZPdwaJBnZogFjWmJoA=="},{"name":"X-Google-Smtp-Source","value":"AGHT+IHkLSC1lm7+qs3qcDYVqc0lds1fgqRW89bYAzZuDlCFzxVpBxBrU0S0qk3APAC3a8lat57heA=="},{"name":"X-Received","value":"by 2002:a17:902:e84b:b0:20b:775f:505c with SMTP id d9443c01a7336-20bfee33c1bmr56530225ad.52.1728066180675; Fri, 04 Oct 2024 11:23:00 -0700 (PDT)"},{"name":"X-BeenThere","value":"76956140-4@febos.cl"},{"name":"Received","value":"by 2002:a17:903:22c8:b0:205:7db5:c886 with SMTP id d9443c01a7336-20be27ea3aals19646045ad.1.-pod-prod-09-us; Fri, 04 Oct 2024 11:23:00 -0700 (PDT)"},{"name":"X-Received","value":"by 2002:a17:902:ea0a:b0:20b:43f8:d764 with SMTP id d9443c01a7336-20bfde57b8emr57865955ad.8.1728066179411; Fri, 04 Oct 2024 11:22:59 -0700 (PDT)"},{"name":"ARC-Seal","value":"i=1; a=rsa-sha256; t=1728066179; cv=none; d=google.com; s=arc-20240605; b=fYmjZMZEATYVRNi0INvVuMUDWSAwtWyWPVgjxico7RtSulpzMmy/mhkrnBFvbmbxzj kmcdh9RKPPpnVwInzVWgbhmQy046cb6fTI77yjaNCl2+aKO/458ZQgmUfTL9N+YVoWmc l/EnP7OHyXJoHv/MMx3MNqal3SDSjUQ80C2aoA5+Jpsk8lBK+/yxqazVwlXmcI/cJyoK +2BuHbFEyJDEvYYY6onZAV2DdvbT3WU6Wjyik+o3JcBf/fEPC4y7Eaf1A2MZ1FVW2hT1 EVQdeb+HUzIdLpbyku/Lezz4yTsZR/BA84v2xIU5qCTzTHVduPJAYhs3NDlSr8khFSCd mhXg=="},{"name":"ARC-Message-Signature","value":"i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605; h=sender:message-id:date:to:from:subject:mime-version:dkim-signature; bh=XKPP3BPnhJThI4mQFacAbt8FNMWe9oek6AKQGboM5x8=; fh=i//1PiRkQCG+TESzcUo3Ps9mCDhtpGPHEoB8/nUozqs=; b=NouuAuPVrBr3tsQzuseHjmbPo4UAPkh/vpkSC/CBTTYiRiou1MjSzeNkVl2PwwTKlk 5F/L64AKNoSXsOrSQ3pgOw1/4YoAKp9tyLq9Cg1Xkks0YFm7eGeIYA28FhkuDOdNRDJM ldgdfMiLCmg8AhVTx5Gn/PnjT5WHKqlI/a0T7txTW7JryZ3o1yFwGYQzjPn7pXJ3EzX7 6236InJDU1rGvplwC4lVvQjWhoxTK7Hgk5waUOK8nIVtOGf6K48GxxGyxO7uwZFYrKWl tpGK+DIS2levU7KvXEE2BQIsUt5x01qgAZ6P0uBHVHu6/0eyYtWJ6ZREYabCMcghvW4A niZw==; dara=google.com"},{"name":"ARC-Authentication-Results","value":"i=1; mx.google.com; dkim=pass header.i=@custodium.com header.s=cluster header.b=caaIU2Xp; spf=pass (google.com: domain of dipresrecepcion@custodium.com designates 200.29.6.201 as permitted sender) smtp.mailfrom=dipresrecepcion@custodium.com"},{"name":"Received","value":"from smtp02.acepta.com (smtp02.acepta.com. [200.29.6.201]) by mx.google.com with ESMTPS id d9443c01a7336-20c13971d51si2752025ad.426.2024.10.04.11.22.58 for <76956140-4@febos.cl> (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128); Fri, 04 Oct 2024 11:22:59 -0700 (PDT)"},{"name":"Received-SPF","value":"pass (google.com: domain of dipresrecepcion@custodium.com designates 200.29.6.201 as permitted sender) client-ip=200.29.6.201;"},{"name":"Received","value":"from concentrador1.acepta.com (unknown [172.20.9.35]) by smtp02.acepta.com (Postfix) with ESMTP id 7AB5918617C for <76956140-4@febos.cl>; Thu,  3 Oct 2024 11:04:50 -0300 (-03)"},{"name":"Received","value":"from [127.0.0.1] (ip-172-20-9-108.ec2.internal [172.20.9.108]) by concentrador1.acepta.com (Postfix) with ESMTP id 025F0131 for <76956140-4@febos.cl>; Thu,  3 Oct 2024 11:04:50 -0300 (-03)"},{"name":"Content-Type","value":"multipart/mixed; boundary=\"===============7367259668773119502==\""},{"name":"MIME-Version","value":"1.0"},{"name":"Subject","value":"Acuse de Recibo de DTEs -\r\n RespuestaDTE-61608502-6-76956140-4-20241003-8069682357"},{"name":"From","value":"61608502-SS Metropolitano Sur - Oriente-Hospital Sotero del RÃ­o <dipresrecepcion@custodium.com>"},{"name":"To","value":"76956140-4@febos.cl"},{"name":"Date","value":"Thu, 03 Oct 2024 11:04:49 -0300"},{"name":"Message-ID","value":"<JCPVTJGc2RHVmtYMStaQldkbEUwWXFOYXc5RHRVVSt4UER2QUVCVTNpTEhGVVcwSXpCUWxPVkFMb0czbTJyRjdsUUNBamIyczFjOWtYTWlkYk9JMWFyd3pKSmUvQS8zMExab0NwRjJFa2k3eUpLNzJMK213cGg5MGtoL1UvczRkU2VVVEY5WXlkUVMzbXd1bVNYSWxMUU5DdUNLQkVvcVpYa2hZWTAwblQxUHAwPQ==@motor2.acepta.com>"},{"name":"Sender","value":"61608502-SS Metropolitano Sur - Oriente-Hospital Sotero del RÃ­o <dipresrecepcion@custodium.com>"},{"name":"X-Original-Sender","value":"dipresrecepcion@custodium.com"},{"name":"X-Original-Authentication-Results","value":"mx.google.com;       dkim=pass header.i=@custodium.com header.s=cluster header.b=caaIU2Xp;       spf=pass (google.com: domain of dipresrecepcion@custodium.com designates 200.29.6.201 as permitted sender) smtp.mailfrom=dipresrecepcion@custodium.com"},{"name":"Precedence","value":"list"},{"name":"Mailing-list","value":"list 76956140-4@febos.cl; contact 76956140-4+owners@febos.cl"},{"name":"List-ID","value":"<76956140-4.febos.cl>"},{"name":"X-Spam-Checked-In-Group","value":"76956140-4@febos.cl"},{"name":"X-Google-Group-Id","value":"160800684873"},{"name":"List-Post","value":"<https://groups.google.com/a/febos.cl/group/76956140-4/post>, <mailto:76956140-4@febos.cl>"},{"name":"List-Help","value":"<https://support.google.com/a/febos.cl/bin/topic.py?topic=25838>, <mailto:76956140-4+help@febos.cl>"},{"name":"List-Archive","value":"<https://groups.google.com/a/febos.cl/group/76956140-4/>"},{"name":"List-Unsubscribe","value":"<mailto:googlegroups-manage+160800684873+unsubscribe@googlegroups.com>, <https://groups.google.com/a/febos.cl/group/76956140-4/subscribe>"}],"commonHeaders":{"returnPath":"76956140-4+bncBD3LV5MPZUNBBBHFQC4AMGQEOROTSHI@febos.cl","from":["\"61608502-SS Metropolitano Sur - Oriente-Hospital Sotero del RÃ­o\" <dipresrecepcion@custodium.com>"],"sender":"\"61608502-SS Metropolitano Sur - Oriente-Hospital Sotero del RÃ­o\" <dipresrecepcion@custodium.com>","date":"Thu, 03 Oct 2024 11:04:49 -0300","to":["76956140-4@febos.cl"],"messageId":"<JCPVTJGc2RHVmtYMStaQldkbEUwWXFOYXc5RHRVVSt4UER2QUVCVTNpTEhGVVcwSXpCUWxPVkFMb0czbTJyRjdsUUNBamIyczFjOWtYTWlkYk9JMWFyd3pKSmUvQS8zMExab0NwRjJFa2k3eUpLNzJMK213cGg5MGtoL1UvczRkU2VVVEY5WXlkUVMzbXd1bVNYSWxMUU5DdUNLQkVvcVpYa2hZWTAwblQxUHAwPQ==@motor2.acepta.com>","subject":"Acuse de Recibo de DTEs -\r\n RespuestaDTE-61608502-6-76956140-4-20241003-8069682357"}},"receipt":{"timestamp":"2024-10-04T18:23:01.746Z","processingTimeMillis":763,"recipients":["recibidos@empresas.febos.io"],"spamVerdict":{"status":"PASS"},"virusVerdict":{"status":"PASS"},"spfVerdict":{"status":"PASS"},"dkimVerdict":{"status":"GRAY"},"dmarcVerdict":{"status":"GRAY"},"action":{"type":"S3","topicArn":"arn:aws:sns:us-east-1:830321976775:ses-event-manager-EmailNotificationTopic-13Gug6rA6bdq","bucketName":"febos-io","objectKeyPrefix":"email/produccion/inbox","objectKey":"email/produccion/inbox/mg682j99cples2s0uk5c38efusbbgrr15ce8tc01"}}}
+{
+  "notificationType": "Received",
+  "mail": {
+    "timestamp": "2024-10-04T18:23:01.746Z",
+    "source": "76956140-4+bncBD3LV5MPZUNBBBHFQC4AMGQEOROTSHI@febos.cl",
+    "messageId": "mg682j99cples2s0uk5c38efusbbgrr15ce8tc01",
+    "destination": [
+      "76956140-4@febos.cl"
+    ],
+    "headersTruncated": false,
+    "headers": [
+      {
+        "name": "Return-Path",
+        "value": "<76956140-4+bncBD3LV5MPZUNBBBHFQC4AMGQEOROTSHI@febos.cl>"
+      },
+      {
+        "name": "Received",
+        "value": "from mail-pl1-f199.google.com (mail-pl1-f199.google.com [209.85.214.199]) by inbound-smtp.us-east-1.amazonaws.com with SMTP id mg682j99cples2s0uk5c38efusbbgrr15ce8tc01 for recibidos@empresas.febos.io; Fri, 04 Oct 2024 18:23:01 +0000 (UTC)"
+      },
+      {
+        "name": "X-SES-Spam-Verdict",
+        "value": "PASS"
+      },
+      {
+        "name": "X-SES-Virus-Verdict",
+        "value": "PASS"
+      },
+      {
+        "name": "Received-SPF",
+        "value": "pass (spfCheck: domain of febos.cl designates 209.85.214.199 as permitted sender) client-ip=209.85.214.199; envelope-from=76956140-4+bncBD3LV5MPZUNBBBHFQC4AMGQEOROTSHI@febos.cl; helo=mail-pl1-f199.google.com;"
+      },
+      {
+        "name": "Authentication-Results",
+        "value": "amazonses.com; spf=pass (spfCheck: domain of febos.cl designates 209.85.214.199 as permitted sender) client-ip=209.85.214.199; envelope-from=76956140-4+bncBD3LV5MPZUNBBBHFQC4AMGQEOROTSHI@febos.cl; helo=mail-pl1-f199.google.com; dmarc=none header.from=custodium.com;"
+      },
+      {
+        "name": "X-SES-RECEIPT",
+        "value": "AEFBQUFBQUFBQUFHSmdBRU9NWkIrN2ptRUdoSzdZdXNQZ0kvVVlBVW9EUjJjWjFXcmkzbGxFd2Zic09GMVU3T3hhblFDNVFSdUVaMUZIWktkcGpxemNHR3NyL2dCZ0MrK2I0R0dwZ2JQV0p0bTE0T3lncU1mY09aNk82Y0IrTG1RMWwxYTViNUpFaHFnN21jckd2R1AwNm82bVhnMTlMNHVvaEdBa0J1eVNJczN4WVpYTVdRS2VtVkJMLytqWVQ0WDQ1UzdaV2FCZUgwY0Z5N29Da0tSWitWTDNnbmlNSWlWYVVFV2ZiTVFpV0hCejYwcWJaRUR5bDdUSFpJMWRDUkg3b3lBRjZGZXpFVDBoSy9PRkVQRjlPNTJ4d2Uzd0FLT2k5M05kc2RZeGRHb2Q0dlBJcjM1Mnk3cFRRcU41cCt1R0tRdzluZFFydVphQ1hBZjlDK2NRNEl3cC9PT3hRNEo="
+      },
+      {
+        "name": "X-SES-DKIM-SIGNATURE",
+        "value": "a=rsa-sha256; q=dns/txt; b=BBVvvGPoyv/9ceg3DPATtRkP9sDrm3axbwxJDtbvenODso6UxrbzGTV1rkbqWrgHhRKDciTkSoz2BcuSHVTOnLr747teeRyFpcsNe19OCKnri2l+4u/N/SZ6AMhwE+1K/FkitFTuGR5Js4tHDS+UEX9cHN9ohN+tTNfOy0qpBTo=; c=relaxed/simple; s=ug7nbtf4gccmlpwj322ax3p6ow6yfsug; d=amazonses.com; t=1728066182; v=1; bh=iZ4kpM8krjpUPmbgO6xjZ21oBmfFgqnr55irlCZMrfg=; h=From:To:Cc:Bcc:Subject:Date:Message-ID:MIME-Version:Content-Type:X-SES-RECEIPT;"
+      },
+      {
+        "name": "Received",
+        "value": "by mail-pl1-f199.google.com with SMTP id d9443c01a7336-20b410f0acfsf23261125ad.0 for <recibidos@empresas.febos.io>; Fri, 04 Oct 2024 11:23:01 -0700 (PDT)"
+      },
+      {
+        "name": "ARC-Seal",
+        "value": "i=2; a=rsa-sha256; t=1728066181; cv=pass; d=google.com; s=arc-20240605; b=U6ub/hJbzJsSZGVe6KteOBiD2UqGdzZGw4cPzCMZ0oloF1nlHqvSAR3MB9JN6bonHW 8U9hrcQJyupX3Pq3nATml185o1qtMd4KVpv7SkaRfIt2zcSAtQwXG/xyGDG2eqBlOWKF /dylEDu5g1VV7+NZd+bzvqotzVC5DKfjpXNLKF/+RSld0l3/rtUC7w0yN1e7Icg1YtHe OZGK7V3ZmUgi7eWfjGg/H1vrv3C4CoUslDFqw+ZAO7qVJPaZ2aBltIyHh+5FGXadWlTx h6y6kqxiFerzmKgXbuq7EmY+YN5QethIf2BEl+B9mXR6gJGYdlJquDHmjvye7eA5Maxy 951A=="
+      },
+      {
+        "name": "ARC-Message-Signature",
+        "value": "i=2; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605; h=list-unsubscribe:list-archive:list-help:list-post:list-id :mailing-list:precedence:sender:message-id:date:to:from:subject :mime-version; bh=XKPP3BPnhJThI4mQFacAbt8FNMWe9oek6AKQGboM5x8=; fh=wLX66xAsXbbgwknbHgCLjgKRlRXwgGK97xcwatgQHz4=; b=cTVTcf5wp3IhW+CJmkiUcErc6tSmp0srpOyia83V1YJ3GuVDQJYyNC7DMzSXS6ZcLG /RBBMNxRkECyBp5fWU+nc6UiFNPKxspf8D9386nve3R0e4TjWDsgDFuzYCr5Spy+AYLY QWck2qQ01/x5VkTunKm4nXWaqEN4832d7LoQzKe6mUcwsLeWK7l/d+1QzmcdrLDZp5wg VxaWFoIzYohE1EQmlkJMnysWQL18/h2uRo77ChBTNrqPbOSFUZCdWznYuI2/VLRuxPxp ziuKVjkS2e+95xMTYfVtAsm84U+nwMz6/uEiRPK0j/UF6aXZbmhupozmgBBWEyWtDVDW SSTA==; darn=empresas.febos.io"
+      },
+      {
+        "name": "ARC-Authentication-Results",
+        "value": "i=2; mx.google.com; dkim=pass header.i=@custodium.com header.s=cluster header.b=caaIU2Xp; spf=pass (google.com: domain of dipresrecepcion@custodium.com designates 200.29.6.201 as permitted sender) smtp.mailfrom=dipresrecepcion@custodium.com"
+      },
+      {
+        "name": "X-Google-DKIM-Signature",
+        "value": "v=1; a=rsa-sha256; c=relaxed/relaxed; d=1e100.net; s=20230601; t=1728066181; x=1728670981; h=list-unsubscribe:list-archive:list-help:list-post :x-spam-checked-in-group:list-id:mailing-list:precedence :x-original-authentication-results:x-original-sender:sender :message-id:date:to:from:subject:mime-version:x-beenthere :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to; bh=XKPP3BPnhJThI4mQFacAbt8FNMWe9oek6AKQGboM5x8=; b=MC6kAB24by8hJyOy426ut0meGp5r4A9MZKq2gMwNG3iAOpugFCI9TmxsXvaRqeohDt BnimR3Ql9qCOm0NtiSvJBsHEBLacWUZtnu3LwOGxnuhTrdDpdYzny0UNqg1wUbP1dMMm rvbTAPUgSr8EkAuOyayW1BOi7fK/un4hRRe0eZU0q0eoyhPk/16+aeEY/REyXA7jUVaA JFhAMgLDeuk5ANRFO/WrW3KuU1TDwH5LaJ/YsdN2PEtE40Zah20z5l7L1+dsmQpv+zsY KiJPAzyQrRNbdD/sgwbvgSIK4LvEvYPyoxlvvWj+GgwMUODkcVaCl0fg9OgmPZ/syhv/ j9cg=="
+      },
+      {
+        "name": "X-Forwarded-Encrypted",
+        "value": "i=2; AJvYcCUqeqWiWLkLaM5OS3tRpH761zTYwHkrkuNwhaW+xlCzHIn0NuJz+gzigUN6WBEHR7B/4cQ8xKyW6/k=@empresas.febos.io"
+      },
+      {
+        "name": "X-Gm-Message-State",
+        "value": "AOJu0YwR6OuaWTooa38+z+T1NcO20xIwtRiWBR5wo2pfAJFPL81qIsKQ AFRGFtv1o0sFvabPduGYXfC5XXQj6FduNZ3hmEI/R6s6lSghZPdwaJBnZogFjWmJoA=="
+      },
+      {
+        "name": "X-Google-Smtp-Source",
+        "value": "AGHT+IHkLSC1lm7+qs3qcDYVqc0lds1fgqRW89bYAzZuDlCFzxVpBxBrU0S0qk3APAC3a8lat57heA=="
+      },
+      {
+        "name": "X-Received",
+        "value": "by 2002:a17:902:e84b:b0:20b:775f:505c with SMTP id d9443c01a7336-20bfee33c1bmr56530225ad.52.1728066180675; Fri, 04 Oct 2024 11:23:00 -0700 (PDT)"
+      },
+      {
+        "name": "X-BeenThere",
+        "value": "76956140-4@febos.cl"
+      },
+      {
+        "name": "Received",
+        "value": "by 2002:a17:903:22c8:b0:205:7db5:c886 with SMTP id d9443c01a7336-20be27ea3aals19646045ad.1.-pod-prod-09-us; Fri, 04 Oct 2024 11:23:00 -0700 (PDT)"
+      },
+      {
+        "name": "X-Received",
+        "value": "by 2002:a17:902:ea0a:b0:20b:43f8:d764 with SMTP id d9443c01a7336-20bfde57b8emr57865955ad.8.1728066179411; Fri, 04 Oct 2024 11:22:59 -0700 (PDT)"
+      },
+      {
+        "name": "ARC-Seal",
+        "value": "i=1; a=rsa-sha256; t=1728066179; cv=none; d=google.com; s=arc-20240605; b=fYmjZMZEATYVRNi0INvVuMUDWSAwtWyWPVgjxico7RtSulpzMmy/mhkrnBFvbmbxzj kmcdh9RKPPpnVwInzVWgbhmQy046cb6fTI77yjaNCl2+aKO/458ZQgmUfTL9N+YVoWmc l/EnP7OHyXJoHv/MMx3MNqal3SDSjUQ80C2aoA5+Jpsk8lBK+/yxqazVwlXmcI/cJyoK +2BuHbFEyJDEvYYY6onZAV2DdvbT3WU6Wjyik+o3JcBf/fEPC4y7Eaf1A2MZ1FVW2hT1 EVQdeb+HUzIdLpbyku/Lezz4yTsZR/BA84v2xIU5qCTzTHVduPJAYhs3NDlSr8khFSCd mhXg=="
+      },
+      {
+        "name": "ARC-Message-Signature",
+        "value": "i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605; h=sender:message-id:date:to:from:subject:mime-version:dkim-signature; bh=XKPP3BPnhJThI4mQFacAbt8FNMWe9oek6AKQGboM5x8=; fh=i//1PiRkQCG+TESzcUo3Ps9mCDhtpGPHEoB8/nUozqs=; b=NouuAuPVrBr3tsQzuseHjmbPo4UAPkh/vpkSC/CBTTYiRiou1MjSzeNkVl2PwwTKlk 5F/L64AKNoSXsOrSQ3pgOw1/4YoAKp9tyLq9Cg1Xkks0YFm7eGeIYA28FhkuDOdNRDJM ldgdfMiLCmg8AhVTx5Gn/PnjT5WHKqlI/a0T7txTW7JryZ3o1yFwGYQzjPn7pXJ3EzX7 6236InJDU1rGvplwC4lVvQjWhoxTK7Hgk5waUOK8nIVtOGf6K48GxxGyxO7uwZFYrKWl tpGK+DIS2levU7KvXEE2BQIsUt5x01qgAZ6P0uBHVHu6/0eyYtWJ6ZREYabCMcghvW4A niZw==; dara=google.com"
+      },
+      {
+        "name": "ARC-Authentication-Results",
+        "value": "i=1; mx.google.com; dkim=pass header.i=@custodium.com header.s=cluster header.b=caaIU2Xp; spf=pass (google.com: domain of dipresrecepcion@custodium.com designates 200.29.6.201 as permitted sender) smtp.mailfrom=dipresrecepcion@custodium.com"
+      },
+      {
+        "name": "Received",
+        "value": "from smtp02.acepta.com (smtp02.acepta.com. [200.29.6.201]) by mx.google.com with ESMTPS id d9443c01a7336-20c13971d51si2752025ad.426.2024.10.04.11.22.58 for <76956140-4@febos.cl> (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128); Fri, 04 Oct 2024 11:22:59 -0700 (PDT)"
+      },
+      {
+        "name": "Received-SPF",
+        "value": "pass (google.com: domain of dipresrecepcion@custodium.com designates 200.29.6.201 as permitted sender) client-ip=200.29.6.201;"
+      },
+      {
+        "name": "Received",
+        "value": "from concentrador1.acepta.com (unknown [172.20.9.35]) by smtp02.acepta.com (Postfix) with ESMTP id 7AB5918617C for <76956140-4@febos.cl>; Thu,  3 Oct 2024 11:04:50 -0300 (-03)"
+      },
+      {
+        "name": "Received",
+        "value": "from [127.0.0.1] (ip-172-20-9-108.ec2.internal [172.20.9.108]) by concentrador1.acepta.com (Postfix) with ESMTP id 025F0131 for <76956140-4@febos.cl>; Thu,  3 Oct 2024 11:04:50 -0300 (-03)"
+      },
+      {
+        "name": "Content-Type",
+        "value": "multipart/mixed; boundary=\"===============7367259668773119502==\""
+      },
+      {
+        "name": "MIME-Version",
+        "value": "1.0"
+      },
+      {
+        "name": "Subject",
+        "value": "Acuse de Recibo de DTEs -\r\n RespuestaDTE-61608502-6-76956140-4-20241003-8069682357"
+      },
+      {
+        "name": "From",
+        "value": "61608502-SS Metropolitano Sur - Oriente-Hospital Sotero del RÃ­o <dipresrecepcion@custodium.com>"
+      },
+      {
+        "name": "To",
+        "value": "76956140-4@febos.cl"
+      },
+      {
+        "name": "Date",
+        "value": "Thu, 03 Oct 2024 11:04:49 -0300"
+      },
+      {
+        "name": "Message-ID",
+        "value": "<JCPVTJGc2RHVmtYMStaQldkbEUwWXFOYXc5RHRVVSt4UER2QUVCVTNpTEhGVVcwSXpCUWxPVkFMb0czbTJyRjdsUUNBamIyczFjOWtYTWlkYk9JMWFyd3pKSmUvQS8zMExab0NwRjJFa2k3eUpLNzJMK213cGg5MGtoL1UvczRkU2VVVEY5WXlkUVMzbXd1bVNYSWxMUU5DdUNLQkVvcVpYa2hZWTAwblQxUHAwPQ==@motor2.acepta.com>"
+      },
+      {
+        "name": "Sender",
+        "value": "61608502-SS Metropolitano Sur - Oriente-Hospital Sotero del RÃ­o <dipresrecepcion@custodium.com>"
+      },
+      {
+        "name": "X-Original-Sender",
+        "value": "dipresrecepcion@custodium.com"
+      },
+      {
+        "name": "X-Original-Authentication-Results",
+        "value": "mx.google.com;       dkim=pass header.i=@custodium.com header.s=cluster header.b=caaIU2Xp;       spf=pass (google.com: domain of dipresrecepcion@custodium.com designates 200.29.6.201 as permitted sender) smtp.mailfrom=dipresrecepcion@custodium.com"
+      },
+      {
+        "name": "Precedence",
+        "value": "list"
+      },
+      {
+        "name": "Mailing-list",
+        "value": "list 76956140-4@febos.cl; contact 76956140-4+owners@febos.cl"
+      },
+      {
+        "name": "List-ID",
+        "value": "<76956140-4.febos.cl>"
+      },
+      {
+        "name": "X-Spam-Checked-In-Group",
+        "value": "76956140-4@febos.cl"
+      },
+      {
+        "name": "X-Google-Group-Id",
+        "value": "160800684873"
+      },
+      {
+        "name": "List-Post",
+        "value": "<https://groups.google.com/a/febos.cl/group/76956140-4/post>, <mailto:76956140-4@febos.cl>"
+      },
+      {
+        "name": "List-Help",
+        "value": "<https://support.google.com/a/febos.cl/bin/topic.py?topic=25838>, <mailto:76956140-4+help@febos.cl>"
+      },
+      {
+        "name": "List-Archive",
+        "value": "<https://groups.google.com/a/febos.cl/group/76956140-4/>"
+      },
+      {
+        "name": "List-Unsubscribe",
+        "value": "<mailto:googlegroups-manage+160800684873+unsubscribe@googlegroups.com>, <https://groups.google.com/a/febos.cl/group/76956140-4/subscribe>"
+      }
+    ],
+    "commonHeaders": {
+      "returnPath": "76956140-4+bncBD3LV5MPZUNBBBHFQC4AMGQEOROTSHI@febos.cl",
+      "from": [
+        "\"61608502-SS Metropolitano Sur - Oriente-Hospital Sotero del RÃ­o\" <dipresrecepcion@custodium.com>"
+      ],
+      "sender": "\"61608502-SS Metropolitano Sur - Oriente-Hospital Sotero del RÃ­o\" <dipresrecepcion@custodium.com>",
+      "date": "Thu, 03 Oct 2024 11:04:49 -0300",
+      "to": [
+        "76956140-4@febos.cl"
+      ],
+      "messageId": "<JCPVTJGc2RHVmtYMStaQldkbEUwWXFOYXc5RHRVVSt4UER2QUVCVTNpTEhGVVcwSXpCUWxPVkFMb0czbTJyRjdsUUNBamIyczFjOWtYTWlkYk9JMWFyd3pKSmUvQS8zMExab0NwRjJFa2k3eUpLNzJMK213cGg5MGtoL1UvczRkU2VVVEY5WXlkUVMzbXd1bVNYSWxMUU5DdUNLQkVvcVpYa2hZWTAwblQxUHAwPQ==@motor2.acepta.com>",
+      "subject": "Acuse de Recibo de DTEs -\r\n RespuestaDTE-61608502-6-76956140-4-20241003-8069682357"
+    }
+  },
+  "receipt": {
+    "timestamp": "2024-10-04T18:23:01.746Z",
+    "processingTimeMillis": 763,
+    "recipients": [
+      "recibidos@empresas.febos.io"
+    ],
+    "spamVerdict": {
+      "status": "PASS"
+    },
+    "virusVerdict": {
+      "status": "PASS"
+    },
+    "spfVerdict": {
+      "status": "PASS"
+    },
+    "dkimVerdict": {
+      "status": "GRAY"
+    },
+    "dmarcVerdict": {
+      "status": "GRAY"
+    },
+    "action": {
+      "type": "S3",
+      "topicArn": "arn:aws:sns:us-east-1:830321976775:ses-event-manager-EmailNotificationTopic-13Gug6rA6bdq",
+      "bucketName": "febos-io",
+      "objectKeyPrefix": "email/produccion/inbox",
+      "objectKey": "email/produccion/inbox/5veh0hmqr0mpmlssp8bfhfme8eh0pmrmvum3s001"
+    }
+  }
+}

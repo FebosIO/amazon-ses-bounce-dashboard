@@ -155,9 +155,6 @@ def procesar_record(record, context):
     num_attachments = len(attachments)
     attachments_size = sum([attachment['contentLength'] for attachment in attachments])
     has_attachments = len(attachments) > 0
-    metrics.add_metric(name="EmailReceived", unit=MetricUnit.Count, value=1)
-    metrics.add_metric(name="Attachments", unit=MetricUnit.Count, value=num_attachments)
-    metrics.add_metric(name="AttachmentsSize", unit=MetricUnit.Count, value=attachments_size)
     for email_address in to_email:
         metrics.add_dimension(name="to", value=clean_email_address(email_address))
         metrics.add_metric(name="EmailReceived", unit=MetricUnit.Count, value=1)
@@ -461,13 +458,15 @@ def procesar_recibidos(recibidos):
         try:
             object_key = recibido['object_key']
             id = recibido['id']
-            if id == '6700199b.630a0220.6b549.1cc6@mx.google.com':
-                print(id)
+            print(id)
             if 'produccion' in object_key.lower() or 'prod' in object_key.lower():
                 to = recibido.get('to', [])
                 # if any to end with @febos.cl
-                if any([x.lower().endswith('@febos.cl') for x in to]):
+                # if any(['febos.' not in x.lower() for x in to]):
+                if any(['<' in x.lower() for x in to]):
                     # corregir to guadar y lanzar evento
+                    print(to)
+                    to = [clean_email_address(t) for t in to]
                     s3_response = s3.s3_get_object_bytes(f"{bucket_name}/{object_key}")
                     file_bytes = s3_response[0]
                     em = email.message_from_bytes(file_bytes)
@@ -499,10 +498,10 @@ def procesar_recibidos(recibidos):
                             send_event('email-received', recibido)
                     except:
                         traceback.print_exc()
-
-                    print(recibido)
         except:
             traceback.print_exc()
+        finally:
+            print(recibido)
 
 
 if __name__ == '__main__':
