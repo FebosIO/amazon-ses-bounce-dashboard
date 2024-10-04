@@ -141,7 +141,7 @@ def procesar_record(record, context):
         received = em.get('received', '')
         matchs = re.findall(r'for(.*);', received)
         receibed_email = matchs[0] if received else None
-        if receibed_email and receibed_email not in to_email:
+        if receibed_email and receibed_email not in to_email:# posiblemente una redireccion o un grupo de google
             tos = to_email
             to_email = [receibed_email.strip()]
     except:
