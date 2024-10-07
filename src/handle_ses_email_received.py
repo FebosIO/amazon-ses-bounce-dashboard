@@ -277,7 +277,11 @@ def process_body(em, from_email):
         if filename and content:
             if charset:
                 try:
-                    content = content.decode(charset)
+                    try:
+                        content = content.decode(charset)
+                    except LookupError as e:
+                        content = content.decode('utf-8')
+                        charset = 'utf-8'
                 except UnicodeDecodeError as e:
                     logger.error(f"Error decoding bytes to string: {e}")
                     posibles_encode = ['latin1', 'utf-8', 'ascii']
@@ -446,9 +450,19 @@ def decode_mime_words(encoded_text):
         return encoded_text
 
 
-if __name__ == "__main__2":
+if __name__ == "__main__":
     with open('/Users/claudiomiranda/IdeaProjects/amazon-ses-bounce-dashboard/events/email_received.json', 'r') as f:
         message = json.load(f)
+        message = message = {
+            "Records": [{'messageId': '969f3319-9909-44ab-8cdc-6ddcecc55a78',
+                         'receiptHandle': 'AQEBGDnx4yAXataO++j5hnmcw7R77ReI9GKx3oGA294SWxwfkGBj39+1gKE1hDYv0iJK1GAItaxG/BUrD/4NFKmzTi4d961nKFZRSf6RhWs+Oxb7hA8wOP+XC59gwFA9NAYrjBN+71kc8QmZVY2yT9IvOUo7/1dtRE/O38t5+tVvvdQ8YQ60sHML2BFkiKIHk6BKi8pqFwN/uhKbF81KCbAW6IDrccZD74zoqOgJAbuZ4lnec6H7Bi8loNuS24YD5/2/F17v7d4drtjOFWoYECwYmLl/3k/LcyeeYHRgkMM4gr8b7dbre9NAEX3scwV5YwZZu/DlpOE8MdKoloGnQ/f1LMLo2OC/tLvDG95ktWypiHaUQQzMZwWArkeOJ3CbIqRXluSd82bWie5z2Gl79fHVkS9LfyeBOsR0Lu1dlmsYAbxIQ/El+wtSZA6Muz+Ltrii',
+                         'body': '{"notificationType":"Received","mail":{"timestamp":"2024-10-05T13:42:44.617Z","source":"sanjose@dtefacturaenlinea.cl","messageId":"pohdp8rukt4i85org4g0m1qa6b9nrbkegh4dlp01","destination":["85067500-7@prd.inbox.febos.cl"],"headersTruncated":false,"headers":[{"name":"Return-Path","value":"<sanjose@dtefacturaenlinea.cl>"},{"name":"Received","value":"from mail.dtefacturaenlinea.cl ([190.153.251.50]) by inbound-smtp.us-east-1.amazonaws.com with SMTP id pohdp8rukt4i85org4g0m1qa6b9nrbkegh4dlp01 for 85067500-7@prd.inbox.febos.cl; Sat, 05 Oct 2024 13:42:44 +0000 (UTC)"},{"name":"X-SES-Spam-Verdict","value":"PASS"},{"name":"X-SES-Virus-Verdict","value":"PASS"},{"name":"Received-SPF","value":"pass (spfCheck: domain of dtefacturaenlinea.cl designates 190.153.251.50 as permitted sender) client-ip=190.153.251.50; envelope-from=sanjose@dtefacturaenlinea.cl; helo=mail.dtefacturaenlinea.cl;"},{"name":"Authentication-Results","value":"amazonses.com; spf=pass (spfCheck: domain of dtefacturaenlinea.cl designates 190.153.251.50 as permitted sender) client-ip=190.153.251.50; envelope-from=sanjose@dtefacturaenlinea.cl; helo=mail.dtefacturaenlinea.cl; dmarc=none header.from=dtefacturaenlinea.cl;"},{"name":"X-SES-RECEIPT","value":"AEFBQUFBQUFBQUFFWWdzc08rZU1uL0tiU2VucWFxVm5KTmkrbk1NMVZmRG8zWld4bTUvNUd2c25UV1gvbE1ZREhIenBVZkxKRVc5RzBDMjZ1S20rVkk2dWY1a3JzbDhaV2JkRkp4a3h0bS8xNW8zRmNUNld2VHZXSU9IWTdKMDNoNUowcXdEN2R2ZFJsdExZdkhJVUhzUmxqcUU5Wkx2RTBoVmxHcmZOMzZUa0xsUnZWamJVaENoZ3dBd3A5Yk1pR1JLOGUvQzc0MWJLc1c4UzhQMERRcEhaMzRzTUM4VGd3RzhEa045blg4V2ZrVlk4Z0JGOUVTUEkxQ3FJNWFDOG12TzMwOHNUbE8ySlFGaWVLdWNlbmxIM1RMNGh6NXgwc1FueTJSZDJTK3dKZGROaTlCUWdjYUE9PQ=="},{"name":"X-SES-DKIM-SIGNATURE","value":"a=rsa-sha256; q=dns/txt; b=nqpcHpRqnRfRFnV2HVzwwrB6WAG6ygqJgZI5gesTSkEOEeTMvLb9tn+r+J3J1Xy2Oa3L74bHEF0iKZWtPgFhPwpHw8TBWVGWrWC6XpzoFa/LA7F7vIgmxCJtLVLapU/fl55iWgyz4+wPbpbHp76UN2lgtFNQqxWluqpMeTS6Z38=; c=relaxed/simple; s=ug7nbtf4gccmlpwj322ax3p6ow6yfsug; d=amazonses.com; t=1728135765; v=1; bh=v5rslivqZgdtAKAigo7tUXFfqPNJowilKnNZAmtIoHs=; h=From:To:Cc:Bcc:Subject:Date:Message-ID:MIME-Version:Content-Type:X-SES-RECEIPT;"},{"name":"Received","value":"from [127.0.0.1] (unknown [192.168.2.1]) by mail.dtefacturaenlinea.cl (Postfix) with ESMTPA id 5AA9A2E2002 for <85067500-7@prd.inbox.febos.cl>; Sat,  5 Oct 2024 10:42:42 -0300 (CLST)"},{"name":"Message-ID","value":"<f2176cfe0a6783a4f89e523bda74effc@swift.generated>"},{"name":"Date","value":"Sat, 05 Oct 2024 10:42:42 -0300"},{"name":"Subject","value":"Acuse de Recibo de DTEs - RespuestaDTE"},{"name":"From","value":"sanjose@dtefacturaenlinea.cl"},{"name":"To","value":"85067500-7@prd.inbox.febos.cl"},{"name":"MIME-Version","value":"1.0"},{"name":"Content-Type","value":"multipart/mixed; boundary=\\"_=_swift_v4_1728135762_4d9c9bc8b3645a71301b29312f9a43df_=_\\""}],"commonHeaders":{"returnPath":"sanjose@dtefacturaenlinea.cl","from":["sanjose@dtefacturaenlinea.cl"],"date":"Sat, 05 Oct 2024 10:42:42 -0300","to":["85067500-7@prd.inbox.febos.cl"],"messageId":"<f2176cfe0a6783a4f89e523bda74effc@swift.generated>","subject":"Acuse de Recibo de DTEs - RespuestaDTE"}},"receipt":{"timestamp":"2024-10-05T13:42:44.617Z","processingTimeMillis":1330,"recipients":["85067500-7@prd.inbox.febos.cl"],"spamVerdict":{"status":"PASS"},"virusVerdict":{"status":"PASS"},"spfVerdict":{"status":"PASS"},"dkimVerdict":{"status":"GRAY"},"dmarcVerdict":{"status":"GRAY"},"action":{"type":"S3","topicArn":"arn:aws:sns:us-east-1:830321976775:ses-event-manager-EmailNotificationTopic-13Gug6rA6bdq","bucketName":"febos-io","objectKeyPrefix":"email/produccion/inbox","objectKey":"email/produccion/inbox/pohdp8rukt4i85org4g0m1qa6b9nrbkegh4dlp01"}}}',
+                         'attributes': {'ApproximateReceiveCount': '1', 'SentTimestamp': '1728307724128',
+                                        'SenderId': 'AIDA4CUYL4XDUYJU3T2TZ',
+                                        'ApproximateFirstReceiveTimestamp': '1728307724129'}, 'messageAttributes': {},
+                         'md5OfBody': '5b54194729b7093dd1c0a4c2186ffda2', 'eventSource': 'aws:sqs',
+                         'eventSourceARN': 'arn:aws:sqs:us-east-1:830321976775:ses-event-manager-EmailNotificationQueue-PzbmPHPzbGTO',
+                         'awsRegion': 'us-east-1'}]}
         if 'Records' not in message:
             message = {
                 "Records": [
@@ -546,7 +560,7 @@ def procesar_recibidos(recibidos):
             print(recibido)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__2':
     find_id = "a3ddf532b5ba4a057364866e2b4d04b2@copeval.cl"
     find_id = "230f9a25f39aa7460b416ae3336d90b8@copeval.cl"
     find_id = "98e26d3abd7d69602ade4b7100cdc092@copeval.cl"
