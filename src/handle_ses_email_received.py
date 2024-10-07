@@ -9,6 +9,7 @@ from email.header import decode_header
 
 from aws_lambda_powertools import Metrics
 from aws_lambda_powertools.metrics import MetricUnit
+from boto3.dynamodb.conditions import Key
 from dateutil import parser
 from langdetect import detect
 
@@ -127,23 +128,7 @@ def procesar_record(record, context):
 
     print(f"Processing email {email_id}")
 
-    to_email = common_headers.get('to')
-    if isinstance(to_email, str):
-        to_email = [to_email]
-    tos = None
-    try:
-        received = em.get('received', headers.get('received'''))
-        matchs = re.findall(r'for(.*);', received)
-        receibed_email = matchs[0] if received else None
-        if receibed_email and (
-                not to_email or receibed_email not in to_email):  # posiblemente una redireccion o un grupo de google
-            tos = to_email
-            to_email = [receibed_email.strip()]
-            print("new to", receibed_email.strip())
-    except:
-        traceback.print_exc()
-
-    to_email = [clean_email_address(email_address) for email_address in to_email]
+    to_email, tos = get_destinations(common_headers, em, headers)
     references = headers.get('references', '').split(' ')
     references = [reference.replace("<", "").replace(">", "") for reference in references]
 
@@ -202,6 +187,26 @@ def procesar_record(record, context):
         with table_references.batch_writer() as batch:
             for reference in references_data:
                 batch.put_item(Item=reference)
+
+
+def get_destinations(common_headers, em, headers):
+    to_email = common_headers.get('to', headers.get('to'))
+    if isinstance(to_email, str):
+        to_email = to_email.split(",")
+    tos = None
+    try:
+        received = em.get('received', headers.get('received'''))
+        matchs = re.findall(r'for(.*);', received)
+        receibed_email = matchs[0] if received else None
+        if receibed_email and '@' in receibed_email and (
+                not to_email or receibed_email not in to_email):  # posiblemente una redireccion o un grupo de google
+            tos = to_email
+            to_email = [receibed_email.strip()]
+            print("new to", receibed_email.strip())
+    except:
+        traceback.print_exc()
+    to_email = [clean_email_address(email_address) for email_address in to_email]
+    return to_email, tos
 
 
 def get_message_id(mail, common_headers, em):
@@ -375,6 +380,14 @@ def process_attachments(bucket_name, em, object_key):
 
         if filename and content:
             filename = decode_mime_words(filename)
+            # replace all \n and \r in filename
+            filename = filename.replace("\n", " ").replace("\r", "")
+            filename = filename.replace("\\", "/")
+            filename = filename.replace("//", "/")
+            # if filename has / get only file name
+            if '/' in filename:
+                filename = filename.split('/')[-1]
+
             # decode the content based on the character set specified
             # TODO: add error handling
             if charset:
@@ -433,7 +446,7 @@ def decode_mime_words(encoded_text):
         return encoded_text
 
 
-if __name__ == "__main__":
+if __name__ == "__main__2":
     with open('/Users/claudiomiranda/IdeaProjects/amazon-ses-bounce-dashboard/events/email_received.json', 'r') as f:
         message = json.load(f)
         if 'Records' not in message:
@@ -466,6 +479,13 @@ if __name__ == "__main__":
         handler(message, Contexto())
 
 
+def get_headers(em):
+    headers = {}
+    for k, v in em.items():
+        headers[k.lower()] = v
+    return headers
+
+
 def procesar_recibidos(recibidos):
     bucket_name = 'febos-io'
     for recibido in recibidos:
@@ -475,41 +495,49 @@ def procesar_recibidos(recibidos):
             print(id)
             if 'produccion' in object_key.lower() or 'prod' in object_key.lower():
                 to = recibido.get('to', [])
+                attachments = recibido.get('attachments', [])
                 # if any to end with @febos.cl
                 # if any(['febos.' not in x.lower() for x in to]):
-                if any(['<' in x.lower() for x in to]):
+                if (
+                        True
+                        or any(['<' in x.lower() for x in to])
+                        or any(['//' in x['name'].lower() for x in attachments])
+                        or any(['\\' in x['name'].lower() for x in attachments])
+                        or any(['\n' in x['name'].lower() for x in attachments])
+                        or any(['\r' in x['name'].lower() for x in attachments])
+                ):
                     # corregir to guadar y lanzar evento
                     print(to)
-                    to = [clean_email_address(t) for t in to]
                     s3_response = s3.s3_get_object_bytes(f"{bucket_name}/{object_key}")
                     file_bytes = s3_response[0]
                     em = email.message_from_bytes(file_bytes)
                     try:
-                        received = em.get('received', '')
-                        matchs = re.findall(r'for(.*);', received)
-                        receibed_email = matchs[0] if received else None
-                        if receibed_email and receibed_email not in to:  # posiblemente una redireccion o un grupo de google
-                            to_email = [receibed_email.strip()]
-                            print("new to", receibed_email.strip())
-                            recibido['to'] = to_email
-                            recibido['tos'] = to
-                            # update dynamo by id and timestamp
-                            update_response = table_received.update_item(
-                                Key={
-                                    'id': recibido['id'],
-                                    'timestamp': recibido['timestamp']
-                                },
-                                UpdateExpression='SET #to = :val0, #tos = :val1',
-                                ExpressionAttributeValues={
-                                    ':val0': to_email,
-                                    ':val1': to
-                                },
-                                ExpressionAttributeNames={
-                                    '#to': 'to',
-                                    '#tos': 'tos'
-                                }
-                            )
-                            send_event('email-received', recibido)
+                        headers = get_headers(em)
+                        to_email, tos = get_destinations(headers, em, headers)
+                        attachments = process_attachments(bucket_name, em, object_key)
+
+                        print("new to", to_email, tos)
+                        recibido['to'] = to_email
+                        recibido['tos'] = tos
+                        # update dynamo by id and timestamp
+                        update_response = table_received.update_item(
+                            Key={
+                                'id': recibido['id'],
+                                'timestamp': recibido['timestamp']
+                            },
+                            UpdateExpression='SET #to = :val0, #tos = :val1, #att = :val2',
+                            ExpressionAttributeValues={
+                                ':val2': attachments,
+                                ':val0': to_email,
+                                ':val1': to
+                            },
+                            ExpressionAttributeNames={
+                                '#to': 'to',
+                                '#tos': 'tos',
+                                '#att': 'attachments'
+                            }
+                        )
+                        send_event('email-received', recibido)
                     except:
                         traceback.print_exc()
         except:
@@ -518,9 +546,19 @@ def procesar_recibidos(recibidos):
             print(recibido)
 
 
-if __name__ == '__main__2':
+if __name__ == '__main__':
+    find_id = "a3ddf532b5ba4a057364866e2b4d04b2@copeval.cl"
+    find_id = "230f9a25f39aa7460b416ae3336d90b8@copeval.cl"
+    find_id = "98e26d3abd7d69602ade4b7100cdc092@copeval.cl"
+    find_id = "3a1c9bc50370494784277db9a9334189@justtime-erp.cl"
+    find_id = "21b1f7ea96ed472a88d86cf3f6fa6a52@justtime-erp.cl"
+    params = {
+        'KeyConditionExpression': Key('id').eq(find_id)
+    }
+    # find by id
+    recibidos_response = table_received.query(**params)
     # load all email received from dynamodb
-    recibidos_response = table_received.scan()
+    # recibidos_response = table_received.scan(**params)
     last_evaluated_key = 'A'
     recibidos = recibidos_response['Items']
     last_evaluated_key = recibidos_response.get('LastEvaluatedKey', None)
