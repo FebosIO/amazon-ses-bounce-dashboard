@@ -550,7 +550,7 @@ if __name__ == '__main__':
     find_id = "a3ddf532b5ba4a057364866e2b4d04b2@copeval.cl"
     find_id = "230f9a25f39aa7460b416ae3336d90b8@copeval.cl"
     find_id = "98e26d3abd7d69602ade4b7100cdc092@copeval.cl"
-    find_id = "3a1c9bc50370494784277db9a9334189@justtime-erp.cl"
+    # find_id = "3a1c9bc50370494784277db9a9334189@justtime-erp.cl"
     find_id = "21b1f7ea96ed472a88d86cf3f6fa6a52@justtime-erp.cl"
     params = {
         'KeyConditionExpression': Key('id').eq(find_id)
