@@ -20,7 +20,8 @@ def enviar_mensaje(
     }
     if '.fifo' in nombre_cola:
         args['MessageGroupId'] = str(MessageGroupId) if MessageGroupId is not None else str(uuid.uuid4())
-        args['MessageDeduplicationId'] = str(MessageDeduplicationId) if MessageDeduplicationId is not None else str(uuid.uuid4())
+        args['MessageDeduplicationId'] = str(MessageDeduplicationId) if MessageDeduplicationId is not None else str(
+            uuid.uuid4())
     if isinstance(mensaje, dict):
         args['MessageBody'] = json.dumps(mensaje)
         response = queue.send_message(
@@ -34,13 +35,15 @@ def enviar_mensaje(
     return response
 
 
-def procesar_mensajes(event, procesar_record, *args,**kargs):
+def procesar_mensajes(event, procesar_record, *args, deduplicate_fn=None, **kargs):
     errores = []
     records = event.get('Records', [])
     for record in records:
         message_id = record.get('messageId')
         try:
-            procesar_record(record, *args,**kargs)
+            if deduplicate_fn and deduplicate_fn(record, *args, **kargs):
+                continue
+            procesar_record(record, *args)
         except:
             traceback.print_exc()
             print(f'Error procesando mensaje {message_id}', record)

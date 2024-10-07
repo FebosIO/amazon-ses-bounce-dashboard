@@ -611,8 +611,10 @@ Resources:
         Variables:
           TABLE_EMAIL_RECEIVED_NAME: !Ref SESEventsReceivedTable
           TABLE_EMAIL_REFERENCES_NAME: !Ref SESEventsReferencesTable
-          SQS_URL: !GetAtt SESSendEmailSQS.QueueName
           POWERTOOLS_SERVICE_NAME: email-received
+          DEDUPLICATED_SQS: !Ref EmailNotificationDeduplicatedQueue
+          DEDUPLICATED_SQS_NAME: !GetAtt EmailNotificationDeduplicatedQueue.QueueName
+          DEDUPLICATED_SQS_ARN: !GetAtt EmailNotificationDeduplicatedQueue.Arn
 
       Policies:
         - DynamoDBCrudPolicy:
@@ -631,6 +633,12 @@ Resources:
           Statement:
             - Effect: Allow
               Action:
+                - 'sqs:*'
+              Resource: !GetAtt EmailNotificationDeduplicatedQueue.Arn
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
                 - 'events:*'
                 - 'ses:SendEmail'
                 - 'ses:SendRawEmail'
@@ -640,7 +648,13 @@ Resources:
           Type: SQS
           Properties:
             Queue: !GetAtt EmailNotificationQueue.Arn
-            BatchSize: 5
+            FunctionResponseTypes:
+              - ReportBatchItemFailures
+        SESEventDeduplicatedSQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt EmailNotificationDeduplicatedQueue.Arn
+            BatchSize: 3
             FunctionResponseTypes:
               - ReportBatchItemFailures
   SesHandlerReceivedFunctionLogGroup:
@@ -659,8 +673,23 @@ Resources:
       RedrivePolicy:
         deadLetterTargetArn: !GetAtt EmailNotificationDeadLetterQueue.Arn
         maxReceiveCount: 3
-      VisibilityTimeout: 300
+      VisibilityTimeout: 900
     DependsOn: EmailNotificationDeadLetterQueue
+  EmailNotificationDeduplicatedDeadLetterQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      FifoQueue: true
+      MessageRetentionPeriod: 1209600
+  EmailNotificationDeduplicatedQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      MessageRetentionPeriod: 1209600
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt EmailNotificationDeduplicatedDeadLetterQueue.Arn
+        maxReceiveCount: 3
+      VisibilityTimeout: 900
+      FifoQueue: true
+    DependsOn: EmailNotificationDeduplicatedDeadLetterQueue
 
   EmailNotificationTopic:
     Type: AWS::SNS::Topic

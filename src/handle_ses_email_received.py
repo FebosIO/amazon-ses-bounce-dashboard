@@ -24,6 +24,10 @@ TABLE_EVENT_NAME = os.environ.get('TABLE_EVENT_NAME', 'ses-event')
 TABLE_EMAIL_SUPPRESSION_NAME = os.environ.get('TABLE_EMAIL_SUPPRESSION_NAME', 'ses-email-suppression')
 TABLE_EMAIL_RECEIVED_NAME = os.environ.get('TABLE_EMAIL_RECEIVED_NAME', 'ses-event-received')
 TABLE_EMAIL_REFERENCES_NAME = os.environ.get('TABLE_EMAIL_REFERENCES_NAME', 'ses-event-references')
+DEDUPLICATED_SQS_NAME = os.environ.get('DEDUPLICATED_SQS_NAME',
+                                       'ses-event-manager-EmailNotificationDeduplicatedQueue-oGI4QbXoRVCP.fifo')
+DEDUPLICATED_SQS_ARN = os.environ.get('DEDUPLICATED_SQS_ARN',
+                                      'arn:aws:sqs:us-east-1:830321976775:ses-event-manager-EmailNotificationDeduplicatedQueue-oGI4QbXoRVCP.fifo')
 
 # Inicializa el cliente DynamoDB y el cliente de SQS (para enviar eventos)
 dynamodb = get_dynamo_client()
@@ -48,7 +52,8 @@ signature_patterns = {
 
 @metrics.log_metrics
 def handler(message, context):
-    return sqs.procesar_mensajes(message, procesar_record, context)
+    return sqs.procesar_mensajes(message, procesar_record, context, deduplicate_fn=deduplicate_event)
+    # return sqs.procesar_mensajes(message, procesar_record, context)
 
 
 def map_headers(headers_list):
@@ -91,6 +96,22 @@ def clean_email_address(email_address):
         return email_address
     except:
         return email_address
+
+
+def deduplicate_event(record, context):
+    source = record.get('eventSource', '')
+    if source != DEDUPLICATED_SQS_ARN:
+        sqs_body: dict = record.get('body', '')
+        if isinstance(sqs_body, str):
+            sqs_body = json.loads(sqs_body)
+        mail = sqs_body.get('mail')
+        common_headers = mail.get('commonHeaders')
+        email_id = get_message_id(mail, common_headers, {})
+        if len(email_id) > 128:
+            email_id = email_id[:128]
+        sqs_response = sqs.enviar_mensaje(DEDUPLICATED_SQS_NAME, sqs_body, MessageDeduplicationId=email_id)
+        return True
+    return False
 
 
 def procesar_record(record, context):
