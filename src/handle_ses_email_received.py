@@ -99,7 +99,7 @@ def clean_email_address(email_address):
 
 
 def deduplicate_event(record, context):
-    source = record.get('eventSource', '')
+    source = record.get('eventSourceARN', '')
     if source != DEDUPLICATED_SQS_ARN:
         sqs_body: dict = record.get('body', '')
         if isinstance(sqs_body, str):
@@ -579,7 +579,7 @@ if __name__ == "__main__":
                                     'SenderId': 'AIDA4CUYL4XDUYJU3T2TZ',
                                     'ApproximateFirstReceiveTimestamp': '1728065849742'}, 'messageAttributes': {},
                      'md5OfBody': '20e30c56eba44bef1df349af55c5a12b', 'eventSource': 'aws:sqs',
-                     'eventSourceARN': 'arn:aws:sqs:us-east-1:830321976775:ses-event-manager-EmailNotificationQueue-PzbmPHPzbGTO',
+                     'eventSourceARN': DEDUPLICATED_SQS_ARN,
                      'awsRegion': 'us-east-1'}
                 ]
             }
