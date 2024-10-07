@@ -1,21 +1,19 @@
 {
   "notificationType": "Received",
   "mail": {
-    "timestamp": "2024-10-04T20:59:55.684Z",
-    "source": "intercambio@dtebcn.cl",
-    "messageId": "pmh8afu1tpb8n8tmhokuosst0vj4h7g1to7pr8o1",
-    "destination": [
-      "76111113-2@prd.inbox.febos.cl"
-    ],
+    "timestamp": "2024-10-05T04:46:05.455Z",
+    "source": "010101925affc4b1-8ff1e697-b100-4cfb-94ee-340cb175e7ea-000000@us-west-2.amazonses.com",
+    "messageId": "3f4eatpg5qjv6gn5b8lodoktbmu15hvj5fgn6j81",
+    "destination": [],
     "headersTruncated": false,
     "headers": [
       {
         "name": "Return-Path",
-        "value": "<intercambio@dtebcn.cl>"
+        "value": "<010101925affc4b1-8ff1e697-b100-4cfb-94ee-340cb175e7ea-000000@us-west-2.amazonses.com>"
       },
       {
         "name": "Received",
-        "value": "from smtp01.dtebcn.cl (smtp01.dtebcn.cl [186.67.102.75]) by inbound-smtp.us-east-1.amazonaws.com with SMTP id pmh8afu1tpb8n8tmhokuosst0vj4h7g1to7pr8o1 for 76111113-2@prd.inbox.febos.cl; Fri, 04 Oct 2024 20:59:55 +0000 (UTC)"
+        "value": "from a27-38.smtp-out.us-west-2.amazonses.com (a27-38.smtp-out.us-west-2.amazonses.com [54.240.27.38]) by inbound-smtp.us-east-1.amazonaws.com with SMTP id 3f4eatpg5qjv6gn5b8lodoktbmu15hvj5fgn6j81 for 99551270-k@prd.inbox.febos.cl; Sat, 05 Oct 2024 04:46:05 +0000 (UTC)"
       },
       {
         "name": "X-SES-Spam-Verdict",
@@ -27,82 +25,87 @@
       },
       {
         "name": "Received-SPF",
-        "value": "pass (spfCheck: domain of dtebcn.cl designates 186.67.102.75 as permitted sender) client-ip=186.67.102.75; envelope-from=intercambio@dtebcn.cl; helo=smtp01.dtebcn.cl;"
+        "value": "pass (spfCheck: domain of us-west-2.amazonses.com designates 54.240.27.38 as permitted sender) client-ip=54.240.27.38; envelope-from=010101925affc4b1-8ff1e697-b100-4cfb-94ee-340cb175e7ea-000000@us-west-2.amazonses.com; helo=a27-38.smtp-out.us-west-2.amazonses.com;"
       },
       {
         "name": "Authentication-Results",
-        "value": "amazonses.com; spf=pass (spfCheck: domain of dtebcn.cl designates 186.67.102.75 as permitted sender) client-ip=186.67.102.75; envelope-from=intercambio@dtebcn.cl; helo=smtp01.dtebcn.cl; dkim=pass header.i=@dtebcn.cl; dmarc=pass header.from=dtebcn.cl;"
+        "value": "amazonses.com; spf=pass (spfCheck: domain of us-west-2.amazonses.com designates 54.240.27.38 as permitted sender) client-ip=54.240.27.38; envelope-from=010101925affc4b1-8ff1e697-b100-4cfb-94ee-340cb175e7ea-000000@us-west-2.amazonses.com; helo=a27-38.smtp-out.us-west-2.amazonses.com; dkim=pass header.i=@amazonses.com; dmarc=none header.from=i2dtechnik.cl;"
       },
       {
         "name": "X-SES-RECEIPT",
-        "value": "AEFBQUFBQUFBQUFGQjlLUXJ2cklSN1BIWFQ0VlhKS3FLM2xKVmtVNSs2NXlKSldnczdSWmVweEd1TVVkSVF4VUY4M2QyOTVoMWpkaDZObWl6MW1Qc21wV29CcW5OajVrQ0ppQmlYcERDeUpUSTBJc3ZrVFJrczJGbFByWlJDUDJxR204d3ZnelJHdjliaVBjOXpCN2xnN2VsemlOWGV2OXRPTXpCNEU5RmhmTFlabHl3SURtRWtDOUw4Z01IaEhRYXBJRTF0WVVCVkd0MVBCcDFxZmlFV1ZQS2dBR3ErR2Zkb1B6NHhDTWt3cW42c1RONERGcFhWYlQwNXBGUjBUcWFCd2VzSDl3YlF2RGZsMXNPbUxQWFRLSHpOa0QwT0ZhanpjajhFQ1NEYXk0djRsZTRHamZIK1E9PQ=="
+        "value": "AEFBQUFBQUFBQUFIZmViRlhzZTZ0Y1RIUWU4ckFhaUtOSkYySUkxSGxsOENJRDhxZDk1b0dpQkVKTnRmbmtiUnI5YXlkZ2lhbmd4WkdKdmRRbCtaREVlcm1XMkdhNm5JbzF2NVBjVjJFVXhkQ1V3Mitibit6WnI2Y1ZsVkpPSjd5NXE5YlYwdDlLRHFxa0RMQTduVWFoZGppM0d1NjVoV3V4UW9KV1luRVUxN0RySTAwYlJoUjNkVU8xUEhRdVRUZm9RdGR1Y3NGN2xhRWtRWjBrSW9xcGM2OXY3emFCUmFNaWY0cy9CcGJERlBHWUxiTlNiUDFpcEZWUjFsNnl3MG1QMTBBcXNOUis1QUlwQ1ZKM054UXM0amhpa0JuR3dlSDdxTEtYYW1EeUpmU3hqL25MSG5Na01udWZzWmkrUHJpNkVmbFN0eXRsYlUxNVJrUGNXcXVMQmJTSm1VRTF5ZUxqMFlJeVp5VmdoeWo2bVZpUzdqWkZFd3BuKzFQa0tESHZVUkp1eFIwUDRrPQ=="
       },
       {
         "name": "X-SES-DKIM-SIGNATURE",
-        "value": "a=rsa-sha256; q=dns/txt; b=JBDXQV6MbwwpBbCN7D9tYwpNnqqMRiA++QLSi12jvAeyIMq5LfGS6RaPZLjMoQn+TS/YrbLwF5YdvxGvew6Uln3HUI+6dVL+q5s8BzbQv1w7rHMm102uyVY0sgJGQRcpdRA1SXBx0hyeyFWM+G+C1wlpejXGFsd51YgmfgGoJE4=; c=relaxed/simple; s=ug7nbtf4gccmlpwj322ax3p6ow6yfsug; d=amazonses.com; t=1728075598; v=1; bh=49bjAAX/loV0U4/cLDLgSUZ9Vk8WY2izt0fmuyKU5FY=; h=From:To:Cc:Bcc:Subject:Date:Message-ID:MIME-Version:Content-Type:X-SES-RECEIPT;"
-      },
-      {
-        "name": "Received",
-        "value": "from localhost.localdomain (ec2-3-144-45-66.us-east-2.compute.amazonaws.com [3.144.45.66]) by smtp01.dtebcn.cl (Postfix) with ESMTPA id B0FF5203D4F4 for <76111113-2@prd.inbox.febos.cl>; Fri,  4 Oct 2024 17:59:53 -0300 (-03)"
-      },
-      {
-        "name": "DKIM-Filter",
-        "value": "OpenDKIM Filter v2.11.0 smtp01.dtebcn.cl B0FF5203D4F4"
+        "value": "a=rsa-sha256; q=dns/txt; b=Ld566HGWL2aw6TNJkrBb6i5O3mP5xkC7bYNBJzHclKq0M7wUQcmtzbcPXujpurjMPS1ofJsEYGjjsq6M9PdnyCuG9zzog47iXZQU9FoLJwQkRmm2HQriXOPN90fdtdmZJK9o5yxWRbZqcZujsA2H2+nK2r+mPhJCaVJVuOKx3fc=; c=relaxed/simple; s=ug7nbtf4gccmlpwj322ax3p6ow6yfsug; d=amazonses.com; t=1728103566; v=1; bh=CtnxothLcvnYBMcWnD+K6Sz43XPCD9oQoA685JvKI0o=; h=From:To:Cc:Bcc:Subject:Date:Message-ID:MIME-Version:Content-Type:X-SES-RECEIPT;"
       },
       {
         "name": "DKIM-Signature",
-        "value": "v=1; a=rsa-sha256; c=relaxed/relaxed; d=dtebcn.cl; s=default; t=1728075594; bh=49bjAAX/loV0U4/cLDLgSUZ9Vk8WY2izt0fmuyKU5FY=; h=Date:From:To:Subject:From; b=QODKgEXcpKEj4kXmTX0oOBsX9gt+Fty3r0QSbBlvIe40suyf7W4l2wHLSCZNCkCJUhRVtEVUzs3uZnFYd3bjFHs9jNfTlDCmyeY1cNqLI7Oz5vjsWknCwVLCiiEGO/Wfh1bqzSRRXD5CE75Ugp33j5ouQKNOFnufx0mNXlCbxnHe+UqhfTkJsSCGYv7TO0Xzxod1rNepUC94Q9qUzOyvYuhzfdPEybXWjhcQDvZ/CqSknWrwJuRY2/YD6h151ijgIbqZPTmNza0h5iluQyNrP7ub03qBLkO+yIVyu+6oHEQ650C8TWC9otQI4OJ/+6KIH8GqhyvNAwvZH3PsRJJZgw=="
+        "value": "v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple; s=7v7vs6w47njt4pimodk5mmttbegzsi6n; d=amazonses.com; t=1728103564; h=Date:From:Reply-To:Subject:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Feedback-ID; bh=CtnxothLcvnYBMcWnD+K6Sz43XPCD9oQoA685JvKI0o=; b=uOTOev5yeae47HahBFQnwEZv+dCxphRC4TNv+V7htfQHTp8BeIKkziNo3l8p2N6dNFfhDh15eFidCyM2xN2syjg+eP1w6XoKYfKtviLhRzR7qnNWCfsojJlLa25rDKD6UEbx6J3wSOTNBlZOWBS98CX2CdN3eCR1uXAcPp3ue68="
       },
       {
-        "name": "Content-Transfer-Encoding",
-        "value": "binary"
+        "name": "Date",
+        "value": "Sat, 5 Oct 2024 04:46:04 +0000"
       },
       {
-        "name": "Content-Type",
-        "value": "multipart/mixed; boundary=\"_----------=_172807559218975398\""
+        "name": "From",
+        "value": "Facturación Electrónica - DIRECCION GENERAL DE PROMOCION DE EXPORTACIONES <facturacion@i2dtechnik.cl>"
+      },
+      {
+        "name": "Reply-To",
+        "value": "DIRECCION GENERAL DE PROMOCION DE EXPORTACIONES <prochile.dte@gmail.com>"
+      },
+      {
+        "name": "Subject",
+        "value": "Facturación Electrónica - DIRECCION GENERAL DE PROMOCION DE EXPORTACIONES"
+      },
+      {
+        "name": "Message-ID",
+        "value": "<010101925affc4b1-8ff1e697-b100-4cfb-94ee-340cb175e7ea-000000@us-west-2.amazonses.com>"
+      },
+      {
+        "name": "X-Mailer",
+        "value": "PHPMailer 5.2.28 (https://github.com/PHPMailer/PHPMailer)"
       },
       {
         "name": "MIME-Version",
         "value": "1.0"
       },
       {
-        "name": "X-Mailer",
-        "value": "MIME::Lite 3.030 (F2.85; T2.17; A2.21; B3.15; Q3.13)"
+        "name": "Content-Type",
+        "value": "multipart/mixed; boundary=\n\nb1_3416a7493ca9c9dd4df806405747d1e0\n\n"
       },
       {
-        "name": "Date",
-        "value": "Fri, 4 Oct 2024 17:59:52 -0300"
+        "name": "Content-Transfer-Encoding",
+        "value": "8bit"
       },
       {
-        "name": "From",
-        "value": "\"ALERTA GETDTE\" <intercambio@dtebcn.cl>"
+        "name": "Feedback-ID",
+        "value": "::1.us-west-2.X+3Va771G4ZmqctlBhhXP1MwK7ozMKaohWNcgtecdfM=:AmazonSES"
       },
       {
-        "name": "To",
-        "value": "76111113-2@prd.inbox.febos.cl"
-      },
-      {
-        "name": "Subject",
-        "value": "Envio Documento Tributario Electronico"
+        "name": "X-SES-Outgoing",
+        "value": "2024.10.05-54.240.27.38"
       }
     ],
     "commonHeaders": {
-      "returnPath": "intercambio@dtebcn.cl",
+      "returnPath": "010101925affc4b1-8ff1e697-b100-4cfb-94ee-340cb175e7ea-000000@us-west-2.amazonses.com",
       "from": [
-        "ALERTA GETDTE <intercambio@dtebcn.cl>"
+        "Facturación Electrónica - DIRECCION GENERAL DE PROMOCION DE EXPORTACIONES <facturacion@i2dtechnik.cl>"
       ],
-      "date": "Fri, 4 Oct 2024 17:59:52 -0300",
-      "to": [
-        "76111113-2@prd.inbox.febos.cl"
+      "replyTo": [
+        "DIRECCION GENERAL DE PROMOCION DE EXPORTACIONES <prochile.dte@gmail.com>"
       ],
-      "subject": "Envio Documento Tributario Electronico"
+      "date": "Sat, 5 Oct 2024 04:46:04 +0000",
+      "messageId": "<010101925affc4b1-8ff1e697-b100-4cfb-94ee-340cb175e7ea-000000@us-west-2.amazonses.com>",
+      "subject": "Facturación Electrónica - DIRECCION GENERAL DE PROMOCION DE EXPORTACIONES"
     }
   },
   "receipt": {
-    "timestamp": "2024-10-04T20:59:55.684Z",
-    "processingTimeMillis": 2531,
+    "timestamp": "2024-10-05T04:46:05.455Z",
+    "processingTimeMillis": 861,
     "recipients": [
-      "76111113-2@prd.inbox.febos.cl"
+      "99551270-k@prd.inbox.febos.cl"
     ],
     "spamVerdict": {
       "status": "PASS"
@@ -114,17 +117,17 @@
       "status": "PASS"
     },
     "dkimVerdict": {
-      "status": "PASS"
+      "status": "GRAY"
     },
     "dmarcVerdict": {
-      "status": "PASS"
+      "status": "GRAY"
     },
     "action": {
       "type": "S3",
       "topicArn": "arn:aws:sns:us-east-1:830321976775:ses-event-manager-EmailNotificationTopic-13Gug6rA6bdq",
       "bucketName": "febos-io",
       "objectKeyPrefix": "email/produccion/inbox",
-      "objectKey": "email/produccion/inbox/pmh8afu1tpb8n8tmhokuosst0vj4h7g1to7pr8o1"
+      "objectKey": "email/produccion/inbox/3f4eatpg5qjv6gn5b8lodoktbmu15hvj5fgn6j81"
     }
   }
 }

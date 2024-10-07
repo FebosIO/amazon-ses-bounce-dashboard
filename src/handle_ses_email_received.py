@@ -123,7 +123,7 @@ def procesar_record(record, context):
     file_bytes = s3_response[0]
     em = email.message_from_bytes(file_bytes)
 
-    email_id = get_message_id(mail,common_headers, em)
+    email_id = get_message_id(mail, common_headers, em)
 
     print(f"Processing email {email_id}")
 
@@ -132,10 +132,11 @@ def procesar_record(record, context):
         to_email = [to_email]
     tos = None
     try:
-        received = em.get('received', '')
+        received = em.get('received', headers.get('received'''))
         matchs = re.findall(r'for(.*);', received)
         receibed_email = matchs[0] if received else None
-        if receibed_email and receibed_email not in to_email:  # posiblemente una redireccion o un grupo de google
+        if receibed_email and (
+                not to_email or receibed_email not in to_email):  # posiblemente una redireccion o un grupo de google
             tos = to_email
             to_email = [receibed_email.strip()]
             print("new to", receibed_email.strip())
@@ -203,8 +204,8 @@ def procesar_record(record, context):
                 batch.put_item(Item=reference)
 
 
-def get_message_id(mail,common_headers, em):
-    message_id =  common_headers.get('messageId')
+def get_message_id(mail, common_headers, em):
+    message_id = common_headers.get('messageId')
     if not message_id:
         message_id = mail.get('messageId')
     if not message_id:
@@ -383,7 +384,9 @@ def process_attachments(bucket_name, em, object_key):
                     logger.error(f"Error decoding bytes to string: {e}")
             # store the decoded MIME part in S3 with the filename appended to the object key
             id = str(uuid.uuid4())
-            file_key = object_key + "/" + filename
+            file_key: str = object_key + "/" + filename
+            # replace // by /
+            file_key = file_key.replace("//", "/")
             params = {
                 'Bucket': bucket_name,
                 'Key': file_key,
@@ -409,7 +412,7 @@ def process_attachments(bucket_name, em, object_key):
             logger.info(
                 f"Part {part_idx}: Content type: {content_type}. Content disposition: {content_disposition} stored in {file_key}.")
         else:
-            logger.error(
+            logger.debug(
                 f"Part ({part_idx}): has no content. Content type: {content_type}. Content disposition: {content_disposition}.")
     return attachments
 
