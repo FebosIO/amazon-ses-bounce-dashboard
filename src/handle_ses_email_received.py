@@ -215,28 +215,29 @@ def procesar_record(record, context):
 
 
 def get_destinations(common_headers, em, headers, recipients=[]):
-    to_email = common_headers.get('to', headers.get('to'))
+    to_email = common_headers.get('to', headers.get('to',common_headers.get('To', headers.get('To'))))
     if isinstance(to_email, str):
         to_email = to_email.split(",")
     tos = None
     try:
-        received = em.get('received', headers.get('received'''))
+        received = em.get('received', headers.get('received',em.get('Received', headers.get('Received'))))
         matchs = re.findall(r'for(.*);', received)
-        receibed_email = matchs[0] if received else None
+        receibed_email = matchs[0] if matchs else None
         if receibed_email and '@' in receibed_email and (
                 not to_email or receibed_email not in to_email):  # posiblemente una redireccion o un grupo de google
             tos = to_email
             to_email = [receibed_email.strip()]
     except:
         traceback.print_exc()
-    to_email = [clean_email_address(email_address) for email_address in to_email]
-    recipients = [clean_email_address(email_address) for email_address in recipients]
     if recipients and len(recipients) > 0:
         tos = tos + to_email
         to_email = recipients
-        # deduplicate tos
+    if tos:
         tos = list(set(tos))
-
+        tos = [clean_email_address(email_address) for email_address in tos]
+    if to_email:
+        to_email = list(set(to_email))
+        to_email = [clean_email_address(email_address) for email_address in to_email]
     return to_email, tos
 
 
@@ -632,7 +633,7 @@ if __name__ == '__main__':
         # recorrer items para re encolar mensaje
         for object_key in single_items:
             print(object_key)
-            if object_key == 'email/produccion/inbox/0l7cmv9qo2vpmr3dm9j9idv95j6m717r7svqr4o1':
+            if object_key == 'email/produccion/inbox/4j5mrjv8iuticttgoo9sr09pq0opuu0mn17dpog1':
                 retomar = True
             if not retomar:
                 continue
