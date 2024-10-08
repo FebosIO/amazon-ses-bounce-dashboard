@@ -107,6 +107,8 @@ def deduplicate_event(record, context):
         mail = sqs_body.get('mail')
         common_headers = mail.get('commonHeaders')
         email_id = get_message_id(mail, common_headers, {})
+        # email_id can only include alphanumeric and punctuation characters. 1 to 128 in length.
+        email_id = re.sub(r'[^a-zA-Z0-9!#$%&\'*+-/=?^_`{|}~@]', '', email_id)
         if len(email_id) > 128:
             email_id = email_id[:128]
         sqs_response = sqs.enviar_mensaje(DEDUPLICATED_SQS_NAME, sqs_body, MessageDeduplicationId=email_id)
@@ -569,6 +571,17 @@ if __name__ == '__main__2':
 if __name__ == "__main__":
     with open('/Users/claudiomiranda/IdeaProjects/amazon-ses-bounce-dashboard/events/email_received.json', 'r') as f:
         message = json.load(f)
+        message = {
+            "Records": [{'messageId': 'f9c41b02-5abf-4b06-a644-730f707d073a',
+                         'receiptHandle': 'AQEBTV9BBfijmw12LsJWAoZhaG5H1zyHuH+ca92XIDhi3DxhZ0mCbqP9cQpaDHD+DUR40S/ow0IzVpFVWOl4k7HkTRjbuwTfENswHFt++tmLHR+8iQ2D1VrRxURB8oAUvNLEiQnrSIqAlkmin+CrstOH6aLaVtaORK+k4/BHrLN3Hh0sjJU8/UbickxXE88NyiQQ1V1KdsMWeiTlSaB4jNI5x6MH/GiNoW+vQZzPVocyUnSxsT6iBpcv5ibacCRXM28NBfWxFxcovSedjbZLrGj5vPVbLFHYfnEaugGP1Lr1yFzJia5PTUozGQ9Kw4CVxGygQXSKwpVY3IbByQiWcvYeMC+Eunke7nLZrW6Z16Ppiu02aehoKbVQjtKpZ4KL2017XyTlIrCKuDzkuqQFQ3DWKL7YSPWUduYqaxk2bNH2+gc3ORm+8CBPnjPfAPDOLERf',
+                         'body': '{"notificationType":"Received","mail":{"timestamp":"2024-10-08T12:12:44.893Z","source":"profactura@ausin.cl","messageId":"uthg3gi1fajvbrd0i29avls9aiqhnu1os5sunl81","destination":["emitidos-76296120-2@prd.inbox.febos.cl"],"headersTruncated":false,"headers":[{"name":"Return-Path","value":"<profactura@ausin.cl>"},{"name":"Received","value":"from ausin107221.dedicados.cl (ausin107221.dedicados.cl [201.148.107.221]) by inbound-smtp.us-east-1.amazonaws.com with SMTP id uthg3gi1fajvbrd0i29avls9aiqhnu1os5sunl81; Tue, 08 Oct 2024 12:12:44 +0000 (UTC)"},{"name":"X-SES-Spam-Verdict","value":"PASS"},{"name":"X-SES-Virus-Verdict","value":"PASS"},{"name":"Received-SPF","value":"pass (spfCheck: domain of ausin.cl designates 201.148.107.221 as permitted sender) client-ip=201.148.107.221; envelope-from=profactura@ausin.cl; helo=ausin107221.dedicados.cl;"},{"name":"Authentication-Results","value":"amazonses.com; spf=pass (spfCheck: domain of ausin.cl designates 201.148.107.221 as permitted sender) client-ip=201.148.107.221; envelope-from=profactura@ausin.cl; helo=ausin107221.dedicados.cl; dkim=pass header.i=@ausin.cl; dmarc=pass header.from=ausin.cl;"},{"name":"X-SES-RECEIPT","value":"AEFBQUFBQUFBQUFHclVGdGdwN3k3SVFjQ281Vkk4VnBIOHVONEd5VVB6U3d3Y0VqYjBXUXg1eldBUG9Xd3ljOXY5L0ZyOU1hWG1xclBqNVRWSXN4RVBsQ3lEVGN0eUpyVHRUeUhiNHRTRnVKTENhWkh4UnlQMXY2cE40OENNMklqdFNKbTZKYjdLdlBCZytsQjlGOVFUNGxXVW9vVkRKSTJCQVRMR0QwRlFJcTBCOXZJdzNTZXRCM0t1YUoybEd3em1lR1VWeHIrdGxhSG9mWW5BRmk0UWVuY2J5MjR0cXBNQWxmY3JsdlJKbHVEdkpWREV6ditsa2c4cVdHODhUT3EvYVppbTNaMU5haXUzRWJXSTBOMnFhdzJKblJVZHhDN2hISlJ2andMZFNTdWtqUVplemxzc3c9PQ=="},{"name":"X-SES-DKIM-SIGNATURE","value":"a=rsa-sha256; q=dns/txt; b=elBKet39Ru92qxwcd0QwqE9NwmEXiN+rDPSp566OH3yUw4yvDhsmw9v743oi48IlxD4M0uBJaBvg7Z3TdPNwg+fHDsNwlWMaQPvL/efJhSKHT27/RT2JQEDRuANZ3+TatCBhNyu6hSVNdZwKUiafbM+9E9fYrhxZ8Fxu0CzWi1o=; c=relaxed/simple; s=ug7nbtf4gccmlpwj322ax3p6ow6yfsug; d=amazonses.com; t=1728389566; v=1; bh=9cl4YoV2d2fBi9+WzKWteQC6Tdvhkh6O5oAiex73h8w=; h=From:To:Cc:Bcc:Subject:Date:Message-ID:MIME-Version:Content-Type:X-SES-RECEIPT;"},{"name":"DKIM-Signature","value":"v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=ausin.cl; s=default; h=Content-Type:MIME-Version:Subject:Message-ID:Date:To:From:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive; bh=aZ7BKtobE9MuaFRCo/u+HFPbY8zGPlRER+LIBa4DTW8=; b=M71rYrF5urfePg4bQqlYDHTsOaNicDfJVc8N6qBSZqC80IIENtq0fNgfB7z+GfRWrFpEnOrh37Id094RdBiKedGeTcZIVKWa2hY8L0SFxOFdFYvxO21Y7o4VrQbyn+G4O6eigtNxIT+TLU5IPfdhDEDGASB8LuzQUcDmTJUpZ+n4LIRb6ln6tccc55wWwg89fJe/hoRzfWzo/IaFpylH0f+W+Lr0l38Tje4IijGp4RdVeZq1kXpQLXTwSuqVo0LqWeV6wr4V87JV1M9tV9tYx8trgPAVdpyvumP45aqGNE0iHhrrtTWL9KM/lOj/nYN8ihfElIXNxXVe/T9GEY2Seg==;"},{"name":"Received","value":"from [200.55.215.218] (port=64492 helo=vmwin-profac) by ausin107221.dedicados.cl with esmtpa (Exim 4.96.2) (envelope-from <profactura@ausin.cl>) id 1sy950-0007sL-1r; Tue, 08 Oct 2024 09:12:41 -0300"},{"name":"From","value":"AUSIN <profactura@ausin.cl>"},{"name":"To","value":"AKRO DISENOS S A <emitidos-76296120-2@prd.inbox.febos.cl>"},{"name":"Date","value":"Tue, 08 Oct 2024 12:12:41 GMT"},{"name":"Message-ID","value":"<{ID 202428291240510472821}>"},{"name":"Subject","value":"Guia de despacho electronica. - 4301576 - archivo XML {ID  202428291240510472821}"},{"name":"MIME-Version","value":"1.0"},{"name":"X-Mailer","value":"devMail.Net (3.0.1854.22234-0)"},{"name":"Content-Type","value":"multipart/mixed; boundary=\\"----=_EDNP_0000_f460b8e3-e2ca-4a8a-9c0e-d9ff404f32ad\\""},{"name":"X-AntiAbuse","value":"This header was added to track abuse, please include it with any abuse report"},{"name":"X-AntiAbuse","value":"Primary Hostname - ausin107221.dedicados.cl"},{"name":"X-AntiAbuse","value":"Original Domain - prd.inbox.febos.cl"},{"name":"X-AntiAbuse","value":"Originator/Caller UID/GID - [47 12] / [47 12]"},{"name":"X-AntiAbuse","value":"Sender Address Domain - ausin.cl"},{"name":"X-Get-Message-Sender-Via","value":"ausin107221.dedicados.cl: authenticated_id: profactura@ausin.cl"},{"name":"X-Authenticated-Sender","value":"ausin107221.dedicados.cl: profactura@ausin.cl"},{"name":"X-Source","value":""},{"name":"X-Source-Args","value":""},{"name":"X-Source-Dir","value":""}],"commonHeaders":{"returnPath":"profactura@ausin.cl","from":["AUSIN <profactura@ausin.cl>"],"date":"Tue, 08 Oct 2024 12:12:41 GMT","to":["AKRO DISENOS S A <emitidos-76296120-2@prd.inbox.febos.cl>"],"messageId":"<{ID 202428291240510472821}>","subject":"Guia de despacho electronica. - 4301576 - archivo XML {ID  202428291240510472821}"}},"receipt":{"timestamp":"2024-10-08T12:12:44.893Z","processingTimeMillis":2094,"recipients":["emitidos-76296120-2@prd.inbox.febos.cl","87645000-3@prd.inbox.febos.cl"],"spamVerdict":{"status":"PASS"},"virusVerdict":{"status":"PASS"},"spfVerdict":{"status":"PASS"},"dkimVerdict":{"status":"PASS"},"dmarcVerdict":{"status":"PASS"},"action":{"type":"S3","topicArn":"arn:aws:sns:us-east-1:830321976775:ses-event-manager-EmailNotificationTopic-13Gug6rA6bdq","bucketName":"febos-io","objectKeyPrefix":"email/produccion/inbox","objectKey":"email/produccion/inbox/uthg3gi1fajvbrd0i29avls9aiqhnu1os5sunl81"}}}',
+                         'attributes': {'ApproximateReceiveCount': '1', 'SentTimestamp': '1728389567026',
+                                        'SenderId': 'AIDAIT2UOQQY3AUEKVGXU',
+                                        'ApproximateFirstReceiveTimestamp': '1728389567027'}, 'messageAttributes': {},
+                         'md5OfBody': '9fe3fe080a3f168df42bc8f994760663', 'eventSource': 'aws:sqs',
+                         'eventSourceARN': 'arn:aws:sqs:us-east-1:830321976775:ses-event-manager-EmailNotificationQueue-PzbmPHPzbGTO',
+                         'awsRegion': 'us-east-1'}]}
+
         if 'Records' not in message:
             message = {
                 "Records": [
@@ -597,3 +610,16 @@ if __name__ == "__main__":
 
         print(json.dumps(message))
         handler(message, Contexto())
+
+if __name__ == '__main__2':
+    items = {}
+    # read file objects_last_hour.txt to object
+    with open('objects_last_hour.txt', 'r') as f:
+        object_keys = f.read().splitlines()
+        for object_key in object_keys:
+            path = "/".join(object_key.split("/")[:4])
+            items[path] = items.get(path, 0) + 1
+
+        # find items with only 1
+        single_items = [k for k, v in items.items() if v == 1]
+        print(len(single_items))
