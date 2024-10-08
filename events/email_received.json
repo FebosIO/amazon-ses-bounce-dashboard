@@ -1,21 +1,19 @@
 {
   "notificationType": "Received",
   "mail": {
-    "timestamp": "2024-10-07T20:41:25.754Z",
-    "source": "info@grupokonectados.org",
-    "messageId": "l1g9r5kblv3e3t0mevkpnsmthlmc49apdbakeu81",
-    "destination": [
-      "76604931-1@PRD.INBOX.FEBOS.CL"
-    ],
+    "timestamp": "2024-10-08T13:17:15.641Z",
+    "source": "mruiz@vifrio.com",
+    "messageId": "e9d17r7rtohh06ojnnmk6qfd3nu55c9sul4tnp81",
+    "destination": [],
     "headersTruncated": false,
     "headers": [
       {
         "name": "Return-Path",
-        "value": "<info@grupokonectados.org>"
+        "value": "<mruiz@vifrio.com>"
       },
       {
         "name": "Received",
-        "value": "from linux19.puntonet.cl (linux19.puntonet.cl [200.75.30.55]) by inbound-smtp.us-east-1.amazonaws.com with SMTP id l1g9r5kblv3e3t0mevkpnsmthlmc49apdbakeu81 for 76604931-1@PRD.INBOX.FEBOS.CL; Mon, 07 Oct 2024 20:41:25 +0000 (UTC)"
+        "value": "from mail.vifrio.com (mail.vifrio.com [44.209.61.163]) by inbound-smtp.us-east-1.amazonaws.com with SMTP id e9d17r7rtohh06ojnnmk6qfd3nu55c9sul4tnp81 for notificaciones@empresas.febos.cl; Tue, 08 Oct 2024 13:17:15 +0000 (UTC)"
       },
       {
         "name": "X-SES-Spam-Verdict",
@@ -23,95 +21,110 @@
       },
       {
         "name": "X-SES-Virus-Verdict",
-        "value": "PASS"
+        "value": "FAIL"
       },
       {
         "name": "Received-SPF",
-        "value": "pass (spfCheck: domain of grupokonectados.org designates 200.75.30.55 as permitted sender) client-ip=200.75.30.55; envelope-from=info@grupokonectados.org; helo=linux19.puntonet.cl;"
+        "value": "pass (spfCheck: domain of vifrio.com designates 44.209.61.163 as permitted sender) client-ip=44.209.61.163; envelope-from=mruiz@vifrio.com; helo=mail.vifrio.com;"
       },
       {
         "name": "Authentication-Results",
-        "value": "amazonses.com; spf=pass (spfCheck: domain of grupokonectados.org designates 200.75.30.55 as permitted sender) client-ip=200.75.30.55; envelope-from=info@grupokonectados.org; helo=linux19.puntonet.cl; dkim=pass header.i=@grupokonectados.org; dmarc=pass header.from=grupokonectados.org;"
+        "value": "amazonses.com; spf=pass (spfCheck: domain of vifrio.com designates 44.209.61.163 as permitted sender) client-ip=44.209.61.163; envelope-from=mruiz@vifrio.com; helo=mail.vifrio.com; dkim=pass header.i=@vifrio.com; dmarc=pass header.from=vifrio.com;"
       },
       {
         "name": "X-SES-RECEIPT",
-        "value": "AEFBQUFBQUFBQUFHbFNQZS9hazJyb0R2WGFsMVdKMG5UR09yeFFPb2tLa0x1emtpTTdTUloyaTk1RFRkNU5tMHFTRnRMQ2x6TWFpc08yVXNYeTF0RDJHN3FteUdpWGhMMGxDQ2ZxQnZWak1RVUc3SEtsRzhUUUY5QnQ2Sm1sQlRPdUQvZ3lFalFvTVMvQ04xSTNNeVFqMjNjWEdGK29pSGVPUC9YcEVlVFdGNHQ3bXNJWjg2aHFDWVpxUlAzS2JwYTROS0NFVVRvR1grVFF3Ulg1aXBBaDZnajkreTVDSVQrTEU1azFzbjZheDRZM2xwOXphNEVYL09oUjdUN2UrN05nOGliVDZXNmNUcmZ0N0tuU1U4N2lvSHJJK1Z2SDdFYTdNc09mbUkzMGRqbzRGaTBkbDdVMVE9PQ=="
+        "value": "AEFBQUFBQUFBQUFHem5GdUsxNjN2Y3A3NlgzRnFJL0VjVEg3ZmplY3NnbUNVclBmMXZ0dmRtR2Z5TGRFVlJRendtSWJqeUNvaTRCZkJPT0d3anBFNFVrVzRIb3o5ZzB2c3pVMkZtNENZKzJjcGVFUXFPbkphVlFJSENEdXF6L3JLYUJSN1hRZUo3WGEwc0E4d2dnUlBWbXl6dzlENzVjQm9kS1AzY3MyM3NVNzlqWVdmVmRJc0d2SDFNWHY2WkxLN0dQOWFxMjAwUDIrdVNxNVVmWndkSVIyRFVpem55Q1Q3ODFKdWNIeUhoa243bzUyMnFTbUx3bXJaK1BLVzg3V2xGcHJvaG1zMHdwTXdUeUFsS0FJMUt5OVBCZ3hjc2M1Ym5wVVdSTEZLWUt5djlWbjlFclJDdGc9PQ=="
       },
       {
         "name": "X-SES-DKIM-SIGNATURE",
-        "value": "a=rsa-sha256; q=dns/txt; b=Y9okJs4a5SE4AQdUBovGamqKdrEHlWDX88HWVVvySNjW2s+AUq+lnJrX8GIY1V1X20A5pz7CVUznnwbC4abMLvojIvfzhHECRCZGqYwqEczcX1PFA1LkC6BdZJZ3NrDaDzk197a8QTrLG3AyXzlf6VcYi9PluuCAlWON2YXBxWs=; c=relaxed/simple; s=ug7nbtf4gccmlpwj322ax3p6ow6yfsug; d=amazonses.com; t=1728333686; v=1; bh=rcgfpxBllaZqCMNMDGdaFPfppGXuhKs7YHKW5XSsHrA=; h=From:To:Cc:Bcc:Subject:Date:Message-ID:MIME-Version:Content-Type:X-SES-RECEIPT;"
+        "value": "a=rsa-sha256; q=dns/txt; b=WcoFUub7bL+txrIsX9VhxmBaUmXgkr02gcEu0ItzNq4pmPXVZepqtUSLsGvnf3lU95XBw0NR/IW+fOv9zTUoeea62I26UXhGlZNgkKhoY9FtytdZC8oih7fU42dmOfPGPQ5erfmY6GBOGEzXSl8uCb+48cVObpqg6Ur/y7E+QL8=; c=relaxed/simple; s=ug7nbtf4gccmlpwj322ax3p6ow6yfsug; d=amazonses.com; t=1728393436; v=1; bh=jfO0kohbRtMMPTF0qRTNpeGLQCArzmfMnjlAYdfoY5I=; h=From:To:Cc:Bcc:Subject:Date:Message-ID:MIME-Version:Content-Type:X-SES-RECEIPT;"
       },
       {
         "name": "Received",
-        "value": "from ServerWeb (unknown [52.179.2.134]) by linux19.puntonet.cl (Postfix) with ESMTPA id 273F760880 for <76604931-1@PRD.INBOX.FEBOS.CL>; Mon,  7 Oct 2024 17:40:40 -0300 (-03)"
+        "value": "from mail.vifrio.com (localhost.localdomain [127.0.0.1]) by mail.vifrio.com (Postfix) with ESMTPS id 63BA050866FA1; Tue,  8 Oct 2024 13:06:51 +0000 (UTC)"
       },
       {
-        "name": "Authentication-Results",
-        "value": "linux19; dmarc=fail header.from=grupokonectados.org"
+        "name": "Received",
+        "value": "from localhost (localhost.localdomain [127.0.0.1]) by mail.vifrio.com (Postfix) with ESMTP id 321F250866F94; Tue,  8 Oct 2024 13:06:49 +0000 (UTC)"
+      },
+      {
+        "name": "DKIM-Filter",
+        "value": "OpenDKIM Filter v2.10.3 mail.vifrio.com 321F250866F94"
       },
       {
         "name": "DKIM-Signature",
-        "value": "v=1; a=rsa-sha256; c=relaxed/relaxed; d=grupokonectados.org; s=Puntonet; t=1728333640; bh=o1qrYgwwuzVjX5myxEUwmLjdoOifkGur1K6fFrKkj5w=; h=From:To:Reply-To:Date:Subject:From; b=ZQLrEfrQB0VFeInMy4qCbaveiRfjYAk5nr6Lm1VazFQ1IKu4H6rMk0ubJDfpVAijWkfqHf1TdV746kvpJ8gRIUpMw9nczJxDR70D6BlGzbe0kibLty2Tx71UDA9bW0aTw2wZxPfVz38iZ09SKzcdY/kUbZ23FAwO5gskcavLS8U="
+        "value": "v=1; a=rsa-sha256; c=relaxed/relaxed; d=vifrio.com; s=BB7920F4-CE3A-11E7-BCE1-7E5F734BD762; t=1728392810; bh=VF1tPVJoORniV3eCJPEQF2ntAiwQ+FhatSevzKRhsWE=; h=Date:From:Message-ID:MIME-Version; b=JXEiU1yhKNzjiaVxCmPkavWSx2U622RwT8L87FteG3TmVOc7OxSU4OlFO0m4VP/DdgRai3mAMXQ4+WtMLrQAAZifEyMwskpto/VLwkP1w+wqNafX+4YKmZuEnRa0IgVgw2P3om48CztteUD0ZNs0ZG4ukXrueu/Ac2Pomr9SgfYpSfIGHQwg90ajsQ5yxZqkl6lYZcXYDgX9Uwc+6gjgySuqffkEf3w6E5DHhdIT/o7VGPYwTnEBiBFqsbx+Cuwz3wDwglm6o25Wqxd/p8Eme2t/vHB0MbKWtxreNFeDEKnQCh2ta3pqI/7LyDP7UcIPsaNBkPxriOhgUJyfAvyeJw=="
+      },
+      {
+        "name": "Received",
+        "value": "from mail.vifrio.com ([127.0.0.1]) by localhost (mail.vifrio.com [127.0.0.1]) (amavisd-new, port 10026) with ESMTP id MoUm_NiPVOmj; Tue,  8 Oct 2024 13:06:47 +0000 (UTC)"
+      },
+      {
+        "name": "Received",
+        "value": "from mail.vifrio.com (mail.vifrio.com [172.31.1.5]) by mail.vifrio.com (Postfix) with ESMTP id 7D78E50866F8A; Tue,  8 Oct 2024 13:06:44 +0000 (UTC)"
+      },
+      {
+        "name": "Date",
+        "value": "Tue, 8 Oct 2024 13:06:44 +0000 (UTC)"
+      },
+      {
+        "name": "From",
+        "value": "Gabriela Lopez <mruiz@vifrio.com>"
+      },
+      {
+        "name": "Message-ID",
+        "value": "<148540960.15316.1728392804159.JavaMail.zimbra@vifrio.com>"
+      },
+      {
+        "name": "Subject",
+        "value": "Orden de compra"
       },
       {
         "name": "MIME-Version",
         "value": "1.0"
       },
       {
-        "name": "From",
-        "value": "\"Grupo Kon3ctados\" <info@grupokonectados.org>"
-      },
-      {
-        "name": "To",
-        "value": "76604931-1@PRD.INBOX.FEBOS.CL"
-      },
-      {
-        "name": "Reply-To",
-        "value": "konectados.autopistacentra@gmail.com"
-      },
-      {
-        "name": "Date",
-        "value": "7 Oct 2024 17:41:20 -0300"
-      },
-      {
-        "name": "Subject",
-        "value": "Nuevo aviso de Autopase"
-      },
-      {
         "name": "Content-Type",
-        "value": "text/html; charset=iso-8859-1"
+        "value": "multipart/mixed;  boundary=\"----=_Part_15307_1478856752.1728392804138\""
       },
       {
-        "name": "Content-Transfer-Encoding",
-        "value": "quoted-printable"
+        "name": "X-Originating-IP",
+        "value": "[172.31.1.5]"
+      },
+      {
+        "name": "X-Mailer",
+        "value": "Zimbra 8.8.12_GA_3866 (ZimbraWebClient - FF131 (Win)/8.8.12_GA_3844)"
+      },
+      {
+        "name": "Thread-Index",
+        "value": "335AwYG8zEaDVNpXXkWIAhJghEnqhA=="
+      },
+      {
+        "name": "Thread-Topic",
+        "value": "Orden de compra"
       }
     ],
     "commonHeaders": {
-      "returnPath": "info@grupokonectados.org",
+      "returnPath": "mruiz@vifrio.com",
       "from": [
-        "Grupo Kon3ctados <info@grupokonectados.org>"
+        "Gabriela Lopez <mruiz@vifrio.com>"
       ],
-      "replyTo": [
-        "konectados.autopistacentra@gmail.com"
-      ],
-      "date": "7 Oct 2024 17:41:20 -0300",
-      "to": [
-        "76604931-1@PRD.INBOX.FEBOS.CL"
-      ],
-      "subject": "Nuevo aviso de Autopase"
+      "date": "Tue, 8 Oct 2024 13:06:44 +0000 (UTC)",
+      "messageId": "<148540960.15316.1728392804159.JavaMail.zimbra@vifrio.com>",
+      "subject": "Orden de compra"
     }
   },
   "receipt": {
-    "timestamp": "2024-10-07T20:41:25.754Z",
-    "processingTimeMillis": 1323,
+    "timestamp": "2024-10-08T13:17:15.641Z",
+    "processingTimeMillis": 1131,
     "recipients": [
-      "76604931-1@PRD.INBOX.FEBOS.CL"
+      "notificaciones@empresas.febos.cl"
     ],
     "spamVerdict": {
       "status": "PASS"
     },
     "virusVerdict": {
-      "status": "PASS"
+      "status": "FAIL"
     },
     "spfVerdict": {
       "status": "PASS"
@@ -127,7 +140,7 @@
       "topicArn": "arn:aws:sns:us-east-1:830321976775:ses-event-manager-EmailNotificationTopic-13Gug6rA6bdq",
       "bucketName": "febos-io",
       "objectKeyPrefix": "email/produccion/inbox",
-      "objectKey": "email/produccion/inbox/l1g9r5kblv3e3t0mevkpnsmthlmc49apdbakeu81"
+      "objectKey": "email/produccion/inbox/e9d17r7rtohh06ojnnmk6qfd3nu55c9sul4tnp81"
     }
   }
 }

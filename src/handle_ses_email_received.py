@@ -230,7 +230,10 @@ def get_destinations(common_headers, em, headers, recipients=[]):
     except:
         traceback.print_exc()
     if recipients and len(recipients) > 0:
-        tos = tos + to_email
+        if tos:
+            tos = tos + to_email
+        else:
+            tos = to_email
         to_email = recipients
     if tos:
         tos = list(set(tos))
@@ -583,7 +586,7 @@ if __name__ == '__main__2':
             last_evaluated_key = recibidos_response.get('LastEvaluatedKey', None)
             recibidos = recibidos_response.get('Items', [])
 
-if __name__ == "__main__2":
+if __name__ == "__main__":
     with open('/Users/claudiomiranda/IdeaProjects/amazon-ses-bounce-dashboard/events/email_received.json', 'r') as f:
         message = json.load(f)
         if 'Records' not in message:
