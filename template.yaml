@@ -394,6 +394,8 @@ Resources:
           Type: SQS
           Properties:
             Queue: !GetAtt SESEventSQS.Arn
+            FunctionResponseTypes:
+              - ReportBatchItemFailures
             BatchSize: 1
     Metadata:
       'AWS::CloudFormation::Designer':
@@ -455,8 +457,10 @@ Resources:
           Properties:
             Queue: !GetAtt SESSendEmailSQS.Arn
             BatchSize: 1
+            FunctionResponseTypes:
+              - ReportBatchItemFailures
             ScalingConfig:
-              MaximumConcurrency: 7
+              MaximumConcurrency: 5
     Metadata:
       'AWS::CloudFormation::Designer':
         id: bce22d8f-5cbc-4935-aa75-d9b30ea96d3a

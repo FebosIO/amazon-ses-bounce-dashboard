@@ -5,6 +5,7 @@ import time
 import traceback
 from _decimal import Decimal
 
+from utils import sqs
 from utils.dynamo import get_dynamo_client
 from utils.logic import value_or_default
 from utils.s3 import s3_get_object_string, s3_get_object_file
@@ -24,13 +25,17 @@ table_suppression = dynamo_client.Table(table_email_suppression_name)
 
 
 def handler(message, context):
+    return sqs.procesar_mensajes(message, procesar_record, context)
+
+
+def procesar_record(record, context):
     id = None
     params = None
     messageId = None
     vencimiento: datetime.datetime = agregar_minutos(datetime.datetime.now(), TTL)
     expiration = Decimal(time.mktime(vencimiento.timetuple()))
     try:
-        sqsBody = json.loads(message['Records'][0]['body'])
+        sqsBody = json.loads(record['body'])
         id = value_or_default(sqsBody, 'id')
         params = {
             'id': id,
@@ -42,7 +47,7 @@ def handler(message, context):
         copias = value_or_default(item, 'copias', [])
         manifiesto = value_or_default(item, 'manifiesto')
         ConfigurationSetName = value_or_default(item, 'ConfigurationSetName', 'default')
-        respuesta_email, subject, tiene_adjuntos, sender, status = sen_notification_from_manifest(
+        respuesta_email, subject, tiene_adjuntos, sender, status = send_notification_from_manifest(
             destinatarios,
             manifiesto,
             ConfigurationSetName,
@@ -95,12 +100,12 @@ def handler(message, context):
             },
             ReturnValues="UPDATED_NEW"
         )
-        print(message)
+        print(record)
         print(e)
         raise e
 
 
-def sen_notification_from_manifest(
+def send_notification_from_manifest(
         destinatario,
         manifiesto,
         ConfigurationSetName="default",
@@ -179,6 +184,7 @@ def sen_notification_from_manifest(
         headers=headers
     )
     return response, emailField['subject']['value'], len(attachments) > 0, emailField['from']['value'], "sended"
+
 
 def pasar_campos_en_manifiesto_a_objeto(manifiesto):
     output = {}
