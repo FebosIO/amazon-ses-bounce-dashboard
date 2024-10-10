@@ -215,12 +215,12 @@ def procesar_record(record, context):
 
 
 def get_destinations(common_headers, em, headers, recipients=[]):
-    to_email = common_headers.get('to', headers.get('to',common_headers.get('To', headers.get('To'))))
+    to_email = common_headers.get('to', headers.get('to', common_headers.get('To', headers.get('To'))))
     if isinstance(to_email, str):
         to_email = to_email.split(",")
     tos = None
     try:
-        received = em.get('received', headers.get('received',em.get('Received', headers.get('Received'))))
+        received = em.get('received', headers.get('received', em.get('Received', headers.get('Received'))))
         matchs = re.findall(r'for(.*);', received)
         receibed_email = matchs[0] if matchs else None
         if receibed_email and '@' in receibed_email and (
@@ -419,6 +419,7 @@ def process_attachments(bucket_name, em, object_key):
 
         if filename and content:
             filename = decode_mime_words(filename)
+
             # replace all \n and \r in filename
             filename = filename.replace("\n", " ").replace("\r", "")
             filename = filename.replace("\\", "/")
@@ -427,6 +428,7 @@ def process_attachments(bucket_name, em, object_key):
             if '/' in filename:
                 filename = filename.split('/')[-1]
 
+            filename = remove_non_assignable_s3_object_name_characters(filename)
             # decode the content based on the character set specified
             # TODO: add error handling
             if charset:
@@ -436,7 +438,7 @@ def process_attachments(bucket_name, em, object_key):
                     logger.error(f"Error decoding bytes to string: {e}")
             # store the decoded MIME part in S3 with the filename appended to the object key
             id = str(uuid.uuid4())
-            file_key: str = object_key + "/" + filename
+            file_key: str = object_key + "/" + id
             # replace // by /
             file_key = file_key.replace("//", "/")
             params = {
@@ -461,12 +463,16 @@ def process_attachments(bucket_name, em, object_key):
                 "etag": etag,
                 "version": version
             })
-            logger.info(
-                f"Part {part_idx}: Content type: {content_type}. Content disposition: {content_disposition} stored in {file_key}.")
+            logger.debug( f"Part {part_idx}: Content type: {content_type}. Content disposition: {content_disposition} stored in {file_key}.")
         else:
             logger.debug(
                 f"Part ({part_idx}): has no content. Content type: {content_type}. Content disposition: {content_disposition}.")
     return attachments
+
+
+def remove_non_assignable_s3_object_name_characters(object_name):
+    return re.sub(r'[\\/:*?"<>|]', '', object_name)
+
 
 
 def decode_mime_words(encoded_text):
@@ -485,108 +491,11 @@ def decode_mime_words(encoded_text):
         return encoded_text
 
 
-def get_headers(em, lower=True, camel_case=False):
-    headers = {}
-    for k, v in em.items():
-        name = k
-        if camel_case:
-            # transformar el nombre en camelCase
-            name = ''.join([word.capitalize() for word in name.split('-')])
-            # lower first letter
-            name = name[0].lower() + name[1:]
-        if lower:
-            name = name.lower()
-        headers[name] = str(v)
-    return headers
-
-
-def procesar_recibidos(recibidos):
-    bucket_name = 'febos-io'
-    for recibido in recibidos:
-        try:
-            object_key = recibido['object_key']
-            id = recibido['id']
-            print(id)
-            if 'produccion' in object_key.lower() or 'prod' in object_key.lower():
-                to = recibido.get('to', [])
-                attachments = recibido.get('attachments', [])
-                # if any to end with @febos.cl
-                # if any(['febos.' not in x.lower() for x in to]):
-                if (
-                        True
-                        or any(['<' in x.lower() for x in to])
-                        or any(['//' in x['name'].lower() for x in attachments])
-                        or any(['\\' in x['name'].lower() for x in attachments])
-                        or any(['\n' in x['name'].lower() for x in attachments])
-                        or any(['\r' in x['name'].lower() for x in attachments])
-                ):
-                    # corregir to guadar y lanzar evento
-                    print(to)
-                    s3_response = s3.s3_get_object_bytes(f"{bucket_name}/{object_key}")
-                    file_bytes = s3_response[0]
-                    em = email.message_from_bytes(file_bytes)
-                    try:
-                        headers = get_headers(em)
-                        to_email, tos = get_destinations(headers, em, headers)
-                        attachments = process_attachments(bucket_name, em, object_key)
-
-                        print("new to", to_email, tos)
-                        recibido['to'] = to_email
-                        recibido['tos'] = tos
-                        # update dynamo by id and timestamp
-                        update_response = table_received.update_item(
-                            Key={
-                                'id': recibido['id'],
-                                'timestamp': recibido['timestamp']
-                            },
-                            UpdateExpression='SET #to = :val0, #tos = :val1, #att = :val2',
-                            ExpressionAttributeValues={
-                                ':val2': attachments,
-                                ':val0': to_email,
-                                ':val1': to
-                            },
-                            ExpressionAttributeNames={
-                                '#to': 'to',
-                                '#tos': 'tos',
-                                '#att': 'attachments'
-                            }
-                        )
-                        print(update_response)
-                        # send_event('email-received', recibido)
-                    except:
-                        traceback.print_exc()
-        except:
-            traceback.print_exc()
-        finally:
-            print(recibido)
-
-
-if __name__ == '__main__2':
-    find_id = "a3ddf532b5ba4a057364866e2b4d04b2@copeval.cl"
-    find_id = "230f9a25f39aa7460b416ae3336d90b8@copeval.cl"
-    find_id = "98e26d3abd7d69602ade4b7100cdc092@copeval.cl"
-    find_id = "3a1c9bc50370494784277db9a9334189@justtime-erp.cl"
-    find_id = "21b1f7ea96ed472a88d86cf3f6fa6a52@justtime-erp.cl"
-    find_id = "241411697.41728301007476.JavaMail.root@soap-sdk"
-    params = {
-        'KeyConditionExpression': Key('id').eq(find_id)
-    }
-    # find by id
-    recibidos_response = table_received.query(**params)
-    # load all email received from dynamodb
-    # recibidos_response = table_received.scan(**params)
-    last_evaluated_key = 'A'
-    recibidos = recibidos_response['Items']
-    last_evaluated_key = recibidos_response.get('LastEvaluatedKey', None)
-    while len(recibidos) > 0:
-        procesar_recibidos(recibidos)
-        recibidos = []
-        if last_evaluated_key:
-            recibidos_response = table_received.scan(ExclusiveStartKey=last_evaluated_key)
-            last_evaluated_key = recibidos_response.get('LastEvaluatedKey', None)
-            recibidos = recibidos_response.get('Items', [])
-
 if __name__ == "__main__":
+    print(remove_non_assignable_s3_object_name_characters("DIRECCI?N GENERAL DE PROMOCI?N DE EXPORTACI?N-2024-10-10-NÂº0"))
+    print(remove_non_assignable_s3_object_name_characters("DIRECCIÓN GENERAL DE PROMOCIÓN DE EXPORTACIÓN-2024-10-10-Nº0"))
+
+if __name__ == "__main__2":
     with open('/Users/claudiomiranda/IdeaProjects/amazon-ses-bounce-dashboard/events/email_received.json', 'r') as f:
         message = json.load(f)
         if 'Records' not in message:
