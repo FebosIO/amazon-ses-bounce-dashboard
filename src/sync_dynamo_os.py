@@ -49,7 +49,6 @@ def handler(message, context):
             new_image = dynamodb_object.get('NewImage', dynamodb_object.get('OldImage', {}))
             new_record = {k: deserializer.deserialize(v) for k, v in new_image.items()}
 
-
             if 'id' in keys:
                 id = keys['id']
             elif 'id' in new_record:
@@ -58,8 +57,7 @@ def handler(message, context):
                 id = keys[keys.keys()[0]]
             url = host + '/' + table_event + '/' + datatype + "/" + id
 
-
-
+            # print(event_name, url)
             # URL de objeto indexado
             if event_name == 'REMOVE':
                 response = requests.delete(url, auth=awsauth, headers=headers)
