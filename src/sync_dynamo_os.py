@@ -46,7 +46,7 @@ def handler(message, context):
 
             table_event = event_source_arn.split("table/")[1].split("/")[0]
             keys = {k: deserializer.deserialize(v) for k, v in dynamodb_object['Keys'].items()}
-            new_image = dynamodb_object.get('NewImage', dynamodb_object.get('OldImage'), {})
+            new_image = dynamodb_object.get('NewImage', dynamodb_object.get('OldImage', {}))
             new_record = {k: deserializer.deserialize(v) for k, v in new_image.items()}
 
 
