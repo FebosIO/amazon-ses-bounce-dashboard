@@ -9,7 +9,6 @@ from email.header import decode_header
 
 from aws_lambda_powertools import Metrics
 from aws_lambda_powertools.metrics import MetricUnit
-from boto3.dynamodb.conditions import Key
 from dateutil import parser
 from langdetect import detect
 
