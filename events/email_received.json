@@ -140,7 +140,7 @@
       "topicArn": "arn:aws:sns:us-east-1:830321976775:ses-event-manager-EmailNotificationTopic-13Gug6rA6bdq",
       "bucketName": "febos-io",
       "objectKeyPrefix": "email/produccion/inbox",
-      "objectKey": "email/produccion/inbox/e9d17r7rtohh06ojnnmk6qfd3nu55c9sul4tnp81"
+      "objectKey": "email/produccion/inbox/2asdd1avnsjf5gsk6eb5gk048iigm4n7lccond81"
     }
   }
 }

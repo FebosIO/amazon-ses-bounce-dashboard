@@ -372,6 +372,20 @@ def process_body(em, from_email):
     return clean_body, email_language, text, html
 
 
+def upload_bytes(contenido: bytes, key: str, bucket: str, encode='latin1', **kargs):
+    if isinstance(contenido, str):
+        if 'ContentEncoding' in kargs:
+            encode = kargs['ContentEncoding']
+        contenido = contenido.encode(encode)
+
+    return s3.put_object(
+        Body=contenido,
+        Bucket=bucket,
+        Key=key,
+        **kargs
+    )
+
+
 def process_attachments(bucket_name, em, object_key):
     parts = em.walk()
     part_idx = 0
@@ -429,25 +443,35 @@ def process_attachments(bucket_name, em, object_key):
 
             filename = remove_non_assignable_s3_object_name_characters(filename)
             # decode the content based on the character set specified
-            # TODO: add error handling
-            if charset:
-                try:
-                    content = content.decode(charset)
-                except Exception as e:
-                    logger.error(f"Error decoding bytes to string: {e}")
             # store the decoded MIME part in S3 with the filename appended to the object key
             id = str(uuid.uuid4())
             file_key: str = object_key + "/" + id
             # replace // by /
             file_key = file_key.replace("//", "/")
-            params = {
-                'Bucket': bucket_name,
-                'Key': file_key,
-                'Body': content
-            }
-            put_response = s3.put_object(
-                **params
-            )
+            if filename.lower().endswith(".xml"):
+                put_response = upload_bytes(
+                    content,
+                    file_key,
+                    bucket_name,
+                    ContentEncoding=charset,
+                    ContentDisposition="text/xml",
+                    ContentType="text/xml"
+                )
+            else:
+                if charset:
+                    try:
+                        content = content.decode(charset)
+                    except Exception as e:
+                        logger.error(f"Error decoding bytes to string: {e}")
+                params = {
+                    'Bucket': bucket_name,
+                    'Key': file_key,
+                    'Body': content
+                }
+                put_response = s3.put_object(
+                    **params
+                )
+
             etag = put_response['ETag']
             version = put_response['VersionId']
             content_length = len(content)
@@ -462,7 +486,8 @@ def process_attachments(bucket_name, em, object_key):
                 "etag": etag,
                 "version": version
             })
-            logger.debug( f"Part {part_idx}: Content type: {content_type}. Content disposition: {content_disposition} stored in {file_key}.")
+            logger.debug(
+                f"Part {part_idx}: Content type: {content_type}. Content disposition: {content_disposition} stored in {file_key}.")
         else:
             logger.debug(
                 f"Part ({part_idx}): has no content. Content type: {content_type}. Content disposition: {content_disposition}.")
@@ -471,7 +496,6 @@ def process_attachments(bucket_name, em, object_key):
 
 def remove_non_assignable_s3_object_name_characters(object_name):
     return re.sub(r'[\\/:*?"<>|]', '', object_name)
-
 
 
 def decode_mime_words(encoded_text):
@@ -491,10 +515,6 @@ def decode_mime_words(encoded_text):
 
 
 if __name__ == "__main__":
-    print(remove_non_assignable_s3_object_name_characters("DIRECCI?N GENERAL DE PROMOCI?N DE EXPORTACI?N-2024-10-10-NÂº0"))
-    print(remove_non_assignable_s3_object_name_characters("DIRECCIÓN GENERAL DE PROMOCIÓN DE EXPORTACIÓN-2024-10-10-Nº0"))
-
-if __name__ == "__main__2":
     with open('/Users/claudiomiranda/IdeaProjects/amazon-ses-bounce-dashboard/events/email_received.json', 'r') as f:
         message = json.load(f)
         if 'Records' not in message:
