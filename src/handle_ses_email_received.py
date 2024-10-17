@@ -457,6 +457,13 @@ def process_attachments(bucket_name, em, object_key):
                     ContentDisposition="text/xml",
                     ContentType="text/xml"
                 )
+            elif isinstance(content, bytes) and charset:
+                put_response = upload_bytes(
+                    content,
+                    file_key,
+                    bucket_name,
+                    ContentEncoding=charset
+                )
             else:
                 if charset:
                     try:
