@@ -9,6 +9,7 @@ from email.header import decode_header
 
 from aws_lambda_powertools import Metrics
 from aws_lambda_powertools.metrics import MetricUnit
+from botocore.exceptions import ClientError
 from dateutil import parser
 from langdetect import detect
 
@@ -158,6 +159,11 @@ def procesar_record(record, context):
     unix_timestamp = int(datetime_timestamp.timestamp())
 
     email_id = get_message_id(mail, common_headers, em)
+    # check if email_id exist in dynamo
+    response = table_received.get_item(Key={'id': email_id})
+    if 'Item' in response:
+        logger.info(f"Email {email_id} already processed")
+        return
 
     print(f"Processing email {email_id}")
     recipients = receipt.get('recipients', [])
@@ -174,11 +180,6 @@ def procesar_record(record, context):
     num_attachments = len(attachments)
     attachments_size = sum([attachment['contentLength'] for attachment in attachments])
     has_attachments = len(attachments) > 0
-    for email_address in to_email:
-        metrics.add_dimension(name="to", value=clean_email_address(email_address))
-        metrics.add_metric(name="EmailReceived", unit=MetricUnit.Count, value=1)
-        metrics.add_metric(name="Attachments", unit=MetricUnit.Count, value=num_attachments)
-        metrics.add_metric(name="AttachmentsSize", unit=MetricUnit.Count, value=attachments_size)
 
     save_data = {
         'id': email_id,
@@ -201,16 +202,28 @@ def procesar_record(record, context):
         "object_key": object_key
 
     }
-    # only save 1 item by id
-    table_received.put_item(
-        Item=save_data,
-        ConditionExpression="attribute_not_exists(id)"
-    )
+    try:
+        # only save 1 item by id
+        table_received.put_item(
+            Item=save_data,
+            ConditionExpression="attribute_not_exists(id)"
+        )
+    except ClientError as e:
+        if e.response['Error']['Code'] == 'ConditionalCheckFailedException':
+            logger.info(f"Email {email_id} already processed")
+            return
+        else:
+            raise e
     if 'references' in save_data:
         del save_data['references']
     if 'attachments' in save_data:
         del save_data['attachments']
     send_event('email-received', save_data)
+    for email_address in to_email:
+        metrics.add_dimension(name="to", value=clean_email_address(email_address))
+        metrics.add_metric(name="EmailReceived", unit=MetricUnit.Count, value=1)
+        metrics.add_metric(name="Attachments", unit=MetricUnit.Count, value=num_attachments)
+        metrics.add_metric(name="AttachmentsSize", unit=MetricUnit.Count, value=attachments_size)
     references_data = []
     for reference in references:
         if reference and str(reference).strip():
@@ -390,7 +403,7 @@ def upload_bytes(contenido: bytes, key: str, bucket: str, encode='latin1', **kar
         if 'ContentEncoding' in kargs:
             encode = kargs['ContentEncoding']
         contenido = contenido.encode(encode)
-    #reemove None values from kargs
+    # reemove None values from kargs
     kargs = {k: v for k, v in kargs.items() if v is not None}
     return s3.put_object(
         Body=contenido,
