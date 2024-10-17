@@ -390,7 +390,8 @@ def upload_bytes(contenido: bytes, key: str, bucket: str, encode='latin1', **kar
         if 'ContentEncoding' in kargs:
             encode = kargs['ContentEncoding']
         contenido = contenido.encode(encode)
-
+    #reemove None values from kargs
+    kargs = {k: v for k, v in kargs.items() if v is not None}
     return s3.put_object(
         Body=contenido,
         Bucket=bucket,
