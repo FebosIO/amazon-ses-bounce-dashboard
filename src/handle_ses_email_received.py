@@ -127,9 +127,24 @@ def procesar_record(record, context):
     object_key = action.get('objectKey')
     if 'AMAZON_SES_SETUP_NOTIFICATION' in object_key:
         return
-    mail = sqs_body.get('mail')
+    mail = sqs_body.get('mail', None)
+
+    # download file from s3
+    s3_response = s3.s3_get_object_bytes(f"{bucket_name}/{object_key}")
+    file_bytes = s3_response[0]
+    em = email.message_from_bytes(file_bytes)
+
+    if not mail:
+        # build headers from em
+        mail = {'headers': [], 'commonHeaders': {}}
+        for key, value in em.items():
+            mail['headers'].append({'name': key, 'value': value})
+            camelCaseKey = ''.join(word.capitalize() for word in key.split('-'))
+            mail['commonHeaders'][camelCaseKey] = value
+
     common_headers = mail.get('commonHeaders')
     headers = map_headers(mail.get('headers', []))
+
     subject = common_headers.get('subject')
     from_email = common_headers.get('from', headers.get('from'))
     if isinstance(from_email, str):
@@ -141,12 +156,6 @@ def procesar_record(record, context):
     datetime_timestamp = parser.isoparse(timestamp)
 
     unix_timestamp = int(datetime_timestamp.timestamp())
-
-    # download file from s3
-
-    s3_response = s3.s3_get_object_bytes(f"{bucket_name}/{object_key}")
-    file_bytes = s3_response[0]
-    em = email.message_from_bytes(file_bytes)
 
     email_id = get_message_id(mail, common_headers, em)
 
@@ -192,7 +201,11 @@ def procesar_record(record, context):
         "object_key": object_key
 
     }
-    table_received.put_item(Item=save_data)
+    # only save 1 item by id
+    table_received.put_item(
+        Item=save_data,
+        ConditionExpression="attribute_not_exists(id)"
+    )
     if 'references' in save_data:
         del save_data['references']
     if 'attachments' in save_data:
