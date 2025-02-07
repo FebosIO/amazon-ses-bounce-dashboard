@@ -63,11 +63,13 @@ def handler(message, context):
                 response = requests.delete(url, auth=awsauth, headers=headers)
                 if response.status_code > 300 and response.status_code < 200:
                     print(response.text)
+                    raise Exception("Something went wrong")
             else:
                 json_str = json.dumps(new_record, cls=DecimalEncoder)
                 response = requests.put(url, auth=awsauth, data=json_str, headers=headers)
                 if response.status_code > 300 and response.status_code < 200:
                     print(response.text)
+                    raise Exception("Something went wrong")
     except:
         traceback.print_exc()
         print(records)
