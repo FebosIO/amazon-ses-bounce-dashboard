@@ -91,8 +91,8 @@ def obtener_company_from_email_tags(mail):
     return '0'
 
 
-async def procesar_eventos_suppression(type_, event_detail, mail, timestamp, message_id, company_id='0',
-                                       stage='produccion'):
+def procesar_eventos_suppression(type_, event_detail, mail, timestamp, message_id, company_id='0',
+                                 stage='produccion'):
     if type_ == 'Bounce':
         recipients = event_detail['bouncedRecipients']
         for recipient in recipients:
@@ -174,6 +174,99 @@ if __name__ == "__main__":
                     }
                 ]
             }
+
+        message['Records'][0]['body'] = {
+            "id": "896f5694-a2f9-43aa-8b52-66b540cf0918",
+            "timestamp": "2025-03-20T14:51:11.257Z",
+            "estado": "queued",
+            "bounce": {
+                "timestamp": "2025-03-20T14:51:11.257Z",
+                "bouncedRecipients": [
+                    {
+                        "action": "failed",
+                        "diagnosticCode": "Amazon SES did not send the message to this address because it is on the suppression list for your account. For more information about removing addresses from the suppression list, see the Amazon SES Developer Guide at https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-email-suppression-list.html",
+                        "emailAddress": "valentin.solis@honorario.uaysen.cl",
+                        "status": "5.1.1"
+                    }
+                ],
+                "bounceSubType": "OnAccountSuppressionList",
+                "bounceType": "Permanent",
+                "feedbackId": "01000195b4096bdf-b25226b7-63a2-4c06-9770-e5a5f320cabf-000000",
+                "reportingMTA": "dns; amazonses.com"
+            },
+            "expiration": 1774018271257,
+            "mail": {
+                "timestamp": "2025-03-20T14:51:10.894Z",
+                "commonHeaders": {
+                    "from": [
+                        "Febos <informacion@empresas.febos.cl>"
+                    ],
+                    "messageId": "01000195b4096aae-eb9bcd3b-c8f9-46ac-baa2-5617f7ff634b-000000",
+                    "subject": "Recuperación de contraseña",
+                    "to": [
+                        "valentin.solis@honorario.uaysen.cl"
+                    ]
+                },
+                "destination": [
+                    "valentin.solis@honorario.uaysen.cl"
+                ],
+                "headers": [
+                    {
+                        "name": "Content-Type",
+                        "value": "multipart/mixed; boundary=\"===============8163948611933252407==\""
+                    },
+                    {
+                        "name": "MIME-Version",
+                        "value": "1.0"
+                    },
+                    {
+                        "name": "From",
+                        "value": "Febos <informacion@empresas.febos.cl>"
+                    },
+                    {
+                        "name": "Subject",
+                        "value": "Recuperación de contraseña"
+                    },
+                    {
+                        "name": "To",
+                        "value": "valentin.solis@honorario.uaysen.cl"
+                    }
+                ],
+                "headersTruncated": False,
+                "messageId": "01000195b4096aae-eb9bcd3b-c8f9-46ac-baa2-5617f7ff634b-000000",
+                "sendingAccountId": "830321976775",
+                "source": "informacion@empresas.febos.cl",
+                "sourceArn": "arn:aws:ses:us-east-1:830321976775:identity/empresas.febos.cl",
+                "tags": {
+                    "empresa": [
+                        "61980520-8"
+                    ],
+                    "ses:caller-identity": [
+                        "ses-event-manager-ProcessSESSendQueueRole-T37E7DP89RXL"
+                    ],
+                    "ses:configuration-set": [
+                        "default"
+                    ],
+                    "ses:from-domain": [
+                        "empresas.febos.cl"
+                    ],
+                    "ses:operation": [
+                        "SendRawEmail"
+                    ],
+                    "ses:source-ip": [
+                        "44.204.40.111"
+                    ],
+                    "ses:source-tls-version": [
+                        "TLSv1.3"
+                    ],
+                    "stage": [
+                        "produccion"
+                    ]
+                }
+            },
+            "messageId": "01000195b4096aae-eb9bcd3b-c8f9-46ac-baa2-5617f7ff634b-000000",
+            "eventType": "Bounce"
+        }
 
 
         class Contexto:

@@ -546,36 +546,3 @@ def decode_mime_words(encoded_text):
     except:
         traceback.print_exc()
         return encoded_text
-
-
-if __name__ == "__main__":
-    with open('/Users/claudiomiranda/IdeaProjects/amazon-ses-bounce-dashboard/events/email_received.json', 'r') as f:
-        message = json.load(f)
-        if 'Records' not in message:
-            message = {
-                "Records": [
-                    {'messageId': '6f92e936-3383-4493-b3b3-e9a87a96c71c',
-                     'receiptHandle': 'AQEBnuDR6UR4MANWNf3mv5Mj6G/VbNseyypX043UU6/2RgHkkzs1/StLF83Hbl0sSnk3nBYi9Jq031EXiXn0MmzYJtADuKo04PM8UgIq4l2r6zlXLYIbCnuBIglbEGDsPbkZpQKrvf/ram5k2tyxgaxpizyuWuGQYig+z606+kRAc784FyKU3q+vQhuMD7GW3h/zEOADrLrfeXRrskdLu3sXxjjjlsBXDbRK2D8AVk/kbVnOOZqGLc5DL/q1RlJuWnBpGshoCS4jzhnAFf3808b3ciP2H21Xd6LXoGKwm3sQCI1HSVbDfgQqEVulqmrzf/6hMaekVq2Q/QR4/BsEyKIVp+ORLfr9QZsDfk8QPLQcfxeQhpMy5CO8FzQ+hF8WYaBfcnh2x656H4M9rNQyXLEtOOAwOxDGRM34LB4/LPUabZanpkKSLeiEUhvaif4Zj9P5',
-                     'body': message,
-                     'attributes': {'ApproximateReceiveCount': '1', 'SentTimestamp': '1728065849741',
-                                    'SenderId': 'AIDA4CUYL4XDUYJU3T2TZ',
-                                    'ApproximateFirstReceiveTimestamp': '1728065849742'}, 'messageAttributes': {},
-                     'md5OfBody': '20e30c56eba44bef1df349af55c5a12b', 'eventSource': 'aws:sqs',
-                     'eventSourceARN': DEDUPLICATED_SQS_ARN,
-                     'awsRegion': 'us-east-1'}
-                ]
-            }
-        logger.setLevel(logging.NOTSET)
-
-
-        class Contexto:
-            aws_request_id = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-            log_group_name = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-            log_stream_name = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-
-            def __int__(self):
-                self.aws_request_id = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-
-
-        print(json.dumps(message))
-        handler(message, Contexto())
