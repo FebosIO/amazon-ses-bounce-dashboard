@@ -279,4 +279,4 @@ if __name__ == "__main__":
 
 
         print(json.dumps(message))
-        handler(message, Contexto())
+        # handler(message, Contexto())
