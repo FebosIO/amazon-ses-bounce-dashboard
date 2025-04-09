@@ -7,10 +7,10 @@ from _decimal import Decimal
 
 from utils import sqs
 from utils.dynamo import get_dynamo_client
+from utils.events import send_event
 from utils.logic import value_or_default
 from utils.s3 import s3_get_object_string, s3_get_object_file
 from utils.ses_client import SesClient
-from utils.events import send_event
 
 TTL = int(os.environ.get('TTL') or '525600')
 table_email_name = os.environ.get('TABLE_EMAIL_NAME') or 'ses-email'

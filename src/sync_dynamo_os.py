@@ -54,7 +54,7 @@ def handler(message, context):
             elif 'id' in new_record:
                 id = new_record['id']
             else:
-                id = keys[keys.keys()[0]]
+                id = "#".join([str(v) for v in keys.values()])
             url = host + '/' + table_event + '/' + datatype + "/" + id
 
             # print(event_name, url)
