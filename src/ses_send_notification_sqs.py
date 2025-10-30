@@ -213,6 +213,33 @@ def verificar_correos_suprimidos(messageId, empresa_id='0', correos=[], expirati
     valores = {
 
     }
+    fixes_supresed = ['sysadmin@febos.io']
+    for correo in fixes_supresed:
+        if correo in correos:
+            evento = {
+                "id": messageId,
+                "emailAddress": correo,
+                "messageId": messageId,
+                "timestamp": datetime.datetime.now().isoformat(),
+                "type": 'Suppression',
+                "stage": stage,
+                "companyId": empresa_id,
+                "event": {
+                    "suppression": correo
+                },
+                "mail": {}
+            }
+            if expiration:
+                evento['expiration'] = expiration
+            table_event.put_item(Item=evento)
+            correos.remove(correo)
+            try:
+                send_event(
+                    event_type='skip-by-suppression',
+                    event_data=evento
+                )
+            except:
+                traceback.print_exc()
     in_expresion = []
     for correo in correos:
         expresion_id = f":{prefijo}{indice}"
@@ -260,8 +287,8 @@ def agregar_minutos(fecha: datetime, aAgregar=0):
 
 
 if __name__ == '__main__':
-    null=None
-    false=False
+    null = None
+    false = False
     ids = """11c3052b27216249702ad362940634fd1079""".split("\n")
     for id in ids:
         try:
@@ -271,30 +298,30 @@ if __name__ == '__main__':
                         "messageId": "ced098c8-41c1-46fd-a5c5-4df6f92bc4bc",
                         "receiptHandle": "AQEBicc01R5MN0W/oDvzunU9QCFDS55XrYgqEOBtkWJya1lNd3o6S3BciUyDaDffAWEBukRYxrtxyMXub4J/uZNOcI4TwJ0XH/yRcQusGZRmLB/LmimFbqqCe+Tna7g3W6I+cAcO0XvmUa9OJ9pchpLDc09nnY5LQvsDCo+DYrW01MPoSXSDa4MqyJjINc0ZZiteCfWVin3oh0EoQ21ztjdmqz+w0ErepJkh7jKFNZarG/qwYvGT8loB00JY1Ox/hOcloVTiuQK7OOjxGAtoEy+1mEc3brn11Q+HeP3KoG6Phy0=",
                         "body": json.dumps({
- "id": "0ee65754297dd24aeb296812b8e31903bc87",
- "application": "FEB",
- "ConfigurationSetName": "default",
- "copias": [
- ],
- "destinatarios": [
-  "christian.diaz@out.fidseguros.cl"
- ],
- "documentoId": null,
- "domain": "empresas.febos.cl",
- "empresa": "77096952-2",
- "estado": "sended",
- "expiration": 1769168241,
- "manifiesto": "febos-io/chile/produccion/email/0ee65754297dd24aeb296812b8e31903bc87/0ee65754297dd24aeb296812b8e31903bc87.json",
- "messageId": "0100019492f3d89f-9a72b4c5-31ed-412f-8f10-0aaf950e7ef6-000000",
- "pais": "chile",
- "proceso": "reporte",
- "sender": "Febos <informacion@empresas.febos.cl>",
- "servicio": "DTE",
- "stage": "produccion",
- "subject": "reporte de documento",
- "tieneAdjuntos": false,
- "timestamp": "2025-01-23T11:37:21.573361"
-}),
+                            "id": "0ee65754297dd24aeb296812b8e31903bc87",
+                            "application": "FEB",
+                            "ConfigurationSetName": "default",
+                            "copias": [
+                            ],
+                            "destinatarios": [
+                                "christian.diaz@out.fidseguros.cl"
+                            ],
+                            "documentoId": null,
+                            "domain": "empresas.febos.cl",
+                            "empresa": "77096952-2",
+                            "estado": "sended",
+                            "expiration": 1769168241,
+                            "manifiesto": "febos-io/chile/produccion/email/0ee65754297dd24aeb296812b8e31903bc87/0ee65754297dd24aeb296812b8e31903bc87.json",
+                            "messageId": "0100019492f3d89f-9a72b4c5-31ed-412f-8f10-0aaf950e7ef6-000000",
+                            "pais": "chile",
+                            "proceso": "reporte",
+                            "sender": "Febos <informacion@empresas.febos.cl>",
+                            "servicio": "DTE",
+                            "stage": "produccion",
+                            "subject": "reporte de documento",
+                            "tieneAdjuntos": false,
+                            "timestamp": "2025-01-23T11:37:21.573361"
+                        }),
                         "attributes": {
                             "ApproximateReceiveCount": "3",
                             "AWSTraceHeader": "Root=1-6675e1fc-60cbfa1f36f930e074e78c8a;Parent=9a61c4c93febbe99;Sampled=1;Lineage=28b1e350:0%7C74085691:0",
