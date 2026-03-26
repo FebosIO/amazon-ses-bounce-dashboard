@@ -36,6 +36,11 @@ Parameters:
     Description: >-
       Identidad principal de emails, para configuraciones base
     Default: febos.cl
+  Recipients:
+    Type: CommaDelimitedList
+    Description: >-
+      Lista completa de dominios/subdominios para recepción de correos en SES (separados por coma).
+    Default: 'cases.febos.cl,inbound.febos.cl,inbox.febos.cl'
 
 Conditions:
   IsProduccion: !Equals
@@ -751,19 +756,7 @@ Resources:
       Rule:
         Enabled: true
         ScanEnabled: true
-        Recipients:
-          - 'Fn::If':
-              - IsProduccion
-              - !Sub cases.${PrincipalIdentity}
-              - !Sub cases-${STAGE}.${PrincipalIdentity}
-          - 'Fn::If':
-              - IsProduccion
-              - !Sub inbound.${PrincipalIdentity}
-              - !Sub inbound-${STAGE}.${PrincipalIdentity}
-          - 'Fn::If':
-              - IsProduccion
-              - !Sub inbox.${PrincipalIdentity}
-              - !Sub inbox-${STAGE}.${PrincipalIdentity}
+        Recipients: !Ref Recipients
         Actions:
           - S3Action:
               BucketName: !Ref PrivateBucket
